@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NOT FOUND</title>
+    <style>
+      .questionCircle {
+        width: 200px;
+        height: 200px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5vh;
+      }
+      .errMessage {
+        text-align: center;
+      }
+
+      .foundtitle {
+        text-align: center;
+      }
+
+      /* 모바일 */
+      @media screen and (max-width: 500px) {
+        .questionCircle {
+          width: 100px;
+          height: 100px;
+        }
+
+        .foundtitle {
+          font-size: 20px;
+        }
+        .errMessage {
+          font-size: 10px;
+        }
+      }
+
+      /* 테블릿 */
+      @media screen and (max-width: 800px) {
+        .questionCircle {
+          width: 200px;
+          height: 200px;
+        }
+
+        .foundtitle {
+          font-size: 24px;
+        }
+        .errMessage {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <img
+        class="questionCircle"
+        src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/QuestionCircle.svg"
+        alt="해당없음"
+      />
+      <br />
+      <h1 class="foundtitle">검색 결과가 없습니다.</h1>
+      <div class="errMessage">
+        <p>검색어의 철자와 띄어쓰기가 정확한지 확인해주세요.</p>
+        <p>
+          검색어의 단어 수를 줄이거나, 보다 일반적인 단어 등 다른 검색어를
+          입력해보세요.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
