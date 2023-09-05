@@ -69,3 +69,16 @@ db.sequelize.sync({ force: false }).then(() => {
     console.log(`http://localhost:${PORT}`);
   });
 });
+
+//bcrypt (단방향)
+//암호화
+const bcrypt = require("bcrypt");
+const saltNum = 10;
+const bcryptPassword = (password) => {
+  return bcrypt.hashSync(password, saltNum);
+};
+
+//비교
+const comparePassword = (password, dbPassword) => {
+  return bcrypt.compareSync(password, dbPassword);
+};
