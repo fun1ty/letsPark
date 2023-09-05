@@ -1,7 +1,11 @@
-const controller = require('../controller/socket');
+const controller = require("../controller/socket");
 
 module.exports = function (io) {
-    io.on('connection', (socket) => {
-        controller.connection(io, socket);
-    });
+  // 클라이언트 연결 이벤트 핸들링
+  io.on("connection", (socket) => {
+    controller.connection(io.of("/chat"), socket);
+  });
 };
+
+//깃토큰
+//키페어 .txt
