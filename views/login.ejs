@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 로그인 페이지 -->
+    <form onsubmit="login(event)">
+      <input type="text" id="userid" placeholder="아이디" /><br />
+      <input type="password" id="password" placeholder="비밀번호" /><br />
+      <button type="submit">로그인하기</button>
+    </form>
+    <br />
+    <a href="/user/find">비밀번호 찾기</a>
+    <a href="/user/signup">회원가입하기</a>
+    <a href="/user/<%= userid %>/edit">회원 정보 수정</a>
+
+    <script>
+      function login(e) {
+        e.preventDefault();
+
+        const userid = document.querySelector('#userid').value;
+        const password = document.querySelector('#password').value;
+
+        if (!userid || !password) {
+          console.log('아이디와 비밀번호를 입력하세요');
+          return;
+        }
+
+        axios({
+          method: 'POST',
+          url: '/user/login',
+          data: {
+            userid: document.querySelector('#userid').value,
+            password: document.querySelector('#password').value,
+          },
+        }).then((res) => {
+          if (res.data.result) {
+            localStorage.setItem('userid', userid);
+            console.log(`로그인 성공`);
+
+            console.log(`${res.data.data.userid}`);
+          } else {
+            console.log('로그인 실패');
+            window.location.reload();
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

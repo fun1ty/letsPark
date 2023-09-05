@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 회원 가입 페이지 -->
+    <h2>가입 정보 입력하기</h2>
+    <form name="register">
+      <input type="text" id="userid" placeholder="아이디" /><br />
+      <input type="password" id="password" placeholder="비밀번호" /><br />
+      <!-- <input
+      type="password"
+      id="passwordCheck"
+      placeholder="비밀번호 확인"
+    /><br /> -->
+      <input type="text" id="name" placeholder="이름" /><br />
+      <input type="text" id="nickname" placeholder="닉네임" /><br />
+      <input type="text" id="phone" placeholder="휴대폰번호" /><br />
+      <button type="button" onclick="registerFunc()">다음으로</button>
+    </form>
+
+    <script>
+      async function registerFunc() {
+        const form = document.forms['register'];
+        try {
+          const res = await axios({
+            method: 'POST',
+            url: '/user/signup',
+            data: {
+              userid: form.userid.value,
+              password: form.password.value,
+              name: form.name.value,
+              nickname: form.nickname.value,
+              phone: form.phone.value,
+            },
+          });
+          if (res.data.result) {
+            console.log('회원가입 성공');
+            const userid = form.userid.value;
+            const nickname = form.nickname.value;
+            document.location.href = `/user/${userid}/${nickname}/success`;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    </script>
+  </body>
+</html>
