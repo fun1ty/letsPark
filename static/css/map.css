@@ -1,0 +1,148 @@
+/* 헤더 */
+/* 헤더 스타일링 */
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+}
+
+.headbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  background-color: #8783f5;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-shadow: 1px 1px 1px 1px rgb(199, 199, 199);
+}
+
+/* 검색창 스타일링 */
+#search-bar {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
+}
+
+#search-input {
+  padding: 10px 35px;
+  width: 300px;
+  border: none;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 1px 1px 1px 1px rgba(210, 210, 210, 0.272);
+}
+
+#search-input::placeholder {
+  text-align: center;
+}
+
+#search-button {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 25px;
+  height: 25px;
+  background-image: url("https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Search.svg");
+  background-color: white;
+  background-size: cover;
+  border: none;
+  cursor: pointer;
+}
+
+.filter-icon {
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 25px;
+  height: 25px;
+}
+
+.logo {
+  width: 140px;
+  height: auto;
+}
+/* 메뉴 아이콘 스타일링 */
+.menu-icons {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  position: absolute;
+  right: 40px;
+}
+
+.menu-icon {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.headermenu {
+  display: flex;
+  align-items: center;
+}
+
+/* //////////////////////// */
+.customoverlay {
+  position: relative;
+  background: #8783f5;
+  border-radius: 20px;
+  width: 100px;
+  height: 26px;
+}
+
+.customoverlay:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-top-color: #8783f5;
+  border-bottom: 0;
+  margin-left: -8px;
+  margin-bottom: -8px;
+}
+.localname {
+  margin-top: 4px;
+  color: white;
+}
+
+#menu-list {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: right 0.3s ease;
+}
+
+#menu-list.visible {
+  right: 0;
+}
+
+/*////////////////////////////*/
+
+@media screen and (min-width: 800px) {
+  #search-input {
+    width: 500px;
+  }
+
+  .filter-icon {
+    margin-left: 10px;
+  }
+}
