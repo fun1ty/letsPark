@@ -16,7 +16,6 @@ const app = express();
 
 const server = http.createServer(app);
 const io = SocketIO(server);
-const chatNamespace = io.of("/chat");
 
 app.set("view engine", "ejs");
 app.use("/uploads", express.static(__dirname + "/uploads"));
@@ -50,7 +49,7 @@ const indexRouter = require("./routes/main.js"); //index.js 생략
 app.use("/", indexRouter);
 
 const socketRouter = require("./routes/socket.js");
-socketRouter(chatNamespace);
+socketRouter(io);
 
 // const indexRouter = require("./routes/user.js"); //index.js 생략
 // app.use("/user", indexRouter);
