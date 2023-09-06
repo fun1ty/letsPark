@@ -6,6 +6,3 @@ module.exports = function (io) {
     controller.connection(io.of("/chat"), socket);
   });
 };
-
-//깃토큰
-//키페어 .txt

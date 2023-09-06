@@ -37,6 +37,18 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+//db 테이블 생성
+db.PublicParking = require('./PublicParking')(sequelize);
+db.OperationTime = require('./OperationTime')(sequelize);
+db.Price = require('./Price')(sequelize);
+
+//연관관계 설정
+db.PublicParking.hasOne(db.OperationTime, {foreignKey : 'publicparking_id', sourceKey : 'id'});
+db.PublicParking.hasOne(db.Price, {foreignKey : 'publicparking_id', sourceKey : 'id'});
+db.OperationTime.belongsTo(db.PublicParking, {foreignKey : 'publicparking_id', sourceKey : 'id'});
+db.Price.belongsTo(db.PublicParking, {foreignKey : 'publicparking_id', sourceKey : 'id'});
+
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

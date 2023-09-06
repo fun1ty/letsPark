@@ -2,6 +2,7 @@ const roomList = [];
 
 exports.connection = (io, socket) => {
   console.log("socket 접속");
+  console.log("io", io);
   //채팅방 목록 보내기
   socket.emit("roomList", roomList);
 

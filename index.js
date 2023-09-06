@@ -16,7 +16,6 @@ const app = express();
 
 const server = http.createServer(app);
 const io = SocketIO(server);
-const chatNamespace = io.of("/chat");
 
 app.set("view engine", "ejs");
 app.use("/uploads", express.static(__dirname + "/uploads"));
@@ -50,7 +49,7 @@ const indexRouter = require("./routes/main.js"); //index.js 생략
 app.use("/", indexRouter);
 
 const socketRouter = require("./routes/socket.js");
-socketRouter(chatNamespace);
+socketRouter(io);
 
 // const indexRouter = require("./routes/user.js"); //index.js 생략
 // app.use("/user", indexRouter);
@@ -63,8 +62,10 @@ app.get("*", (req, res) => {
   res.render("404");
 });
 
+//job import(스케줄 js파일 추가 -> 자동 실행)
+const updateInfoJob = require('./utils/schedule');
 //server start
-db.sequelize.sync({ force: false }).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   server.listen(PORT, () => {
     console.log(`http://localhost:${PORT}`);
   });
