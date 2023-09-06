@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 const Model = (sequelize) => {
-    const PublicParking =  sequelize.define("publicparking", {
+    return  sequelize.define("publicparking", {
         //컬럼 정의
         id: {
             type: DataTypes.INTEGER,
@@ -9,7 +9,10 @@ const Model = (sequelize) => {
             primaryKey: true,
             autoIncrement: true,
         },
-
+        code : {
+          type : DataTypes.INTEGER,
+            allowNull : false,
+        },
         name : {
             type: DataTypes.STRING(100),
             allowNull: false,
@@ -24,13 +27,17 @@ const Model = (sequelize) => {
         },
         tel : {
             type: DataTypes.STRING(20),
-            allowNull: false,
+            allowNull: true,
+        },
+        questatus : {
+          type : DataTypes.INTEGER,
+          allowNull : false,
         },
         capacity : {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        questatus : {
+        currentparking : {
             type: DataTypes.INTEGER,
             allowNull: true,
         },
@@ -38,12 +45,20 @@ const Model = (sequelize) => {
             type: DataTypes.CHAR(1),
             allowNull: false,
         },
+        lat : {
+            type : DataTypes.DOUBLE,
+            allowNull : false,
+        },
+        lng : {
+            type : DataTypes.DOUBLE,
+            allowNull : false,
+        },
+        curparkingtime : {
+            type : DataTypes.STRING(50),
+            allowNull : false,
+        },
     });
-    PublicParking.associate = models => {
-        PublicParking.hasOne(models.OperationTime, {foreignKey : 'publicparking_id', sourceKey : 'id'});
-    };
 
-    return PublicParking;
 };
 
 

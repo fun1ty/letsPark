@@ -4,4 +4,6 @@ const router = express.Router();
 
 router.get("/", controller.main);
 
+router.get('/ppdb', controller.ppdb);
+
 module.exports = router;

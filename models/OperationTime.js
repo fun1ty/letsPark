@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 const Model = (sequelize) => {
-    const OperationTime = sequelize.define("operationtime", {
+    return sequelize.define("operationtime", {
         //컬럼 정의
        weekday_begin : {
            type : DataTypes.STRING(50),
@@ -29,11 +29,6 @@ const Model = (sequelize) => {
        },
 
     });
-
-    OperationTime.assosiate = models => {
-        OperationTime.belongsTo(models.PublicParking, {foreignKey : 'publicparking_id', sourceKey : 'id'});
-    };
-    return OperationTime;
 };
 
 module.exports = Model;

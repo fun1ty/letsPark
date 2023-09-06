@@ -63,8 +63,10 @@ app.get("*", (req, res) => {
   res.render("404");
 });
 
+//job import(스케줄 js파일 추가 -> 자동 실행)
+const updateInfoJob = require('./utils/schedule');
 //server start
-db.sequelize.sync({ force: false }).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   server.listen(PORT, () => {
     console.log(`http://localhost:${PORT}`);
   });
