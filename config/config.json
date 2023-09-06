@@ -2,7 +2,7 @@
   "development": {
     "username": "user",
     "password": "1234",
-    "database": "kdt8",
+    "database": "kdt8-production",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
@@ -17,7 +17,7 @@
     "username": "admin",
     "password": "12345678",
     "database": "kdt8",
-    "host": "",
+    "host": "kdt8-test.ctknx6neegwh.ap-northeast-2.rds.amazonaws.com",
     "dialect": "mysql"
   }
 }
