@@ -19,4 +19,6 @@ router.patch('/edit', controller.editProfile);
 
 router.delete('/drop', controller.drop); //회원 탈퇴
 
+router.get('/ppdb', controller.ppdb);
+
 module.exports = router;

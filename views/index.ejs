@@ -5,11 +5,173 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="/reset.css" />
     <link rel="stylesheet" type="text/css" href="/index.css" />
+    <link rel="stylesheet" href="/map.css" />
     <script src="/socket.io/socket.io.js"></script>
-    <title>Document</title>
-    <div id="title">주차하카</div>
+    <title>Main</title>
     <div id="test"></div>
   </head>
   <body>
+
+    <!-- header -->
+    <div class="header-container">
+      <nav class="headbox">
+        <div class="headermenu">
+          <img
+            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/W_text_logo.svg"
+            alt="로고"
+            class="logo"
+          />
+
+          <div class="menu-icons">
+            <div class="menu-icon">
+              <img
+                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/bell.svg"
+                alt="알람"
+                width="25px"
+                height="25px"
+              />
+            </div>
+            <div class="menu-icon">
+              <button id="menu-button" onclick="toggleMenu()">
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/menu.svg"
+                  alt="메뉴"
+                  width="25px"
+                  height="25px"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="menu-container" class="menu">
+          <button id="close-button" onclick="closeMenu()">
+            <img
+              src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/X.svg"
+              alt="닫기"
+              width="25px"
+              height="25px"
+            />
+          </button>
+
+          <div>
+            <button class="mypageEdit" onclick="profileEdit()">
+              마이페이지
+              <div>parkinghaka@gmail.com</div>
+            </button>
+          </div>
+
+          <div>
+            <button onclick="userReservation()">예약 내역 보기</button>
+          </div>
+          <div>
+            <ul>
+              <li onclick="parkingAdd()">공유주차장 등록</li>
+              <li>채팅방</li>
+              <li>포인트</li>
+              <li>결제내역</li>
+            </ul>
+          </div>
+          <h5>이용안내 및 문의하기</h5>
+          <h5>로그아웃</h5>
+        </div>
+
+        <div id="search-bar">
+          <form action="검색결과페이지URL">
+            <div class="search-container">
+              <input
+                type="text"
+                id="search-input"
+                name="q"
+                placeholder="목적지 또는 주소 검색"
+              />
+              <div class="filter-icon">
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/filter.svg"
+                  alt="필터"
+                  width="25px"
+                  height="25px"
+                />
+              </div>
+              <button type="submit" id="search-button"></button>
+            </div>
+          </form>
+        </div>
+      </nav>
+    </div>
+    <!-- map -->
+    <div id="map" style="width: 100%; height: 100vh"></div>
+    <div class="search-results" id="search-results"></div>
+
+    <script
+      type="text/javascript"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=249c4bf9f052079cf0cb2a51dceb3dc1"
+    ></script>
+    <script>
+      var mapContainer = document.getElementById("map"),
+        mapOption = {
+          center: new kakao.maps.LatLng(37.547771, 126.942069),
+          level: 4,
+        };
+
+      var map = new kakao.maps.Map(mapContainer, mapOption);
+
+      // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+      var content =
+        '<div class="customoverlay">' +
+        '  <a href="https://kko.to/cf3Xnt9X8D" target="_blank" style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;">' +
+        '    <span class="localname">대흥역</span>' +
+        "  </a>" +
+        "</div>";
+
+      // 커스텀 오버레이가 표시될 위치입니다
+      var position = new kakao.maps.LatLng(37.547771, 126.942069);
+
+      // 커스텀 오버레이를 생성합니다
+      var customOverlay = new kakao.maps.CustomOverlay({
+        map: map,
+        position: position,
+        content: content,
+        yAnchor: 1,
+      });
+
+      // 변수를 추가하여 메뉴 상태를 추적합니다.
+      var isMenuVisible = false;
+
+      function toggleMenu() {
+        var menu = document.getElementById("menu-container");
+        if (!isMenuVisible) {
+          menu.style.right = "0";
+        } else {
+          menu.style.right = "-300px";
+        }
+
+        // 메뉴 상태를 업데이트합니다.
+        isMenuVisible = !isMenuVisible;
+      }
+
+      // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
+      function closeMenu() {
+        var menu = document.getElementById("menu-container");
+        menu.style.right = "-300px";
+        isMenuVisible = false;
+      }
+
+      // 회원 정보 수정 이동
+      function profileEdit() {
+        location.href = "/user/edit";
+      }
+
+      // 예약내역조회 이동
+      function userReservation() {
+        location.href = "/user/reservation";
+      }
+
+      //공유주차장등록 이동
+      function parkingAdd() {
+        location.href = "/mypage/parking/add";
+      }
+    </script>
+
   </body>
 </html>
