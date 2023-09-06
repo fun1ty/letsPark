@@ -43,12 +43,36 @@
           </div>
         </div>
 
-        <div id="menu-list" class="hidden">
-          <ul>
-            <li><a href="#">메뉴 항목 1</a></li>
-            <li><a href="#">메뉴 항목 2</a></li>
-            <li><a href="#">메뉴 항목 3</a></li>
-          </ul>
+        <div id="menu-container" class="menu">
+          <button id="close-button" onclick="closeMenu()">
+            <img
+              src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/X.svg"
+              alt="닫기"
+              width="25px"
+              height="25px"
+            />
+          </button>
+
+          <div>
+            <button class="mypageEdit" onclick="profileEdit()">
+              마이페이지
+              <div>parkinghaka@gmail.com</div>
+            </button>
+          </div>
+
+          <div>
+            <button onclick="userReservation()">예약 내역 보기</button>
+          </div>
+          <div>
+            <ul>
+              <li onclick="parkingAdd()">공유주차장 등록</li>
+              <li>채팅방</li>
+              <li>포인트</li>
+              <li>결제내역</li>
+            </ul>
+          </div>
+          <h5>이용안내 및 문의하기</h5>
+          <h5>로그아웃</h5>
         </div>
 
         <div id="search-bar">
@@ -85,11 +109,11 @@
     <script>
       var mapContainer = document.getElementById("map"),
         mapOption = {
-          center: new kakao.maps.LatLng(37.547771, 126.942069), // 지도의 중심좌표
-          level: 4, // 지도의 확대 레벨
+          center: new kakao.maps.LatLng(37.547771, 126.942069),
+          level: 4,
         };
 
-      var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+      var map = new kakao.maps.Map(mapContainer, mapOption);
 
       // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
       var content =
@@ -109,17 +133,42 @@
         content: content,
         yAnchor: 1,
       });
+
+      // 변수를 추가하여 메뉴 상태를 추적합니다.
+      var isMenuVisible = false;
+
       function toggleMenu() {
-        var menuList = document.getElementById("menu-list");
-        var menuButton = document.getElementById("menu-button");
-
-        menuList.classList.toggle("visible");
-
-        if (menuList.classList.contains("visible")) {
-          menuList.style.right = "0";
+        var menu = document.getElementById("menu-container");
+        if (!isMenuVisible) {
+          menu.style.right = "0";
         } else {
-          menuList.style.right = "-300px";
+          menu.style.right = "-300px";
         }
+
+        // 메뉴 상태를 업데이트합니다.
+        isMenuVisible = !isMenuVisible;
+      }
+
+      // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
+      function closeMenu() {
+        var menu = document.getElementById("menu-container");
+        menu.style.right = "-300px";
+        isMenuVisible = false;
+      }
+
+      // 회원 정보 수정 이동
+      function profileEdit() {
+        location.href = "/user/edit";
+      }
+
+      // 예약내역조회 이동
+      function userReservation() {
+        location.href = "/user/reservation";
+      }
+
+      //공유주차장등록 이동
+      function parkingAdd() {
+        location.href = "/mypage/parking/add";
       }
     </script>
   </body>
