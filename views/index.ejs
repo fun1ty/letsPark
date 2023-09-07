@@ -7,11 +7,14 @@
     <link rel="stylesheet" type="text/css" href="/index.css" />
     <link rel="stylesheet" href="/map.css" />
     <script src="/socket.io/socket.io.js"></script>
+    <script
+      type="text/javascript"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=249c4bf9f052079cf0cb2a51dceb3dc1"
+    ></script>
     <title>Main</title>
     <div id="test"></div>
   </head>
   <body>
-
     <!-- header -->
     <div class="header-container">
       <nav class="headbox">
@@ -103,10 +106,6 @@
     <div id="map" style="width: 100%; height: 100vh"></div>
     <div class="search-results" id="search-results"></div>
 
-    <script
-      type="text/javascript"
-      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=249c4bf9f052079cf0cb2a51dceb3dc1"
-    ></script>
     <script>
       var mapContainer = document.getElementById("map"),
         mapOption = {
@@ -172,6 +171,5 @@
         location.href = "/mypage/parking/add";
       }
     </script>
-
   </body>
 </html>

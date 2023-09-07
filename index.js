@@ -84,6 +84,7 @@ app.get('*', (req, res) => {
 
 //job import(스케줄 js파일 추가 -> 자동 실행)
 //const updateInfoJob = require('./utils/schedule');
+
 //server start
 db.sequelize.sync({ force: true }).then(() => {
   server.listen(PORT, () => {
