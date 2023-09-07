@@ -14,9 +14,6 @@
       <button type="submit">로그인하기</button>
     </form>
     <br />
-    <a href="/user/find">비밀번호 찾기</a>
-    <a href="/user/signup">회원가입하기</a>
-    <a href="/user/<%= userid %>/edit">회원 정보 수정</a>
 
     <script>
       function login(e) {
@@ -39,10 +36,7 @@
           },
         }).then((res) => {
           if (res.data.result) {
-            localStorage.setItem('userid', userid);
             console.log(`로그인 성공`);
-
-            console.log(`${res.data.data.userid}`);
           } else {
             console.log('로그인 실패');
             window.location.reload();

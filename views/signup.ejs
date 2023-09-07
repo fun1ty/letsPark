@@ -12,20 +12,50 @@
     <form name="register">
       <input type="text" id="userid" placeholder="아이디" /><br />
       <input type="password" id="password" placeholder="비밀번호" /><br />
-      <!-- <input
-      type="password"
-      id="passwordCheck"
-      placeholder="비밀번호 확인"
-    /><br /> -->
+      <input
+        type="password"
+        id="passwordCheck"
+        placeholder="비밀번호 확인"
+        oninput="checkPassword()"
+      /><br />
+      <span id="passwordError"></span><br />
       <input type="text" id="name" placeholder="이름" /><br />
       <input type="text" id="nickname" placeholder="닉네임" /><br />
       <input type="text" id="phone" placeholder="휴대폰번호" /><br />
-      <button type="button" onclick="registerFunc()">다음으로</button>
+      <button type="button" onclick="registerFunc()">회원가입</button>
     </form>
 
     <script>
+      function checkPassword() {
+        const password = document.getElementById('password').value;
+        const passwordCheck = document.getElementById('passwordCheck').value;
+        const errorSpan = document.getElementById('passwordError');
+
+        if (password !== passwordCheck) {
+          errorSpan.textContent = '비밀번호가 일치하지 않습니다.';
+          document
+            .getElementById('passwordCheck')
+            .setCustomValidity('비밀번호가 일치하지 않습니다.');
+        } else {
+          errorSpan.textContent = '';
+          document.getElementById('passwordCheck').setCustomValidity('');
+        }
+      }
+
       async function registerFunc() {
         const form = document.forms['register'];
+        const password = form.password.value;
+
+        if (
+          password.length < 8 ||
+          !/[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password)
+        ) {
+          alert(
+            '비밀번호는 8자리 이상이어야 하며, 특수 기호를 하나 이상 포함해야 합니다.'
+          );
+          return;
+        }
+
         try {
           const res = await axios({
             method: 'POST',
