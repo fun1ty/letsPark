@@ -27,7 +27,8 @@
     </div>
 
     <script>
-      const socket = io("/chat");
+      const socket = io();
+      console.log(socket);
       const roomForm = document.querySelector("#room");
       const chatForm = document.querySelector("#chat");
       const msg = document.querySelector("#msg");

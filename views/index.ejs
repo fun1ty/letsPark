@@ -70,7 +70,9 @@
           <div>
             <ul>
               <li onclick="parkingAdd()">공유주차장 등록</li>
-              <li>채팅방</li>
+              <button type="button" id="chat" onclick="chatBtn()">
+                <li>채팅방</li>
+              </button>
               <li>포인트</li>
               <li>결제내역</li>
             </ul>
@@ -169,6 +171,12 @@
       //공유주차장등록 이동
       function parkingAdd() {
         location.href = "/mypage/parking/add";
+      }
+
+      //채팅방 이동
+      function chatBtn() {
+        console.log("front 채팅방클릭");
+        location.href = "/chat";
       }
     </script>
   </body>
