@@ -1,5 +1,6 @@
 const http = require("http");
 const express = require("express");
+const SocketIO = require("socket.io");
 const db = require("./models");
 const jwt = require("jsonwebtoken"); //JWT토큰
 const SECRET = "secretKey"; //secret키 설정
@@ -14,6 +15,7 @@ const PORT = 8000;
 const app = express();
 
 const server = http.createServer(app);
+const io = SocketIO(server);
 
 app.set("view engine", "ejs");
 app.use("/uploads", express.static(__dirname + "/uploads"));
@@ -36,8 +38,11 @@ aws.config.update({
 });
 
 //router 파일
-const indexRouter = require("./routes/main.js"); //index.js 생략
+const indexRouter = require("./routes/main");
 app.use("/", indexRouter);
+
+const socketRouter = require("./routes/socket");
+socketRouter(io);
 
 const userRouter = require("./routes/user");
 app.use("/user", userRouter);
@@ -54,7 +59,7 @@ app.get("*", (req, res) => {
 //const updateInfoJob = require('./utils/schedule');
 
 //server start
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ force: false }).then(() => {
   server.listen(PORT, () => {
     console.log(`http://localhost:${PORT}`);
   });
