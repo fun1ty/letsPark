@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 회원 정보 수정하기, (탈퇴하기 버튼) -->
+    <h2>회원 정보</h2>
+    <br />
+    <form name="profileView">
+      <input
+        type="text"
+        id="userid"
+        value="<%= user.userid %>"
+        placeholder="아이디"
+        readonly
+      /><br />
+      <input type="password" id="password" placeholder="비밀번호" /><br />
+      <input
+        type="text"
+        id="name"
+        value="<%= user.name %>"
+        placeholder="이름"
+      /><br />
+      <input
+        type="text"
+        id="nickname"
+        value="<%= user.nickname %>"
+        placeholder="닉네임"
+      /><br />
+      <input
+        type="text"
+        id="phone"
+        value="<%= user.phone %>"
+        placeholder="휴대폰번호"
+      /><br />
+      <button type="button" onclick="edit()">수정하기</button>
+      <button type="button" onclick="drop()">탈퇴하기</button>
+    </form>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const userid = urlParams.get('userid');
+
+      function loadUserInfo() {
+        axios
+          .get(`/mypage/${userid}`)
+          .then((res) => {
+            if (res.data.result) {
+              const userInfo = res.data.data;
+              document.querySelector('#userid').value = userInfo.userid;
+              document.querySelector('#name').value = userInfo.name;
+              document.querySelector('#nickname').value = userInfo.nickname;
+              document.querySelector('#phone').value = userInfo.phone;
+
+              console.log(userid);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+
+      loadUserInfo();
+
+      // 회원 수정 버튼
+      function edit() {
+        const form = document.forms['profileView'];
+
+        axios({
+          method: 'PATCH',
+          url: `/mypage/${userid}/edit`,
+          data: {
+            userid: form.userid.value,
+            password: form.password.value,
+            name: form.name.value,
+            nickname: form.nickname.value,
+            phone: form.phone.value,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }).then((res) => {
+          if (res.data.result) {
+            alert('수정이 완료되었습니다.');
+            document.location.reload(0);
+          }
+        });
+      }
+      // 회원 탈퇴 버튼
+      function drop() {
+        if (!confirm('회원 탈퇴 하시겠습니까?')) {
+          return;
+        }
+        axios({
+          method: 'DELETE',
+          url: `/mypage/${userid}/drop`,
+          data: {
+            userid: document.querySelector('#userid').value,
+          },
+        }).then((res) => {
+          if (res.data.result) {
+            alert('회원 탈퇴 완료되었습니다.');
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

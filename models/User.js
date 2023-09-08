@@ -10,15 +10,24 @@ const Model = (sequelize) => {
       autoIncrement: true,
     },
     userid: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(30),
+      allowNull: false,
+      primaryKey: false,
+    },
+    password: {
+      type: DataTypes.STRING(255),
       allowNull: false,
     },
     name: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(30),
       allowNull: false,
     },
-    pw: {
-      type: DataTypes.STRING(255),
+    nickname: {
+      type: DataTypes.STRING(30),
+      allowNull: false,
+    },
+    phone: {
+      type: DataTypes.STRING(30),
       allowNull: false,
     },
   });

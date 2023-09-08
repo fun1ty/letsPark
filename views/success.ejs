@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원가입 완료</title>
+  </head>
+  <body>
+    <!-- 회원가입 성공 페이지 -->
+    <h1>회원가입 완료</h1>
+    <br />
+    <h3>
+      <span id="userid"><%= userid %></span>님 환영합니다! 주차하카와 함께
+      편안한 주차를 해보세요.
+    </h3>
+    <br />
+    <h3>
+      이제 <span id="nickname"><%= nickname %></span>로 다양한 서비스를 이용하실
+      수 있습니다.
+    </h3>
+    <br />
+    <button>시작하기</button>
+    <a href="/user/login">로그인하기</a>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const userid = urlParams.get('userid');
+      const nickname = urlParams.get('nickname');
+      const nicknameElement = document.getElementById('nickname');
+      const useridElement = document.getElementById('userid');
+
+      if (userid && nickname) {
+        nicknameElement.textContent = nickname;
+        useridElement.textContent = userid;
+      }
+    </script>
+  </body>
+</html>
