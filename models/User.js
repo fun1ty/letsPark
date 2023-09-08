@@ -12,7 +12,7 @@ const Model = (sequelize) => {
     userid: {
       type: DataTypes.STRING(30),
       allowNull: false,
-      primaryKey: false,
+
     },
     password: {
       type: DataTypes.STRING(255),

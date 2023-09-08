@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/map.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script
       type="text/javascript"
       src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=<%= javascriptkey%>"
@@ -80,6 +82,25 @@
           </div>
           <h5>이용안내 및 문의하기</h5>
           <h5>로그아웃</h5>
+
+          <!-- 사용자 정보 조회 -->
+          <!-- <form name="user-info-form">
+            <label for="userid">User ID:</label>
+            <input type="text" id="userid" name="userid" readonly />
+            <br />
+            <label for="password">Password:</label>
+            <input type="text" id="password" name="password" readonly />
+            <br />
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" readonly />
+            <br />
+            <label for="nickname">Nickname:</label>
+            <input type="text" id="nickname" name="nickname" readonly />
+            <br />
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" readonly />
+            <br />
+          </form> -->
         </div>
 
         <div id="search-bar">
@@ -110,7 +131,7 @@
     <div class="search-results" id="search-results"></div>
 
     <script>
-      var mapContainer = document.getElementById("map"),
+      var mapContainer = document.getElementById('map'),
         mapOption = {
           center: new kakao.maps.LatLng(37.547771, 126.942069),
           level: 4,
@@ -149,8 +170,8 @@
         '<div class="customoverlay">' +
         '  <a href="https://kko.to/cf3Xnt9X8D" target="_blank" style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;">' +
         '    <span class="localname">대흥역</span>' +
-        "  </a>" +
-        "</div>";
+        '  </a>' +
+        '</div>';
 
       // 커스텀 오버레이가 표시될 위치입니다
       var position = new kakao.maps.LatLng(37.547771, 126.942069);
@@ -168,11 +189,11 @@
 
 
       function toggleMenu() {
-        var menu = document.getElementById("menu-container");
+        var menu = document.getElementById('menu-container');
         if (!isMenuVisible) {
-          menu.style.right = "0";
+          menu.style.right = '0';
         } else {
-          menu.style.right = "-300px";
+          menu.style.right = '-300px';
         }
 
         // 메뉴 상태를 업데이트합니다.
@@ -181,28 +202,29 @@
 
       // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
       function closeMenu() {
-        var menu = document.getElementById("menu-container");
-        menu.style.right = "-300px";
+        var menu = document.getElementById('menu-container');
+        menu.style.right = '-300px';
         isMenuVisible = false;
       }
 
       // 회원 정보 수정 이동
       function profileEdit() {
-        location.href = "/user/edit";
+        location.href = '/user/edit';
       }
 
       // 예약내역조회 이동
       function userReservation() {
-        location.href = "/user/reservation";
+        location.href = '/user/reservation';
       }
 
       //공유주차장등록 이동
       function parkingAdd() {
-        location.href = "/mypage/parking/add";
+        location.href = '/mypage/parking/add';
       }
 
       //채팅방 이동
       function chatBtn() {
+
         console.log("front 채팅방클릭");
         location.href = "/chat";
       }
