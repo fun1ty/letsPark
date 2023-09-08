@@ -1,5 +1,6 @@
 const models = require("../models/index");
 const jwt = require('jsonwebtoken');
+const vt = require('../utils/JwtVerifyToken');
 
 //노상주차장 상세보기
 exports.detail = async (req, res) => {
@@ -48,15 +49,11 @@ exports.writeReview = async (req, res) => {
   //추후 객체구조분해할당으로 변경해야함
   const [publicParkingId, score, comment] = req.body;
   const token = req.headers.authorization.split(' ')[1];
-  let userId;
-  //jwt 토큰값 검증, 검증완료 시 userId 저장
-  jwt.verify(token, SECRETKEY, (err, decoded) => {
-    if(err)
-      return res.status(404).send();
 
-    userId = decoded.id;
-  });
+  const userId = vt.verifyToken(token);
+  if(userId === false) {
 
+  }
   //닉네임, id 가져오기
   let nickname, id;
   try {
