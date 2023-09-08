@@ -1,7 +1,11 @@
+
 const axios = require('axios');
 const models = require('../models/index');
 const jwt = require('jsonwebtoken');
 const { x64 } = require('crypto-js');
+const { Navigator } = require('node-navigator');
+require('dotenv').config();
+const env = process.env;
 
 exports.main = (req, res) => {
   console.log('main');
@@ -24,15 +28,76 @@ exports.main = (req, res) => {
     //res.redirect('/user/login');
   }
   res.render('index');
+
+
+exports.main = async (req, res) => {
+  const navigator = new Navigator();
+  let tempLocation;
+  navigator.geolocation.getCurrentPosition((success, error) => {
+    if (error) console.error(error);
+    else console.log(success);
+    tempLocation = {
+      lat : success.latitude,
+      lng : success.longitude,
+    }
+  });
+  let publicParkingList;
+  try {
+    publicParkingList = await models.PublicParking.findAll({
+      attributes : ['capacity', 'currentparking', 'lat', 'lng'],
+    });
+  } catch (err) {
+    console.log(err);
+  }
+
+  let cleaningList;
+  try {
+    cleaningList = await models.Cleaning.findAll({
+      include : [{
+        model : models.ShareParking,
+        attributes : ['id', 'lat', 'lng'],
+      }],
+    });
+  } catch (err) {
+    console.log(err);
+  }
+  let shareParkingIdList = [];
+  for(let idx of cleaningList) {
+    shareParkingIdList.push(idx.shareparking_id);
+  }
+  let shareParkingList;
+  try {
+    shareParkingList = await models.ShareParking.findAll({
+      attributes : ['id', 'lat', 'lng'],
+      where : { status : 'Y' },
+    })
+  } catch (err) {
+    console.log(err);
+  };
+
+  /*
+    tempLocation - 현재 위치 위도, 경도 객체 { lat, lng }
+    publicParkingList - 노상주차장 객체 배열 { capacity, currentparking, lat, lng }
+    cleaningList - 공유주차장 중 클리닝 신청한 주차장 객체 배열 { id. lat, lng }
+    shareParkingList - 공유주차장 객체 배열 { id, lat, lng }
+    shareParkingIdList - 클리닝 신청한 주차장의 id를 담은 배열
+   */
+  res.render("index", { tempLocation, publicParkingList, cleaningList, shareParkingList, shareParkingIdList, javascriptkey : env.JAVASCRIPTKEY });
 };
+
+
+
+
 
 exports.ppdb = async (req, res) => {
   let map = new Map();
   for (let i = 1; i < 18000; i += 1000) {
+
     console.log('----------------------------', i);
     await axios({
       method: 'GET',
       url: `http://openapi.seoul.go.kr:8088/466354715470617039364d6b517341/json/GetParkingInfo/${i}/${
+
         i + 999
       }/`,
     }).then((response) => {
@@ -116,3 +181,24 @@ exports.ppdb = async (req, res) => {
     );
   }
 };
+
+
+
+//지도 핀 데이터
+exports.parking = async (req, res) => {
+  console.log("hi");
+  const result = await models.PublicParking.findAll();
+  console.log("reulst", result);
+  const arr = [];
+  for (let i = 0; i < result.length; i++) {
+    const a = {
+      content: result[i].name,
+      lat: result[i].lat,
+      lng: result[i].lng,
+    };
+    arr.push(a);
+  }
+  res.json({ data: arr });
+};
+
+

@@ -6,12 +6,13 @@
     <link rel="stylesheet" type="text/css" href="/reset.css" />
     <link rel="stylesheet" type="text/css" href="/index.css" />
     <link rel="stylesheet" href="/map.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script
       type="text/javascript"
-      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=249c4bf9f052079cf0cb2a51dceb3dc1"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=<%= javascriptkey%>"
     ></script>
     <title>Main</title>
     <div id="test"></div>
@@ -138,6 +139,32 @@
 
       var map = new kakao.maps.Map(mapContainer, mapOption);
 
+      (async function () {
+        const arr = [];
+        const result = await axios({
+          method: "GET",
+          url: "/parking",
+        });
+        console.log(result);
+        const { data } = result.data;
+        for (let i = 0; i < data.length; i++) {
+          const a = {
+            content: data[i].content,
+            latlng: new kakao.maps.LatLng(data[i].lat, data[i].lng),
+          };
+
+          arr.push(a);
+        }
+        console.log(arr);
+      })();
+
+      // 페이지 로드 시 주차장 정보 가져오기
+      fetchParkingData();
+
+      // 변수를 추가하여 메뉴 상태를 추적합니다.
+      var isMenuVisible = false;
+
+
       // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
       var content =
         '<div class="customoverlay">' +
@@ -159,6 +186,7 @@
 
       // 변수를 추가하여 메뉴 상태를 추적합니다.
       var isMenuVisible = false;
+
 
       function toggleMenu() {
         var menu = document.getElementById('menu-container');
@@ -196,41 +224,10 @@
 
       //채팅방 이동
       function chatBtn() {
-        console.log('front 채팅방클릭');
-        location.href = '/chat';
+
+        console.log("front 채팅방클릭");
+        location.href = "/chat";
       }
-
-      // // 사용자 정보를 가져오는 함수
-      // function getUserInfo() {
-      //   // 로컬 스토리지에서 저장된 사용자 정보를 가져옵니다.
-      //   const token = localStorage.getItem('userid');
-
-      //   // 사용자 정보를 가져오기 위한 axios 요청
-      //   axios({
-      //     method: 'GET',
-      //     url: '/', // 서버의 API 엔드포인트에 요청을 보냅니다.
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   })
-      //     .then((response) => {
-      //       // 서버에서 사용자 정보를 성공적으로 가져왔을 때 실행되는 부분
-      //       const userInfo = response.data;
-
-      //       // 가져온 정보를 폼에 표시합니다.
-      //       document.forms['user-info-form'].userid.value = userInfo.userid;
-      //       document.forms['user-info-form'].password.value = userInfo.password;
-      //       document.forms['user-info-form'].name.value = userInfo.name;
-      //       document.forms['user-info-form'].nickname.value = userInfo.nickname;
-      //       document.forms['user-info-form'].phone.value = userInfo.phone;
-      //     })
-      //     .catch((error) => {
-      //       console.error('사용자 정보를 가져오는 중 오류 발생:', error);
-      //     });
-      // }
-
-      // // 페이지가 로드될 때 사용자 정보를 가져옵니다.
-      // window.addEventListener('load', getUserInfo);
     </script>
   </body>
 </html>
