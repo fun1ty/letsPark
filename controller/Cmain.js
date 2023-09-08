@@ -1,4 +1,3 @@
-
 const axios = require('axios');
 const models = require('../models/index');
 const jwt = require('jsonwebtoken');
@@ -6,6 +5,9 @@ const { x64 } = require('crypto-js');
 const { Navigator } = require('node-navigator');
 require('dotenv').config();
 const env = process.env;
+
+exports.chat = (req, res) => {
+  res.render("chat");
 
 exports.main = (req, res) => {
   console.log('main');
@@ -84,9 +86,6 @@ exports.main = async (req, res) => {
    */
   res.render("index", { tempLocation, publicParkingList, cleaningList, shareParkingList, shareParkingIdList, javascriptkey : env.JAVASCRIPTKEY });
 };
-
-
-
 
 
 exports.ppdb = async (req, res) => {
