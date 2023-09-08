@@ -1,8 +1,7 @@
 const roomList = [];
 
 exports.connection = (io, socket) => {
-  console.log("socket 접속");
-  console.log("io", io);
+  console.log("접속");
   //채팅방 목록 보내기
   socket.emit("roomList", roomList);
 
@@ -14,8 +13,9 @@ exports.connection = (io, socket) => {
     //socket은 객체이며 원하는 값을 할당할 수 있음
     socket.room = roomName;
     socket.user = userName;
+    console.log(socket.user);
 
-    socket.to(roomName).emit("notice", `${socket.id}님이 입장하셨습니다`);
+    socket.to(roomName).emit("notice", `${userName}님이 입장하셨습니다`);
 
     //채팅방 목록 갱신
     if (!roomList.includes(roomName)) {

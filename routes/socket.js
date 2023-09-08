@@ -1,8 +1,7 @@
-const controller = require("../controller/socket");
+const controller = require("../controller/Csocket");
 
-module.exports = function (io) {
-  // 클라이언트 연결 이벤트 핸들링
+module.exports = function socketConn(io) {
   io.on("connection", (socket) => {
-    controller.connection(io.of("/chat"), socket);
+    controller.connection(io, socket);
   });
 };

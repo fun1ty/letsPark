@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 const Model = (sequelize) => {
-  return sequelize.define("user", {
+  return sequelize.define("chat", {
     //컬럼 정의
     id: {
       type: DataTypes.INTEGER,
@@ -10,25 +10,21 @@ const Model = (sequelize) => {
       autoIncrement: true,
     },
     userid: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.INTEGER,
       allowNull: false,
-
+      primaryKey: false,
     },
-    password: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING(30),
+    roomid: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    nickname: {
-      type: DataTypes.STRING(30),
-      allowNull: false,
+    CONTENT: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
     },
-    phone: {
-      type: DataTypes.STRING(30),
-      allowNull: false,
+    FILE: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
     },
   });
 };
