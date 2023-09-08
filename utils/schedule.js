@@ -1,6 +1,8 @@
 const schedule = require('node-schedule');
 const models = require('../models/index');
 const axios = require('axios');
+require('dotenv').config();
+const env = process.env;
 
 const updateInfoJob = schedule.scheduleJob('* 3 * * * *', async ()=> {
     console.log('---------스케줄 실행 시작---------- ');
@@ -15,7 +17,7 @@ const updateInfoJob = schedule.scheduleJob('* 3 * * * *', async ()=> {
     let recentUpdateData;
     await axios ({
         method : 'GET',
-        url : `http://openapi.seoul.go.kr:8088/466354715470617039364d6b517341/json/GetParkingInfo/1/1`,
+        url : `http://openapi.seoul.go.kr:8088/${env.SEOULDATA}/json/GetParkingInfo/1/1`,
     }).then((response)=> {
         recentUpdateData = response.data.GetParkingInfo.row[0].CUR_PARKING_TIME;
     });
@@ -27,7 +29,7 @@ const updateInfoJob = schedule.scheduleJob('* 3 * * * *', async ()=> {
             console.log('----------------------------', i);
             await axios ({
                 method : 'GET',
-                url : `http://openapi.seoul.go.kr:8088/466354715470617039364d6b517341/json/GetParkingInfo/${i}/${i + 999}/`,
+                url : `http://openapi.seoul.go.kr:8088/${env.SEOULDATA}/json/GetParkingInfo/${i}/${i + 999}/`,
             }).then((response)=> {
                 const data = response.data.GetParkingInfo.row;
                 data.forEach(idx => {

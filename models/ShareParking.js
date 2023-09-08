@@ -44,6 +44,7 @@ const Model = (sequelize) => {
         status : {
             type : DataTypes.CHAR(1),
             allowNull : false,
+            default : 'Y',
         }
     });
 };

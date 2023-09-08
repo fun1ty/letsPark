@@ -12,6 +12,15 @@ router.get('/', shareParkingController.shareParking);
 //공유주차장 등록
 router.post('/', upload.single('file'), shareParkingController.enrollShareParking);
 
+//공유주차장 정보수정
+router.patch('/edit', upload.single('file'), shareParkingController.editShareParking);
+
+//공유주차창 정보삭제
+router.delete('/delete', shareParkingController.deleteShareParking);
+
+//공유주차장 예약 결제
+router.post('/pay', shareParkingController.pay);
+
 //공유주차장 등록 테스트용
 router.get('/test', shareParkingController.test);
 
