@@ -19,14 +19,6 @@
       function login(e) {
         e.preventDefault();
 
-        const userid = document.querySelector("#userid").value;
-        const password = document.querySelector("#password").value;
-
-        if (!userid || !password) {
-          console.log("아이디와 비밀번호를 입력하세요");
-          return;
-        }
-
         axios({
           method: "POST",
           url: "/user/login",
@@ -36,12 +28,11 @@
           },
         }).then((res) => {
           if (res.data.result) {
-            localStorage.setItem("token", res.data.token);
-            console.log(`로그인 성공`);
-            alert("로그인 성공");
-            location.href = "/";
+
+            localStorage.setItem('token', res.data.token);
+            alert('로그인 성공');
+            window.location.href = '/';
           } else {
-            console.log("로그인 실패");
             window.location.reload();
           }
         });

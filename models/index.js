@@ -49,6 +49,9 @@ db.PublicParking = require('./PublicParking')(sequelize);
 db.OperationTime = require('./OperationTime')(sequelize);
 db.Price = require('./Price')(sequelize);
 db.User = require('./User')(sequelize);
+db.ShareParking = require('./ShareParking')(sequelize);
+db.ParkingReview = require('./ParkingReview')(sequelize);
+db.Cleaning = require('./Cleaning')(sequelize);
 
 //연관관계 설정
 db.PublicParking.hasOne(db.OperationTime, {
@@ -67,6 +70,14 @@ db.Price.belongsTo(db.PublicParking, {
   foreignKey: 'publicparking_id',
   sourceKey: 'id',
 });
+db.User.hasMany(db.ParkingReview, { foreignKey : 'user_id', sourceKey : 'id' });
+db.ParkingReview.belongsTo(db.User, {  foreignKey : 'user_id', sourceKey : 'id'});
+db.User.hasMany(db.ShareParking, { foreignKey : 'user_id', sourceKey : 'id' })
+db.ShareParking.belongsTo(db.User, { foreignKey : 'user_id', sourceKey : 'id' });
+db.ShareParking.hasOne(db.Cleaning, { foreignKey : 'shareparking_id', sourceKey : 'id' });
+db.Cleaning.belongsTo(db.ShareParking, { foreignKey : 'shareparking_id', sourceKey : 'id' });
+db.User.hasMany(db.Cleaning, { foreignKey : 'user_id', sourceKey : 'id' })
+db.Cleaning.belongsTo(db.User, { foreignKey : 'user_id', sourceKey : 'id' });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

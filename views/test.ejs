@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <title>Document</title>
+    </head>
+    <body>
+        <form onsubmit="fileupload(event)">
+            <input type="file" id="files" /><br />
+            <button type="submit">업로드</button>
+        </form>
+        <br />
+        <div class="result"></div>
+        <script>
+            const resultBox = document.querySelector('.result');
+            async function fileupload(e) {
+                e.preventDefault();
+                //파일에 접근
+                const file = document.querySelector('#files');
+                console.log(file.files);
+                //폼 데이터 생성
+                const formData = new FormData();
+
+                formData.append('file', file.files[0]);
+                formData.append('shareparkname', '모두의 주차장');
+                formData.append('address', '동작구 동작대로 31길 32');
+                formData.append('starttime', '0900');
+                formData.append('endtime', '2100');
+                formData.append('price', 1000);
+                formData.append('lat', 37.1239581);
+                formData.append('lng', 120.1246177);
+
+                try {
+                    const res = await axios({
+                        method: 'POST',
+                        url: '/shareparking',
+                        data: formData,
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        </script>
+    </body>
+</html>
