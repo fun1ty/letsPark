@@ -63,47 +63,40 @@ exports.postSignup = async (req, res) => {
 
 exports.postLogin = async (req, res) => {
   try {
-    const { userid, password } = req.body;
-    //사용자 조회
+    const { userid, password, nickname } = req.body;
     const user = await User.findOne({
-      where: { userid: userid },
+      where: { userid },
     });
-    if (!user) {
-      res.json({ result: false, message: '사용자가 존재하지 않습니다.' });
-    }
-    //비밀번호 확인
-    const compare = comparePassword(password, user.password);
-    if (compare) {
-      res.cookie('isLoggin', true, cookieConfig);
-      //req.session.user = user;
-      //JWT토큰 생성
-      const token = jwt.sign({ userid: user.userid }, SECRET, {
-        expiresIn: '24h',
-      }); //토큰 유효 기간 (24시간)
-      res.json({ result: true, token });
+
+    if (user) {
+      const result = comparePassword(password, user.password);
+      if (result) {
+        res.cookie('isLoggin', true, cookieConfig);
+        const token = jwt.sign(
+          { userid: userid, nickname: user.nickname },
+          SECRET
+        );
+        res.json({ result: true, token, data: user });
+      } else {
+        res.json({ result: false, message: '비밀번호가 틀렸습니다.' });
+      }
     } else {
-      res.json({ result: false, message: '비밀번호가 일치하지 않습니다.' });
+      res.json({ result: false, message: '존재하는 사용자가 없습니다.' });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ result: false, message: '로그인에 실패했습니다.' }); // 로그인 실패
+    console.log('로그인 오류', error);
   }
 };
 
-const bcryptPassword = (pw) => {
-  return bcrypt.hashSync(pw, 10);
-};
-const comparePassword = (pw, dbPw) => {
-  return bcrypt.compareSync(pw, dbPw);
-};
-
-//PATCH
 exports.editProfile = (req, res) => {
-  console.log(req.headers.authorization);
-  const [bearer, token] = req.headers.authorization.split(' ');
+  const { userid, password, name, nickname, phone } = req.body;
 
-  if (bearer === 'Bearer') {
-    try {
+  try {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      const token = req.headers.authorization.split(' ')[1];
       const result = jwt.verify(token, SECRET);
 
       User.findOne({ where: { userid: result.userid } }).then((user) => {
@@ -112,7 +105,6 @@ exports.editProfile = (req, res) => {
         } else {
           User.update(
             {
-              // 비밀번호 수정 시, 암호화 필요
               password: bcryptPassword(password),
               name,
               nickname,
@@ -124,53 +116,22 @@ exports.editProfile = (req, res) => {
               res.json({ result: true });
             })
             .catch((error) => {
-              console.log(error);
-              res
-                .status(500)
-                .json({
-                  result: false,
-                  message: '프로필 수정에 실패했습니다.',
-                });
+              console.error(error);
+              res.status(500).json({
+                result: false,
+                message: '프로필 수정에 실패했습니다.',
+              });
             });
         }
       });
-    } catch (error) {
-      console.log(error);
-      res.json({ result: false, message: '토큰 검증에 실패했습니다.' });
+    } else {
+      res.json({ result: false, message: '인증방식이 틀렸습니다. ' });
     }
-  } else {
-    res.json({ result: false, message: '인증방식이 틀렸습니다. ' });
+  } catch (error) {
+    console.error(error);
+    res.json({ result: false, message: '토큰 검증에 실패했습니다.' });
   }
 };
-//   User.findOne({ where: { userid: userid } })
-//     .then((user) => {
-//       if (!user) {
-//         res.json({ result: false, message: '사용자가 존재하지 않습니다.' });
-//       } else {
-//         User.update(
-//           {
-//             password: bcryptPassword(password),
-//             name,
-//             nickname,
-//             phone,
-//           },
-//           { where: { userid: userid } }
-//         )
-//           .then(() => {
-//             res.json({ result: true });
-//           })
-//           .catch((error) => {
-//             console.log(error);
-//           });
-//       }
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//       res
-//         .status(500)
-//         .json({ result: false, message: '프로필 수정에 실패했습니다.' });
-//     });
-// };
 
 //DELETE
 exports.drop = (req, res) => {
@@ -189,4 +150,11 @@ exports.drop = (req, res) => {
         .status(500)
         .json({ result: false, message: '사용자 삭제에 실패했습니다.' });
     });
+};
+
+const bcryptPassword = (pw) => {
+  return bcrypt.hashSync(pw, 10);
+};
+const comparePassword = (pw, dbPw) => {
+  return bcrypt.compareSync(pw, dbPw);
 };

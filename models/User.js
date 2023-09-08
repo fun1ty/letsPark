@@ -3,16 +3,15 @@ const { DataTypes } = require('sequelize');
 const Model = (sequelize) => {
   return sequelize.define('user', {
     //컬럼 정의
-    // id: {
-    //   type: DataTypes.INTEGER,
-    //   allowNull: false, //NOT NULL
-    //   primaryKey: true,
-    //   autoIncrement: true,
-    // },
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false, //NOT NULL
+      primaryKey: true,
+      autoIncrement: true,
+    },
     userid: {
       type: DataTypes.STRING(30),
       allowNull: false,
-      primaryKey: true,
     },
     password: {
       type: DataTypes.STRING(255),
