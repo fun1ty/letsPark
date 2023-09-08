@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/reset.css" />
     <link rel="stylesheet" type="text/css" href="/index.css" />
     <link rel="stylesheet" href="/map.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script
       type="text/javascript"
@@ -117,6 +118,32 @@
 
       var map = new kakao.maps.Map(mapContainer, mapOption);
 
+      (async function () {
+        const arr = [];
+        const result = await axios({
+          method: "GET",
+          url: "/parking",
+        });
+        console.log(result);
+        const { data } = result.data;
+        for (let i = 0; i < data.length; i++) {
+          const a = {
+            content: data[i].content,
+            latlng: new kakao.maps.LatLng(data[i].lat, data[i].lng),
+          };
+
+          arr.push(a);
+        }
+        console.log(arr);
+      })();
+
+      // 페이지 로드 시 주차장 정보 가져오기
+      fetchParkingData();
+
+      // 변수를 추가하여 메뉴 상태를 추적합니다.
+      var isMenuVisible = false;
+
+
       // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
       var content =
         '<div class="customoverlay">' +
@@ -138,6 +165,7 @@
 
       // 변수를 추가하여 메뉴 상태를 추적합니다.
       var isMenuVisible = false;
+
 
       function toggleMenu() {
         var menu = document.getElementById("menu-container");

@@ -190,3 +190,22 @@ exports.ppdb = async (req, res) => {
     );
   }
 };
+
+
+//지도 핀 데이터
+exports.parking = async (req, res) => {
+  console.log("hi");
+  const result = await models.PublicParking.findAll();
+  console.log("reulst", result);
+  const arr = [];
+  for (let i = 0; i < result.length; i++) {
+    const a = {
+      content: result[i].name,
+      lat: result[i].lat,
+      lng: result[i].lng,
+    };
+    arr.push(a);
+  }
+  res.json({ data: arr });
+};
+

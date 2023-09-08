@@ -8,4 +8,10 @@ router.get("/ppdb", controller.ppdb);
 
 router.get("/chat", controller.chat);
 
+router.get("/ppdb", controller.ppdb);
+
+router.get("/chat", controller.chat);
+
+router.get("/parking", controller.parking);
+
 module.exports = router;
