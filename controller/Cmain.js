@@ -191,6 +191,7 @@ exports.ppdb = async (req, res) => {
   }
 };
 
+
 //지도 핀 데이터
 exports.parking = async (req, res) => {
   console.log("hi");
@@ -207,3 +208,4 @@ exports.parking = async (req, res) => {
   }
   res.json({ data: arr });
 };
+

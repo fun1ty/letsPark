@@ -143,6 +143,30 @@
       // 변수를 추가하여 메뉴 상태를 추적합니다.
       var isMenuVisible = false;
 
+
+      // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+      var content =
+        '<div class="customoverlay">' +
+        '  <a href="https://kko.to/cf3Xnt9X8D" target="_blank" style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;">' +
+        '    <span class="localname">대흥역</span>' +
+        "  </a>" +
+        "</div>";
+
+      // 커스텀 오버레이가 표시될 위치입니다
+      var position = new kakao.maps.LatLng(37.547771, 126.942069);
+
+      // 커스텀 오버레이를 생성합니다
+      var customOverlay = new kakao.maps.CustomOverlay({
+        map: map,
+        position: position,
+        content: content,
+        yAnchor: 1,
+      });
+
+      // 변수를 추가하여 메뉴 상태를 추적합니다.
+      var isMenuVisible = false;
+
+
       function toggleMenu() {
         var menu = document.getElementById("menu-container");
         if (!isMenuVisible) {
