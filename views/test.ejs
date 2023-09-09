@@ -12,7 +12,18 @@
             <button type="submit">업로드</button>
         </form>
         <br />
+        <input type="text" id="comment" placeholder="">
+        <div style="width: 50px; height: 50px; background-color: red" onclick='enrollReview(<%= publicParkingDetailResult.id%>)'>리뷰작성</div>
+        <input type="text" id="score">
         <div class="result"></div>
+        <div><%= publicParkingDetailResult.id%></div>
+        <input type="hidden" value="<%= publicParkingDetailResult.id%>" id="id">
+        <% for(let i=0 ; i<result.length ; i++) {%>
+            <div><%= result[i].nickname%></div>
+            <div><%= result[i].score%></div>
+            <div><%= result[i].comment%></div>
+        <% }%>
+        <div><%= average%></div>
         <script>
             const resultBox = document.querySelector('.result');
             async function fileupload(e) {
@@ -33,17 +44,40 @@
                 formData.append('lng', 120.1246177);
 
                 try {
-                    const res = await axios({
+                    const result = await axios({
                         method: 'POST',
                         url: '/shareparking',
                         data: formData,
                         headers: {
                             'Content-Type': 'multipart/form-data',
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
                         },
                     });
+                    console.log(result);
                 } catch (error) {
                     console.log(error);
                 }
+            }
+
+            async function enrollReview(id) {
+                const result = await axios({
+                    method: 'POST',
+                    url: '/publicparking/detail/reviews',
+                    data : {
+                        publicParkingId : id,
+                        score : document.getElementById('score').value,
+                        comment : document.getElementById('comment').value,
+                    },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                })
+                console.log(result);
+                // if(result) {
+                //
+                // } else {
+                //
+                // }
             }
         </script>
     </body>

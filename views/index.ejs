@@ -7,9 +7,10 @@
     <link rel="stylesheet" type="text/css" href="/index.css" />
     <link rel="stylesheet" href="/map.css" />
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script
-      type="text/javascript"
-      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=<%= javascriptkey%>"
+            type="text/javascript"
+            src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=<%= javascriptkey%>"
     ></script>
     <title>Main</title>
     <div id="test"></div>
@@ -105,37 +106,79 @@
       </nav>
     </div>
     <!-- map -->
+
     <div id="map" style="width: 100%; height: 100vh"></div>
     <div class="search-results" id="search-results"></div>
-
     <script>
-      var mapContainer = document.getElementById("map"),
-        mapOption = {
-          center: new kakao.maps.LatLng(37.547771, 126.942069),
-          level: 4,
-        };
+      ( async function () {
+        const result = await axios({
+          method : 'POST',
+          url : '/',
+        });
+        console.log(result);
 
-      var map = new kakao.maps.Map(mapContainer, mapOption);
+        //카카오 맵 기본 설정
+        var mapContainer = document.getElementById("map"),
+                mapOption = {
+                  center: new kakao.maps.LatLng(result.data.tempLat, result.data.tempLng),
+                  level: 4,
+                };
+        var map = new kakao.maps.Map(mapContainer, mapOption);
 
-      // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-      var content =
-        '<div class="customoverlay">' +
-        '  <a href="https://kko.to/cf3Xnt9X8D" target="_blank" style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;">' +
-        '    <span class="localname">대흥역</span>' +
-        "  </a>" +
-        "</div>";
+        //클리닝 리스트 오버레이 설정
+        var cleaningPositions = [];
+        for(let cleaning of result.data.cleaningList) {
+          console.log(cleaning.lat);
+          console.log(cleaning.lng);
+          cleaningPositions.push(
+                  {
+                    content :
+                            '<div class="customoverlay">' +
+                            `  <div  style="text-decoration: none; color: mediumspringgreen; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="cleaningDetail(${cleaning.id})">` +
+                            `    <span class="localname">클리닝 요청</span>` +
+                            "  </div>" +
+                            "</div>",
+                    latlng : new kakao.maps.LatLng(cleaning.lat, cleaning.lng),
+                  }
+          )
+        }
 
-      // 커스텀 오버레이가 표시될 위치입니다
-      var position = new kakao.maps.LatLng(37.547771, 126.942069);
+        for(let i=0 ; i<cleaningPositions.length ; i++) {
+          var customOverlay = new kakao.maps.CustomOverlay({
+            position : cleaningPositions[i].latlng,
+            content : cleaningPositions[i].content,
+          });
 
-      // 커스텀 오버레이를 생성합니다
-      var customOverlay = new kakao.maps.CustomOverlay({
-        map: map,
-        position: position,
-        content: content,
-        yAnchor: 1,
-      });
+          customOverlay.setMap(map);
+        }
 
+        //노상주차장 리스트 오버레이 설정
+        var publicParkingPositions = [];
+        for(let publicParking of result.data.publicParkingList) {
+          publicParkingPositions.push(
+                  {
+                    content :
+                            '<div class="customoverlay">' +
+                            `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="parkingDetail(${publicParking.id})">` +
+                            `    <span class="localname">${publicParking.currentparking} / ${publicParking.capacity}</span>` +
+                            "  </div>" +
+                            "</div>",
+                    latlng : new kakao.maps.LatLng(publicParking.lat, publicParking.lng),
+                  }
+          );
+        }
+        for(let i=0 ; i<publicParkingPositions.length ; i++) {
+          var customOverlay = new kakao.maps.CustomOverlay({
+            position : publicParkingPositions[i].latlng,
+            content : publicParkingPositions[i].content,
+          });
+
+          customOverlay.setMap(map);
+        }
+
+      })();
+    </script>
+    <script>
       // 변수를 추가하여 메뉴 상태를 추적합니다.
       var isMenuVisible = false;
 
@@ -150,7 +193,10 @@
         // 메뉴 상태를 업데이트합니다.
         isMenuVisible = !isMenuVisible;
       }
-
+      function parkingDetail(id) {
+        console.log('parkingDetail', id);
+        location.href = `/publicparking/detail?id=${id}`;
+      }
       // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
       function closeMenu() {
         var menu = document.getElementById("menu-container");

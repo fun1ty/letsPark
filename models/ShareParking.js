@@ -17,14 +17,6 @@ const Model = (sequelize) => {
             type : DataTypes.STRING(100),
             allowNull : false,
         },
-        starttime : {
-            type : DataTypes.STRING(10),
-            allowNull : false,
-        },
-        endtime : {
-            type : DataTypes.STRING(10),
-            allowNull : false,
-        },
         price : {
             type : DataTypes.INTEGER,
             allowNull : false,

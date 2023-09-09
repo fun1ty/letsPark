@@ -11,25 +11,21 @@ require('dotenv').config();
 const env = process.env;
 
 exports.main = async (req, res) => {
-  const navigator = new Navigator();
-  let tempLocation;
-  navigator.geolocation.getCurrentPosition((success, error) => {
-    if (error) console.error(error);
-    else console.log(success);
-    tempLocation = {
-      lat : success.latitude,
-      lng : success.longitude,
-    }
-  });
+
+  res.render("index", { javascriptkey : env.JAVASCRIPTKEY });
+};
+
+exports.getInfo = async (req, res) => {
   let publicParkingList;
   try {
     publicParkingList = await models.PublicParking.findAll({
-      attributes : ['capacity', 'currentparking', 'lat', 'lng'],
+      attributes : ['id', 'capacity', 'currentparking', 'lat', 'lng'],
     });
   } catch (err) {
     console.log(err);
   }
 
+  //left outer join됨, attribute 적용안됬음
   let cleaningList;
   try {
     cleaningList = await models.Cleaning.findAll({
@@ -54,16 +50,22 @@ exports.main = async (req, res) => {
   } catch (err) {
     console.log(err);
   };
+  let allLen = cleaningList.length + publicParkingList.length + shareParkingList.length;
 
-  /*
-    tempLocation - 현재 위치 위도, 경도 객체 { lat, lng }
-    publicParkingList - 노상주차장 객체 배열 { capacity, currentparking, lat, lng }
-    cleaningList - 공유주차장 중 클리닝 신청한 주차장 객체 배열 { id. lat, lng }
-    shareParkingList - 공유주차장 객체 배열 { id, lat, lng }
-    shareParkingIdList - 클리닝 신청한 주차장의 id를 담은 배열
-   */
-  res.render("index", { tempLocation, publicParkingList, cleaningList, shareParkingList, shareParkingIdList, javascriptkey : env.JAVASCRIPTKEY });
+  const navigator = new Navigator();
+  let tempLat;
+  let tempLng;
+  navigator.geolocation.getCurrentPosition((success, error) => {
+    if (error) console.error(error);
+    else {
+      tempLat = success.latitude;
+      tempLng = success.longitude;
+      console.log(cleaningList);
+      res.json({tempLat, tempLng, publicParkingList, cleaningList, shareParkingIdList, shareParkingList, allLen});
+    }
+  });
 };
+
 exports.chat = (req, res) => {
   res.render("chat");
   socketModule(io);
