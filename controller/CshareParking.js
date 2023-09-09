@@ -1,6 +1,9 @@
 const models = require("../models/index");
 const jwt = require("jsonwebtoken");
 const  vt  = require('../utils/JwtVerifyToken');
+const rto = require('../utils/ResultToObject');
+require('dotenv').config();
+const env = process.env;
 
 //공유주차장 상세페이지 이동
 exports.detail = async (req, res) => {
@@ -18,6 +21,7 @@ exports.detail = async (req, res) => {
 
 //공유주차장 등록 페이지 이동
 exports.shareParking = async (req, res) => {
+    //토큰 인증 추가해야함
     const id = req.query.id;
     try {
         const result = await models.User.findOne({
@@ -25,7 +29,7 @@ exports.shareParking = async (req, res) => {
            where : { id },
         });
 
-        res.render('', { result });
+        res.render('enrollShareParking', { data : rto.resultToObject(result), javascriptkey : env.JAVASCRIPTKEY });
     } catch (error) {
         console.log(error);
     }
@@ -36,35 +40,36 @@ exports.test = async (req, res) => {
 }
 //공유주차장 등록
 exports.enrollShareParking = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-
+    // const token = req.headers.authorization.split(' ')[1];
+    //
     //jwt 토큰값 검증, 검증완료 시 userId 저장
-    const userId = vt.verifyToken(token);
-    if(userId === false) {
+    // const userId = vt.verifyToken(token);
+    // if(userId === false) {
+    //
+    // }
 
-    }
-
-    let id;
-    try {
-        const result = await models.User.findOne({
-            attributes : ['id'],
-            where : { userid : userId },
-        });
-        id = result.id;
-    } catch (err) {
-        console.log(err);
-    }
+    // let id;
+    // try {
+    //     const result = await models.User.findOne({
+    //         attributes : ['id'],
+    //         where : { userid : userId },
+    //     });
+    //     id = result.id;
+    // } catch (err) {
+    //     console.log(err);
+    // }
 
     const location = req.file.location;
-    const {shareparkname, address, starttime, endtime, price, lat, lng} = req.body;
+    const {shareparkname, address, price, lat, lng} = req.body;
 
     try {
         const result = await models.ShareParking.create({
-            shareparkname, address, starttime, endtime, price, lat, lng, location,
-            userid : id,
+            shareparkname, address, price, lat, lng, location,
+            userid : 1, status : 'Y',
         });
 
         console.log(result);
+        res.send({ result });
     } catch (err) {
         console.log(err);
     }

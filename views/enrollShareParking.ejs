@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%= javascriptkey%>&libraries=services"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <title>Document</title>
+
+</head>
+<body>
+    <input type="text" id="sharePakringName" placeholder="주차장 이름">
+    <input type="text" id="phone" placeholder="<%= data.phone%>">
+    <input type="text" id="address" readonly placeholder="주소" onclick="getLatLng()">
+    <input type="number" id="price">
+    <input type="file" id="files" /><br />
+
+    <button onclick="enrollShareParking()">공유주차장등록</button>
+</body>
+<script>
+    let lat = 0, lng = 0;
+    var geocoder = new kakao.maps.services.Geocoder();
+    function getLatLng() {
+        const addrInput = document.getElementById('address');
+
+        var  callback = (result ,status) => {
+            if(status === kakao.maps.services.Status.OK) {
+                lat = result[0].y;
+                lng = result[0].x;
+            };
+        };
+        new daum.Postcode({
+            oncomplete: function(data) {
+                addrInput.value = data.address;
+                geocoder.addressSearch(data.address, callback);
+            }
+        }).open()
+    };
+
+    async function enrollShareParking() {
+        const shareParkingName = document.getElementById('sharePakringName').value;
+        const phone = document.getElementById('phone').value;
+        const address = document.getElementById('address').value;
+        const price = document.getElementById('price').value;
+        const file = document.querySelector('#files');
+
+        //모든 input값 다 들어왔는지 검증
+
+        const formData = new FormData();
+
+        formData.append('file', file.files[0]);
+        formData.append('shareparkname', shareParkingName);
+        formData.append('address', address);
+        formData.append('price', price);
+        formData.append('lat', lat);
+        formData.append('lng', lng);
+
+        try {
+            const result = await axios({
+                method : 'POST',
+                url : '/shareparking',
+                data : formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    // Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            })
+        } catch (err) {
+            console.log(err);
+        }
+
+    }
+</script>
+</html>
