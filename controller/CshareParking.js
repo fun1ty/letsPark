@@ -13,7 +13,7 @@ exports.detail = async (req, res) => {
             where : { id },
         });
 
-        res.send({ result });
+        res.render('shareParkingDetail', { result });
     } catch (error) {
         console.log(error);
     }
