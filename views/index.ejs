@@ -28,7 +28,7 @@
           />
 
           <div class="menu-icons">
-            <div class="menu-icon">
+            <div class="menu-icon" onclick="reservationAlarm()">
               <img
                 src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/bell.svg"
                 alt="알람"
@@ -59,28 +59,59 @@
             />
           </button>
 
-          <div>
+          <div style="margin: 20px">
             <button class="mypageEdit" onclick="profileEdit()">
-              마이페이지
-              <div>parkinghaka@gmail.com</div>
+              <div>
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg"
+                  alt="profile"
+                  width="30px"
+                  height="30px"
+                />
+              </div>
+              <div>
+                <div class="userNick">파킹퍼시블님</div>
+                <div class="userEmail">parkinghaka@gmail.com</div>
+              </div>
             </button>
           </div>
 
           <div>
-            <button onclick="userReservation()">예약 내역 보기</button>
+            <button class="reservationButton" onclick="userReservation()">
+              예약 내역 보기
+            </button>
           </div>
-          <div>
-            <ul>
-              <li onclick="parkingAdd()">공유주차장 등록</li>
-              <button type="button" id="chat" onclick="chatBtn()">
-                <li>채팅방</li>
-              </button>
-              <li>포인트</li>
-              <li>결제내역</li>
+          <div class="noticeBox">
+            <ul class="menuContainer">
+              <li onclick="parkingAdd()">
+                🚙 공유주차장 등록
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+
+              <li type="button" id="chat" onclick="chatBtn()">
+                💬 채팅방
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+              <li>💰 포인트</li>
             </ul>
           </div>
-          <h5>이용안내 및 문의하기</h5>
-          <h5>로그아웃</h5>
+          <h5 class="payButton">결제내역</h5>
+          <div class="logoutBox">
+            <span class="service">이용안내 및 문의하기</span>
+            <span class="logoutService">로그아웃</span>
+          </div>
 
           <!-- 사용자 정보 조회 -->
           <!-- <form name="user-info-form">
@@ -132,15 +163,14 @@
     <div id="search-results"></div>
 
     <script>
-      ( async function () {
+      (async function () {
         const result = await axios({
-          method: 'POST',
-          url: '/',
+          method: "POST",
+          url: "/",
         });
         console.log(result);
-        })();
+      })();
     </script>
-
 
     <script>
       var mapContainer = document.getElementById("map"),
@@ -149,42 +179,41 @@
           level: 4,
         };
 
+      //카카오 맵 기본 설정
+      var mapContainer = document.getElementById("map"),
+        mapOption = {
+          center: new kakao.maps.LatLng(
+            result.data.tempLat,
+            result.data.tempLng
+          ),
+          level: 4,
+        };
+      var map = new kakao.maps.Map(mapContainer, mapOption);
 
-        //카카오 맵 기본 설정
-        var mapContainer = document.getElementById("map"),
-                mapOption = {
-                  center: new kakao.maps.LatLng(result.data.tempLat, result.data.tempLng),
-                  level: 4,
-                };
-        var map = new kakao.maps.Map(mapContainer, mapOption);
+      //클리닝 리스트 오버레이 설정
+      var cleaningPositions = [];
+      for (let cleaning of result.data.cleaningList) {
+        console.log(cleaning.lat);
+        console.log(cleaning.lng);
+        cleaningPositions.push({
+          content:
+            '<div class="customoverlay">' +
+            `  <div  style="text-decoration: none; color: mediumspringgreen; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="cleaningDetail(${cleaning.id})">` +
+            `    <span class="localname">클리닝 요청</span>` +
+            "  </div>" +
+            "</div>",
+          latlng: new kakao.maps.LatLng(cleaning.lat, cleaning.lng),
+        });
+      }
 
+      for (let i = 0; i < cleaningPositions.length; i++) {
+        var customOverlay = new kakao.maps.CustomOverlay({
+          position: cleaningPositions[i].latlng,
+          content: cleaningPositions[i].content,
+        });
 
-        //클리닝 리스트 오버레이 설정
-        var cleaningPositions = [];
-        for(let cleaning of result.data.cleaningList) {
-          console.log(cleaning.lat);
-          console.log(cleaning.lng);
-          cleaningPositions.push(
-                  {
-                    content :
-                            '<div class="customoverlay">' +
-                            `  <div  style="text-decoration: none; color: mediumspringgreen; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="cleaningDetail(${cleaning.id})">` +
-                            `    <span class="localname">클리닝 요청</span>` +
-                            "  </div>" +
-                            "</div>",
-                    latlng : new kakao.maps.LatLng(cleaning.lat, cleaning.lng),
-                  }
-          )
-        }
-
-        for(let i=0 ; i<cleaningPositions.length ; i++) {
-          var customOverlay = new kakao.maps.CustomOverlay({
-            position : cleaningPositions[i].latlng,
-            content : cleaningPositions[i].content,
-          });
-
-          customOverlay.setMap(map);
-        }
+        customOverlay.setMap(map);
+      }
 
       // 장소 검색 객체를 생성합니다
       var ps = new kakao.maps.services.Places();
@@ -239,29 +268,27 @@
         }
       }
 
-        //노상주차장 리스트 오버레이 설정
-        var publicParkingPositions = [];
-        for(let publicParking of result.data.publicParkingList) {
-          publicParkingPositions.push(
-                  {
-                    content :
-                            '<div class="customoverlay">' +
-                            `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="parkingDetail(${publicParking.id})">` +
-                            `    <span class="localname">${publicParking.currentparking} / ${publicParking.capacity}</span>` +
-                            "  </div>" +
-                            "</div>",
-                    latlng : new kakao.maps.LatLng(publicParking.lat, publicParking.lng),
-                  }
-          );
-        }
-        for(let i=0 ; i<publicParkingPositions.length ; i++) {
-          var customOverlay = new kakao.maps.CustomOverlay({
-            position : publicParkingPositions[i].latlng,
-            content : publicParkingPositions[i].content,
-          });
+      //노상주차장 리스트 오버레이 설정
+      var publicParkingPositions = [];
+      for (let publicParking of result.data.publicParkingList) {
+        publicParkingPositions.push({
+          content:
+            '<div class="customoverlay">' +
+            `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="parkingDetail(${publicParking.id})">` +
+            `    <span class="localname">${publicParking.currentparking} / ${publicParking.capacity}</span>` +
+            "  </div>" +
+            "</div>",
+          latlng: new kakao.maps.LatLng(publicParking.lat, publicParking.lng),
+        });
+      }
+      for (let i = 0; i < publicParkingPositions.length; i++) {
+        var customOverlay = new kakao.maps.CustomOverlay({
+          position: publicParkingPositions[i].latlng,
+          content: publicParkingPositions[i].content,
+        });
 
-          customOverlay.setMap(map);
-        }
+        customOverlay.setMap(map);
+      }
     </script>
     <script>
       // 변수를 추가하여 메뉴 상태를 추적합니다.
@@ -279,7 +306,7 @@
         isMenuVisible = !isMenuVisible;
       }
       function parkingDetail(id) {
-        console.log('parkingDetail', id);
+        console.log("parkingDetail", id);
         location.href = `/publicparking/detail?id=${id}`;
       }
       // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
@@ -289,9 +316,14 @@
         isMenuVisible = false;
       }
 
+      // 예약 알람 이동
+      function reservationAlarm() {
+        location.href = "/user/reservation";
+      }
+
       // 회원 정보 수정 이동
       function profileEdit() {
-        location.href = "/user/edit";
+        location.href = "/mypage/:userid/edit";
       }
 
       // 예약내역조회 이동
