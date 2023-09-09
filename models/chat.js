@@ -12,7 +12,6 @@ const Model = (sequelize) => {
     userid: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: false,
     },
     roomid: {
       type: DataTypes.INTEGER,
