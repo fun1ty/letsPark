@@ -133,113 +133,109 @@
     <div id="search-results"></div>
 
     <script>
-    var mapContainer = document.getElementById("map"),
-            mapOption = {
-                center: new kakao.maps.LatLng(37.547771, 126.942069), // 초기 중심 위치 설정
-                level: 4,
-            };
+      var mapContainer = document.getElementById("map"),
+        mapOption = {
+          center: new kakao.maps.LatLng(37.547771, 126.942069), // 초기 중심 위치 설정
+          level: 4,
+        };
 
-        var map = new kakao.maps.Map(mapContainer, mapOption);
+      var map = new kakao.maps.Map(mapContainer, mapOption);
 
-        // 장소 검색 객체를 생성합니다
-        var ps = new kakao.maps.services.Places();
+      // 장소 검색 객체를 생성합니다
+      var ps = new kakao.maps.services.Places();
 
-        // 검색 버튼 클릭 시 검색을 수행하는 함수
-        function searchPlaces() {
-            var keyword = document.getElementById("search-input").value;
+      // 검색 버튼 클릭 시 검색을 수행하는 함수
+      function searchPlaces() {
+        var keyword = document.getElementById("search-input").value;
 
-            if (!keyword.replace(/^\s+|\s+$/g, "")) {
-                alert("키워드를 입력해주세요!");
-                return false;
+        if (!keyword.replace(/^\s+|\s+$/g, "")) {
+          alert("키워드를 입력해주세요!");
+          return false;
+        }
+
+        // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
+        ps.keywordSearch(keyword, placesSearchCB);
+      }
+
+      // 검색 결과를 처리하는 콜백 함수
+      function placesSearchCB(data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+          // 검색 결과가 정상적으로 받아진 경우
+
+          // 검색 결과가 있는지 확인
+          if (data.length > 0) {
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기 위해 LatLngBounds 객체를 생성합니다
+            var bounds = new kakao.maps.LatLngBounds();
+
+            // 검색된 모든 장소를 지도에 표시하고 bounds에 추가합니다
+            for (var i = 0; i < data.length; i++) {
+              var place = data[i];
+              var placePosition = new kakao.maps.LatLng(place.y, place.x);
+
+              // // 마커를 생성하고 지도에 표시합니다
+              // var marker = new kakao.maps.Marker({
+              //     position: placePosition,
+              // });
+              // marker.setMap(map);
+
+              // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해 LatLngBounds 객체에 좌표를 추가합니다
+              bounds.extend(placePosition);
             }
 
-            // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
-            ps.keywordSearch(keyword, placesSearchCB);
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+            map.setBounds(bounds);
+          } else {
+            // 검색 결과가 없을 경우에 대한 처리
+            alert("검색 결과가 없습니다.");
+          }
+        } else {
+          // 검색 중 오류가 발생한 경우에 대한 처리
+          alert("검색 중 오류가 발생했습니다.");
+        }
+      }
+
+      // 변수를 추가하여 메뉴 상태를 추적합니다.
+      var isMenuVisible = false;
+
+      function toggleMenu() {
+        var menu = document.getElementById("menu-container");
+        if (!isMenuVisible) {
+          menu.style.right = "0";
+        } else {
+          menu.style.right = "-300px";
         }
 
-        // 검색 결과를 처리하는 콜백 함수
-        function placesSearchCB(data, status, pagination) {
-            if (status === kakao.maps.services.Status.OK) {
-                // 검색 결과가 정상적으로 받아진 경우
+        // 메뉴 상태를 업데이트합니다.
+        isMenuVisible = !isMenuVisible;
+      }
 
-                // 검색 결과가 있는지 확인
-                if (data.length > 0) {
-                    // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기 위해 LatLngBounds 객체를 생성합니다
-                    var bounds = new kakao.maps.LatLngBounds();
+      // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
+      function closeMenu() {
+        var menu = document.getElementById("menu-container");
+        menu.style.right = "-300px";
+        isMenuVisible = false;
+      }
 
-                    // 검색된 모든 장소를 지도에 표시하고 bounds에 추가합니다
-                    for (var i = 0; i < data.length; i++) {
-                        var place = data[i];
-                        var placePosition = new kakao.maps.LatLng(place.y, place.x);
+      // 회원 정보 수정 이동
+      function profileEdit() {
+        location.href = "/user/edit";
+      }
 
-                        // // 마커를 생성하고 지도에 표시합니다
-                        // var marker = new kakao.maps.Marker({
-                        //     position: placePosition,
-                        // });
-                        // marker.setMap(map);
+      // 예약내역조회 이동
+      function userReservation() {
+        location.href = "/user/reservation";
+      }
 
-                        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해 LatLngBounds 객체에 좌표를 추가합니다
-                        bounds.extend(placePosition);
-                    }
+      //공유주차장등록 이동
+      function parkingAdd() {
+        location.href = "/mypage/parking/add";
+      }
 
-                    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-                    map.setBounds(bounds);
-                } else {
-                    // 검색 결과가 없을 경우에 대한 처리
-                    alert("검색 결과가 없습니다.");
-                }
-            } else {
-                // 검색 중 오류가 발생한 경우에 대한 처리
-                alert("검색 중 오류가 발생했습니다.");
-            }
-        }
-
-        
-        // 변수를 추가하여 메뉴 상태를 추적합니다.
-        var isMenuVisible = false;
-
-        function toggleMenu() {
-            var menu = document.getElementById("menu-container");
-            if (!isMenuVisible) {
-                menu.style.right = "0";
-            } else {
-                menu.style.right = "-300px";
-            }
-
-            // 메뉴 상태를 업데이트합니다.
-            isMenuVisible = !isMenuVisible;
-        }
-
-        // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
-        function closeMenu() {
-            var menu = document.getElementById("menu-container");
-            menu.style.right = "-300px";
-            isMenuVisible = false;
-        }
-
-        // 회원 정보 수정 이동
-        function profileEdit() {
-            location.href = "/user/edit";
-        }
-
-        // 예약내역조회 이동
-        function userReservation() {
-            location.href = "/user/reservation";
-        }
-
-        //공유주차장등록 이동
-        function parkingAdd() {
-            location.href = "/mypage/parking/add";
-        }
-
-        //채팅방 이동
-        function chatBtn() {
-            console.log("front 채팅방클릭");
-            location.href = "/chat";
-        }
-    </script>
-</body>
-</html>
+      //채팅방 이동
+      function chatBtn() {
+        console.log("front 채팅방클릭");
+        location.href = "/chat";
+      }
     </script>
   </body>
 </html>
