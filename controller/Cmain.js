@@ -1,14 +1,37 @@
-const SocketIO = require("socket.io"); //웹소켓
-const http = require("http");
-const express = require("express");
-const app = express();
-const server = http.createServer(app);
-const io = SocketIO(server);
 const axios = require("axios");
 const models = require("../models/index");
-const { Navigator } = require('node-navigator');
-require('dotenv').config();
+const jwt = require("jsonwebtoken");
+const { x64 } = require("crypto-js");
+const { Navigator } = require("node-navigator");
+require("dotenv").config();
 const env = process.env;
+
+exports.chat = (req, res) => {
+  res.render("chat");
+};
+
+// exports.main = (req, res) => {
+//   console.log("main");
+//   const token = req.headers.authorization;
+//   if (token) {
+//     try {
+//       const decodedToken = jwt.verify(token, "SECRET");
+//       const userId = decodedToken.userid;
+//
+//       const userInfo = {
+//         userid: userId,
+//       };
+//
+//       res.json(userInfo);
+//       console.log(userInfo);
+//     } catch (error) {
+//       console.log("토큰 디코드 오류", error);
+//     }
+//   } else {
+    //res.redirect('/user/login');
+//   }
+//   res.render("index");
+// };
 
 exports.main = async (req, res) => {
 
@@ -19,7 +42,7 @@ exports.getInfo = async (req, res) => {
   let publicParkingList;
   try {
     publicParkingList = await models.PublicParking.findAll({
-      attributes : ['id', 'capacity', 'currentparking', 'lat', 'lng'],
+      attributes: ['id', 'capacity', 'currentparking', 'lat', 'lng'],
     });
   } catch (err) {
     console.log(err);
@@ -29,26 +52,30 @@ exports.getInfo = async (req, res) => {
   let cleaningList;
   try {
     cleaningList = await models.Cleaning.findAll({
-      include : [{
-        model : models.ShareParking,
-        attributes : ['id', 'lat', 'lng'],
-      }],
+      include: [
+        {
+          model: models.ShareParking,
+          attributes: ["id", "lat", "lng"],
+        },
+      ],
     });
   } catch (err) {
     console.log(err);
   }
+
   let shareParkingIdList = [];
-  for(let idx of cleaningList) {
+  for (let idx of cleaningList) {
     shareParkingIdList.push(idx.shareparking_id);
   }
   let shareParkingList;
   try {
     shareParkingList = await models.ShareParking.findAll({
-      attributes : ['id', 'lat', 'lng'],
-      where : { status : 'Y' },
-    })
+      attributes: ["id", "lat", "lng"],
+      where: { status: "Y" },
+    });
   } catch (err) {
     console.log(err);
+
   };
   let allLen = cleaningList.length + publicParkingList.length + shareParkingList.length;
 
@@ -77,83 +104,8 @@ function socketModule(io) {
     console.log("라우터접속");
     // connection 함수 호출
     connection(io, socket);
+
   });
-}
-
-const roomList = [];
-
-exports.connection = (io, socket) => {
-  console.log("socket 접속");
-  console.log("io", io);
-  //채팅방 목록 보내기
-  socket.emit("roomList", roomList);
-
-  //채팅방 만들기 생성
-  socket.on("create", (roomName, userName, cb) => {
-    //join(방이름) 해당 방이름으로 없다면 생성. 존재하면 입장
-    //socket.rooms에 socket.id값과 방이름 확인가능
-    socket.join(roomName);
-    //socket은 객체이며 원하는 값을 할당할 수 있음
-    socket.room = roomName;
-    socket.user = userName;
-
-    socket.to(roomName).emit("notice", `${socket.id}님이 입장하셨습니다`);
-
-    //채팅방 목록 갱신
-    if (!roomList.includes(roomName)) {
-      roomList.push(roomName);
-      //갱신된 목록은 전체가 봐야함
-      io.emit("roomList", roomList);
-    }
-    const usersInRoom = getUsersInRoom(roomName);
-    io.to(roomName).emit("userList", usersInRoom);
-    cb();
-  });
-
-  socket.on("sendMessage", (message) => {
-    console.log(message);
-    if (message.user === "all") {
-      io.to(socket.room).emit(
-        "newMessage",
-        message.message,
-        message.nick,
-        false
-      );
-    } else {
-      io.to(message.user).emit(
-        "newMessage",
-        message.message,
-        message.nick,
-        true
-      );
-      //자기자신에게 메세지 띄우기
-      socket.emit("newMessage", message.message, message.nick, true);
-    }
-  });
-
-  socket.on("disconnect", () => {
-    if (socket.room) {
-      socket.leave(socket.room);
-    }
-  });
-
-  function getUsersInRoom(room) {
-    const users = [];
-    //채팅룸에 접속한 socket.id값을 찾아야함
-    const clients = io.sockets.adapter.rooms.get(room);
-    //console.log(clients);
-    if (clients) {
-      clients.forEach((socketId) => {
-        //io.sockets.sockets: socket.id가 할당한 변수들의 객체값
-        const userSocket = io.sockets.sockets.get(socketId);
-        //개별 사용자에게 메세지를 보내기 위해서 객체형태로 변경
-        //key: 소켓아이디, name:이름
-        const info = { name: userSocket.user, key: socketId };
-        users.push(info);
-      });
-    }
-    return users;
-  }
 };
 
 exports.ppdb = async (req, res) => {
@@ -162,7 +114,7 @@ exports.ppdb = async (req, res) => {
     console.log("----------------------------", i);
     await axios({
       method: "GET",
-      url: `http://openapi.seoul.go.kr:8088/${env.SEOULDATA}/json/GetParkingInfo/${i}/${
+      url: `http://openapi.seoul.go.kr:8088/466354715470617039364d6b517341/json/GetParkingInfo/${i}/${
         i + 999
       }/`,
     }).then((response) => {
@@ -245,4 +197,21 @@ exports.ppdb = async (req, res) => {
       }
     );
   }
+};
+
+//지도 핀 데이터
+exports.parking = async (req, res) => {
+  console.log("hi");
+  const result = await models.PublicParking.findAll();
+  console.log("reulst", result);
+  const arr = [];
+  for (let i = 0; i < result.length; i++) {
+    const a = {
+      content: result[i].name,
+      lat: result[i].lat,
+      lng: result[i].lng,
+    };
+    arr.push(a);
+  }
+  res.json({ data: arr });
 };

@@ -6,11 +6,12 @@
     <link rel="stylesheet" type="text/css" href="/reset.css" />
     <link rel="stylesheet" type="text/css" href="/index.css" />
     <link rel="stylesheet" href="/map.css" />
-    <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
     <script
-            type="text/javascript"
-            src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=<%= javascriptkey%>"
+      type="text/javascript"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=<%= javascriptkey%>&libraries=services"
     ></script>
     <title>Main</title>
     <div id="test"></div>
@@ -80,10 +81,29 @@
           </div>
           <h5>이용안내 및 문의하기</h5>
           <h5>로그아웃</h5>
+
+          <!-- 사용자 정보 조회 -->
+          <!-- <form name="user-info-form">
+            <label for="userid">User ID:</label>
+            <input type="text" id="userid" name="userid" readonly />
+            <br />
+            <label for="password">Password:</label>
+            <input type="text" id="password" name="password" readonly />
+            <br />
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" readonly />
+            <br />
+            <label for="nickname">Nickname:</label>
+            <input type="text" id="nickname" name="nickname" readonly />
+            <br />
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" readonly />
+            <br />
+          </form> -->
         </div>
 
         <div id="search-bar">
-          <form action="검색결과페이지URL">
+          <form onsubmit="searchPlaces(); return false;">
             <div class="search-container">
               <input
                 type="text"
@@ -105,17 +125,30 @@
         </div>
       </nav>
     </div>
-    <!-- map -->
 
+    <!-- map -->
     <div id="map" style="width: 100%; height: 100vh"></div>
-    <div class="search-results" id="search-results"></div>
+
+    <div id="search-results"></div>
+
     <script>
       ( async function () {
         const result = await axios({
-          method : 'POST',
-          url : '/',
+          method: 'POST',
+          url: '/',
         });
         console.log(result);
+        })();
+    </script>
+
+
+    <script>
+      var mapContainer = document.getElementById("map"),
+        mapOption = {
+          center: new kakao.maps.LatLng(37.547771, 126.942069), // 초기 중심 위치 설정
+          level: 4,
+        };
+
 
         //카카오 맵 기본 설정
         var mapContainer = document.getElementById("map"),
@@ -124,6 +157,7 @@
                   level: 4,
                 };
         var map = new kakao.maps.Map(mapContainer, mapOption);
+
 
         //클리닝 리스트 오버레이 설정
         var cleaningPositions = [];
@@ -152,6 +186,59 @@
           customOverlay.setMap(map);
         }
 
+      // 장소 검색 객체를 생성합니다
+      var ps = new kakao.maps.services.Places();
+
+      // 검색 버튼 클릭 시 검색을 수행하는 함수
+      function searchPlaces() {
+        var keyword = document.getElementById("search-input").value;
+
+        if (!keyword.replace(/^\s+|\s+$/g, "")) {
+          alert("키워드를 입력해주세요!");
+          return false;
+        }
+
+        // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
+        ps.keywordSearch(keyword, placesSearchCB);
+      }
+
+      // 검색 결과를 처리하는 콜백 함수
+      function placesSearchCB(data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+          // 검색 결과가 정상적으로 받아진 경우
+
+          // 검색 결과가 있는지 확인
+          if (data.length > 0) {
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기 위해 LatLngBounds 객체를 생성합니다
+            var bounds = new kakao.maps.LatLngBounds();
+
+            // 검색된 모든 장소를 지도에 표시하고 bounds에 추가합니다
+            for (var i = 0; i < data.length; i++) {
+              var place = data[i];
+              var placePosition = new kakao.maps.LatLng(place.y, place.x);
+
+              // // 마커를 생성하고 지도에 표시합니다
+              // var marker = new kakao.maps.Marker({
+              //     position: placePosition,
+              // });
+              // marker.setMap(map);
+
+              // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해 LatLngBounds 객체에 좌표를 추가합니다
+              bounds.extend(placePosition);
+            }
+
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+            map.setBounds(bounds);
+          } else {
+            // 검색 결과가 없을 경우에 대한 처리
+            alert("검색 결과가 없습니다.");
+          }
+        } else {
+          // 검색 중 오류가 발생한 경우에 대한 처리
+          alert("검색 중 오류가 발생했습니다.");
+        }
+      }
+
         //노상주차장 리스트 오버레이 설정
         var publicParkingPositions = [];
         for(let publicParking of result.data.publicParkingList) {
@@ -175,8 +262,6 @@
 
           customOverlay.setMap(map);
         }
-
-      })();
     </script>
     <script>
       // 변수를 추가하여 메뉴 상태를 추적합니다.
