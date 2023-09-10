@@ -10,12 +10,6 @@
   </head>
   <body>
     <div id="main">
-      <!-- <form id="room">
-        <h1>채팅방</h1>
-        <input type="text" id="roomName" placeholder="채팅방 만들기" /> -->
-      <!-- <input type="text" id="userName" placeholder="사용자 이름 입력" /> -->
-      <!-- <button>만들기</button> -->
-      <!-- </form>  -->
       <ul id="lists"></ul>
     </div>
     <div id="body">
@@ -23,7 +17,6 @@
         <div id="notice"></div>
       </div>
       <form id="chat">
-        <!-- <select id="userList"></select> -->
         <input type="text" id="message" placeholder="메세지 입력" />
         <button>입력</button>
       </form>
@@ -34,17 +27,12 @@
       const userid = "dfdf";
       const usernick = "영치코";
       console.log(socket);
-      const roomForm = document.querySelector("#room");
+      const token = localStorage.getItem("token");
       const chatForm = document.querySelector("#chat");
       const msg = document.querySelector("#msg");
       const notice = document.querySelector("#notice");
 
       let myName;
-
-      //룸리스트
-      socket.on("roomList", (roomLists) => {
-        console.log(roomLists);
-      });
 
       //메세지 띄우기
       socket.on("newMessage", (message, nick, bool) => {
@@ -72,6 +60,11 @@
         p.textContent = message;
         div.appendChild(p);
         notice.appendChild(div);
+      });
+
+      //jwt토큰검증
+      socket.emit("jwt", { token }, () => {
+        console.log("JWT 토큰을 서버로 전송했습니다.");
       });
 
       //채팅방 생성

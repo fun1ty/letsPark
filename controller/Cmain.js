@@ -1,13 +1,16 @@
-const axios = require("axios");
-const models = require("../models/index");
-const jwt = require("jsonwebtoken");
-const { x64 } = require("crypto-js");
-const { Navigator } = require("node-navigator");
-require("dotenv").config();
+
+const axios = require('axios');
+const models = require('../models/index');
+const jwt = require('jsonwebtoken');
+const { x64 } = require('crypto-js');
+const { Navigator } = require('node-navigator');
+const vt = require('../utils/JwtVerifyToken');
+require('dotenv').config();
 const env = process.env;
 
-exports.chat = (req, res) => {
+exports.chat = async (req, res) => {
   res.render("chat");
+
 };
 
 // exports.main = (req, res) => {
@@ -28,21 +31,50 @@ exports.chat = (req, res) => {
 //       console.log("토큰 디코드 오류", error);
 //     }
 //   } else {
-    //res.redirect('/user/login');
+//res.redirect('/user/login');
 //   }
 //   res.render("index");
 // };
 
 exports.main = async (req, res) => {
+  const user = req.user;
+  const userInfo = { userid: user.userid, nickname: user.nickname };
+  console.log('user: ', user);
+  if (!user) {
+    console.log('토큰 디코드 오류');
+  } else {
+    const authHeader = req.headers.authorization;
+    console.log('controller authHeader: ', authHeader);
 
-  res.render("index", { javascriptkey : env.JAVASCRIPTKEY });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('인증 헤더 없음');
+    }
+  }
+
+  // const navigator = new Navigator();
+  // let tempLocation;
+  // navigator.geolocation.getCurrentPosition((success, error) => {
+  //   if (error) console.error(error);
+  //   else console.log(success);
+  //   tempLocation = {
+  //     lat: success.latitude,
+  //     lng: success.longitude,
+  //   };
+  // });
+  // let publicParkingList;
+  // try {
+  //   publicParkingList = await models.PublicParking.findAll({
+  //     attributes: ['capacity', 'currentparking', 'lat', 'lng']})
+
+  res.render('index', { javascriptkey: env.JAVASCRIPTKEY });
+
 };
 
 exports.getInfo = async (req, res) => {
   let publicParkingList;
   try {
     publicParkingList = await models.PublicParking.findAll({
-      attributes: ['id', 'capacity', 'currentparking', 'lat', 'lng'],
+      attributes: ["id", "capacity", "currentparking", "lat", "lng"],
     });
   } catch (err) {
     console.log(err);
@@ -67,14 +99,16 @@ exports.getInfo = async (req, res) => {
   let shareParkingList;
   try {
     shareParkingList = await models.ShareParking.findAll({
-      attributes: ["id", "lat", "lng", 'price'],
-      where: { status: "Y" },
+
+      attributes: ['id', 'lat', 'lng', 'price'],
+      where: { status: 'Y' },
+
     });
   } catch (err) {
     console.log(err);
-
-  };
+  }
   let allLen = publicParkingList.length + shareParkingList.length;
+
   console.log(cleaningList);
   res.json({publicParkingList, shareParkingList, cleaningList, allLen});
 
@@ -93,14 +127,17 @@ function socketModule(io) {
     connection(io, socket);
 
   });
+
+
+  res.json({ publicParkingList, shareParkingList, allLen });
 };
 
 exports.ppdb = async (req, res) => {
   let map = new Map();
   for (let i = 1; i < 18000; i += 1000) {
-    console.log("----------------------------", i);
+    console.log('----------------------------', i);
     await axios({
-      method: "GET",
+      method: 'GET',
       url: `http://openapi.seoul.go.kr:8088/466354715470617039364d6b517341/json/GetParkingInfo/${i}/${
         i + 999
       }/`,
@@ -188,9 +225,9 @@ exports.ppdb = async (req, res) => {
 
 //지도 핀 데이터
 exports.parking = async (req, res) => {
-  console.log("hi");
+  console.log('hi');
   const result = await models.PublicParking.findAll();
-  console.log("reulst", result);
+  console.log('reulst', result);
   const arr = [];
   for (let i = 0; i < result.length; i++) {
     const a = {
@@ -202,4 +239,3 @@ exports.parking = async (req, res) => {
   }
   res.json({ data: arr });
 };
-
