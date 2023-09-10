@@ -10,16 +10,18 @@ exports.connection = (io, socket) => {
   socket.on("jwt", async ({ token }, cb) => {
     console.log(`클라이언트로부터 JWT 토큰을 수신: ${token}`);
     //jwt토큰 확인
-    const userId = await vt.verifyToken(token);
-    console.log("userId: ", userId);
-    const resultValue = await models.User.findOne({
-      where: { id: userId },
-    }); //회원이 있는지 검증
-
-    console.log("resultValue", resultValue);
-
-    socket.emit("jwt", resultValue);
-    cb();
+    try {
+      const userId = await vt.verifyToken(token);
+      console.log("userId: ", userId);
+      const resultValue = await models.User.findOne({
+        where: { id: userId },
+      }); //회원이 있는지 검증
+      console.log("resultValue", resultValue);
+      socket.emit("jwt", resultValue);
+      cb();
+    } catch (error) {
+      console.error("토큰 검증 에러:", error);
+    }
   });
 
   //채팅방 만들기 생성
