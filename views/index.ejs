@@ -108,7 +108,6 @@
             </ul>
           </div>
           <h5>이용안내 및 문의하기</h5>
-          <h5 onclick="logout()">로그아웃</h5>
           <button type="button" onclick="fetchUserInfo()">사용자조회</button>
           <br />
           <a href="/user/login">로그인하기</a><br />
@@ -116,7 +115,7 @@
           <h5 class="payButton">결제내역</h5>
           <div class="logoutBox">
             <span class="service">이용안내 및 문의하기</span>
-            <span class="logoutService">로그아웃</span>
+            <span class="logoutService" onclick="logout()">로그아웃</span>
           </div>
 
           <!-- 사용자 정보 조회 -->

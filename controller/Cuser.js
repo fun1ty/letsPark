@@ -1,6 +1,7 @@
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const SECRET = 'SECRET';
 //쿠키 설정
 const cookieConfig = {
@@ -62,7 +63,7 @@ exports.postSignup = async (req, res) => {
 
 exports.postLogin = async (req, res) => {
   try {
-    const { userid, password, nickname } = req.body;
+    const { id, userid, password, name, nickname } = req.body;
     const user = await User.findOne({
       where: { userid },
     });
@@ -72,7 +73,12 @@ exports.postLogin = async (req, res) => {
       if (result) {
         res.cookie('isLoggin', true, cookieConfig);
         const token = jwt.sign(
-          { userid: userid, nickname: user.nickname },
+          {
+            id: user.id,
+            userid: userid,
+            nickname: user.nickname,
+            name: user.name,
+          },
           SECRET
         );
         res.json({ result: true, token, data: user });
