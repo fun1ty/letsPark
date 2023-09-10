@@ -18,21 +18,13 @@ exports.connection = (io, socket) => {
       socket.room = roomName;
       socket.user = userName;
       //jwt토큰 확인
-      const [bearer, token] = req.headers.authorization.split(" ");
-      if (bearer === "Bearer") {
-        //토큰 인증
-        const result = jwt.verify(token, SECRET);
-        const resultValue = User.findOne({
-          where: { id: result.id },
-        }); //회원이 있는지 검증
-        console.log(result);
-        const { name, id } = req.body;
-        User.update({ name, pw }, { where: { id } }).then(() => {
-          res.json({ result: true });
-        });
-      } else {
-        io.to(socket.room).emit("인증된 사용자가 아닙니다.", false);
-      }
+      const token = req.headers.authorization.split(" ")[1];
+      //토큰 인증
+      const userId = vt.verifyToken(token);
+      const resultValue = User.findOne({
+        where: { id: userId },
+      }); //회원이 있는지 검증
+      console.log(result);
 
       socket.to(roomName).emit("notice", `${socket.id}님이 입장하셨습니다`);
 

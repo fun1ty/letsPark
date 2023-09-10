@@ -163,10 +163,12 @@
 
     <div id="search-results"></div>
     <script>
+
       var map;
       function success({ coords, timestamp }) {
         const lat = coords.latitude;   // 위도
         const lng = coords.longitude; // 경도
+
 
         var mapContainer = document.getElementById('map'), // 지도를 표시할 div
                 mapOption = {
@@ -253,6 +255,7 @@
       ps.keywordSearch(val, placesSearchCB);
       }
 
+
       // 키워드 검색 완료 시 호출되는 콜백함수 입니다
       function placesSearchCB (data, status, pagination) {
         if (status === kakao.maps.services.Status.OK) {
@@ -260,6 +263,7 @@
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
           // LatLngBounds 객체에 좌표를 추가합니다
           var bounds = new kakao.maps.LatLngBounds();
+
 
           for (var i=0; i<data.length; i++) {
             bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
@@ -342,7 +346,9 @@
 
       // 회원 정보 수정 이동
       function profileEdit() {
+
         location.href = "/mypage/:userid/edit";
+
       }
 
       // 예약내역조회 이동
@@ -356,9 +362,20 @@
       }
 
       //채팅방 이동
-      function chatBtn() {
+      async function chatBtn() {
         console.log("front 채팅방클릭");
-        location.href = "/chat";
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("로그인 해주세요");
+        } else {
+          const res = await axios({
+            method: "POST",
+            url: "/chat",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        }
       }
     </script>
   </body>
