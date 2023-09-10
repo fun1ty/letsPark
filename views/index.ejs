@@ -242,6 +242,14 @@
                     }
             );
           }
+           for (let i = 0; i < publicParkingPositions.length; i++) {
+            var customOverlay = new kakao.maps.CustomOverlay({
+              position: publicParkingPositions[i].latlng,
+              content: publicParkingPositions[i].content,
+            });
+
+            customOverlay.setMap(map);
+          }
           var shareParkingPositions = [];
 
           for(let shareParking of result.data.shareParkingList) {
