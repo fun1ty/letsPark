@@ -50,11 +50,11 @@ app.use('/user', userRouter);
 const mypageRouter = require('./routes/mypage');
 app.use('/mypage', mypageRouter);
 
-const publicParkingRouter = require('./routes/publicParking');
-app.use('/publicparking', publicParkingRouter);
+const publicParkingRouter = require("./routes/publicParking");
+app.use("/publicparking", publicParkingRouter);
 
-const shareParkingRouter = require('./routes/shareParking');
-app.use('/shareparking', shareParkingRouter);
+const shareParkingRouter = require("./routes/shareParking");
+app.use("/shareparking", shareParkingRouter);
 
 //404
 app.get('*', (req, res) => {

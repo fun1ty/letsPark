@@ -11,7 +11,7 @@
 
     <script
       type="text/javascript"
-      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=<%= javascriptkey%>"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=<%= javascriptkey%>&libraries=services"
     ></script>
     <title>Main</title>
     <div id="test"></div>
@@ -28,7 +28,7 @@
           />
 
           <div class="menu-icons">
-            <div class="menu-icon">
+            <div class="menu-icon" onclick="reservationAlarm()">
               <img
                 src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/bell.svg"
                 alt="알람"
@@ -59,24 +59,52 @@
             />
           </button>
 
-          <div>
+          <div style="margin: 20px">
             <button class="mypageEdit" onclick="profileEdit()">
-              마이페이지
-              <div>parkinghaka@gmail.com</div>
+              <div>
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg"
+                  alt="profile"
+                  width="30px"
+                  height="30px"
+                />
+              </div>
+              <div>
+                <div class="userNick">파킹퍼시블님</div>
+                <div class="userEmail">parkinghaka@gmail.com</div>
+              </div>
             </button>
           </div>
 
           <div>
-            <button onclick="userReservation()">예약 내역 보기</button>
+            <button class="reservationButton" onclick="userReservation()">
+              예약 내역 보기
+            </button>
           </div>
-          <div>
-            <ul>
-              <li onclick="parkingAdd()">공유주차장 등록</li>
-              <button type="button" id="chat" onclick="chatBtn()">
-                <li>채팅방</li>
-              </button>
-              <li>포인트</li>
-              <li>결제내역</li>
+          <div class="noticeBox">
+            <ul class="menuContainer">
+              <li onclick="parkingAdd()">
+                🚙 공유주차장 등록
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+
+              <li type="button" id="chat" onclick="chatBtn()">
+                💬 채팅방
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+              <li>💰 포인트</li>
             </ul>
           </div>
           <h5>이용안내 및 문의하기</h5>
@@ -85,6 +113,11 @@
           <br />
           <a href="/user/login">로그인하기</a><br />
           <a href="/user/signup">회원가입</a>
+          <h5 class="payButton">결제내역</h5>
+          <div class="logoutBox">
+            <span class="service">이용안내 및 문의하기</span>
+            <span class="logoutService">로그아웃</span>
+          </div>
 
           <!-- 사용자 정보 조회 -->
           <!-- <form name="user-info-form">
@@ -105,9 +138,10 @@
             <br />
           </form> -->
         </div>
-
+        <input type="hidden" id="kakaoLat" />
+        <input type="hidden" id="kakaoLng" />
         <div id="search-bar">
-          <form action="검색결과페이지URL">
+          <form onsubmit="searchPlaces(); return false;">
             <div class="search-container">
               <input
                 type="text"
@@ -129,63 +163,146 @@
         </div>
       </nav>
     </div>
+    <input type="hidden" id="check" value="0" />
     <!-- map -->
     <div id="map" style="width: 100%; height: 100vh"></div>
-    <div class="search-results" id="search-results"></div>
 
+    <div id="search-results"></div>
     <script>
-      var mapContainer = document.getElementById('map'),
-        mapOption = {
-          center: new kakao.maps.LatLng(37.547771, 126.942069),
-          level: 4,
-        };
+      var map;
+      function success({ coords, timestamp }) {
+        const lat = coords.latitude; // 위도
+        const lng = coords.longitude; // 경도
 
-      var map = new kakao.maps.Map(mapContainer, mapOption);
-
-      (async function () {
-        const arr = [];
-        const result = await axios({
-          method: 'GET',
-          url: '/parking',
-        });
-        console.log(result);
-        const { data } = result.data;
-        for (let i = 0; i < data.length; i++) {
-          const a = {
-            content: data[i].content,
-            latlng: new kakao.maps.LatLng(data[i].lat, data[i].lng),
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+          mapOption = {
+            center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
+            level: 3, // 지도의 확대 레벨
           };
 
-          arr.push(a);
+        // 지도를 생성합니다
+        map = new kakao.maps.Map(mapContainer, mapOption);
+        console.log(map);
+      }
+      function getUserLocation() {
+        if (!navigator.geolocation) {
+          throw '위치 정보가 지원되지 않습니다.';
         }
-        console.log(arr);
+        navigator.geolocation.getCurrentPosition(success);
+      }
+
+      (async function () {
+        const result = await axios({
+          method: 'POST',
+          url: '/',
+        });
+        console.log(result);
+        getUserLocation();
+        setTimeout(() => {
+          //노상주차장 리스트 오버레이 설정
+          var publicParkingPositions = [];
+          for (let publicParking of result.data.publicParkingList) {
+            publicParkingPositions.push({
+              content:
+                '<div class="customoverlay">' +
+                `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="publicParkingDetail(${publicParking.id})">` +
+                `    <span class="localname">${publicParking.currentparking} / ${publicParking.capacity}</span>` +
+                '  </div>' +
+                '</div>',
+              latlng: new kakao.maps.LatLng(
+                publicParking.lat,
+                publicParking.lng
+              ),
+            });
+          }
+          for (let i = 0; i < publicParkingPositions.length; i++) {
+            var customOverlay = new kakao.maps.CustomOverlay({
+              position: publicParkingPositions[i].latlng,
+              content: publicParkingPositions[i].content,
+            });
+
+            customOverlay.setMap(map);
+          }
+
+          var shareParkingPositions = [];
+          for (let shareParking of result.data.shareParkingList) {
+            console.log(shareParking.price);
+            shareParkingPositions.push({
+              content:
+                '<div class="customoverlay" style="background-color: lightgreen">' +
+                `  <div  style="text-decoration: none;  color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="shareParkingDetail(${shareParking.id})">` +
+                `    <span class="localname">${shareParking.price}</span>` +
+                '  </div>' +
+                '</div>',
+              latlng: new kakao.maps.LatLng(shareParking.lat, shareParking.lng),
+            });
+          }
+          for (let i = 0; i < shareParkingPositions.length; i++) {
+            var customOverlay = new kakao.maps.CustomOverlay({
+              position: shareParkingPositions[i].latlng,
+              content: shareParkingPositions[i].content,
+            });
+
+            customOverlay.setMap(map);
+          }
+        }, 4000);
       })();
 
-      // 페이지 로드 시 주차장 정보 가져오기
-      fetchParkingData();
+      // 장소 검색 객체를 생성합니다
+      var ps = new kakao.maps.services.Places();
+      // 키워드로 장소를 검색합니다
+      function searchPlaces() {
+        const val = document.getElementById('search-input').value;
 
-      // 변수를 추가하여 메뉴 상태를 추적합니다.
-      var isMenuVisible = false;
+        ps.keywordSearch(val, placesSearchCB);
+      }
 
-      // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-      var content =
-        '<div class="customoverlay">' +
-        '  <a href="https://kko.to/cf3Xnt9X8D" target="_blank" style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;">' +
-        '    <span class="localname">대흥역</span>' +
-        '  </a>' +
-        '</div>';
+      // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+      function placesSearchCB(data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+          // LatLngBounds 객체에 좌표를 추가합니다
+          var bounds = new kakao.maps.LatLngBounds();
 
-      // 커스텀 오버레이가 표시될 위치입니다
-      var position = new kakao.maps.LatLng(37.547771, 126.942069);
+          for (var i = 0; i < data.length; i++) {
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+          }
 
-      // 커스텀 오버레이를 생성합니다
-      var customOverlay = new kakao.maps.CustomOverlay({
-        map: map,
-        position: position,
-        content: content,
-        yAnchor: 1,
-      });
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+          map.setBounds(bounds);
+        }
+      }
+    </script>
 
+    <script>
+      // 클리닝 리스트 오버레이 설정
+      // var cleaningPositions = [];
+      // for(let cleaning of result.data.cleaningList) {
+      //   console.log(cleaning.lat);
+      //   console.log(cleaning.lng);
+      //   cleaningPositions.push(
+      //           {
+      //             content :
+      //                     '<div class="customoverlay">' +
+      //                     `  <div  style="text-decoration: none; color: mediumspringgreen; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="cleaningDetail(${cleaning.id})">` +
+      //                     `    <span class="localname">클리닝 요청</span>` +
+      //                     "  </div>" +
+      //                     "</div>",
+      //             latlng : new kakao.maps.LatLng(cleaning.lat, cleaning.lng),
+      //           }
+      //   )
+      // }
+      //
+      // for(let i=0 ; i<cleaningPositions.length ; i++) {
+      //   var customOverlay = new kakao.maps.CustomOverlay({
+      //     position : cleaningPositions[i].latlng,
+      //     content : cleaningPositions[i].content,
+      //   });
+      //
+      //   customOverlay.setMap(map);
+      // }
+    </script>
+    <script>
       // 변수를 추가하여 메뉴 상태를 추적합니다.
       var isMenuVisible = false;
 
@@ -196,16 +313,26 @@
         } else {
           menu.style.right = '-300px';
         }
-
         // 메뉴 상태를 업데이트합니다.
         isMenuVisible = !isMenuVisible;
       }
-
+      function publicParkingDetail(id) {
+        console.log('parkingDetail', id);
+        location.href = `/publicparking/detail?id=${id}`;
+      }
+      function shareParkingDetail(id) {
+        console.log('parkingDetail', id);
+        location.href = `/shareparking/detail?id=${id}`;
+      }
       // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
       function closeMenu() {
         var menu = document.getElementById('menu-container');
         menu.style.right = '-300px';
         isMenuVisible = false;
+      }
+      // 예약 알람 이동
+      function reservationAlarm() {
+        location.href = '/user/reservation';
       }
 
       // 회원 정보 수정 이동
@@ -264,6 +391,26 @@
       function chatBtn() {
         console.log('front 채팅방클릭');
         location.href = '/chat';
+        function parkingAdd() {
+          location.href = '/mypage/parking/add';
+        }
+
+        //채팅방 이동
+        async function chatBtn() {
+          console.log('front 채팅방클릭');
+          const token = localStorage.getItem('token');
+          if (!token) {
+            alert('로그인 해주세요');
+          } else {
+            const res = await axios({
+              method: 'POST',
+              url: '/chat',
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+          }
+        }
       }
     </script>
   </body>

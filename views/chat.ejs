@@ -44,26 +44,8 @@
       //룸리스트
       socket.on("roomList", (roomLists) => {
         console.log(roomLists);
-        // const lists = document.querySelector("#lists");
-        // lists.textContent = "";
-        // roomLists.forEach((roomList) => {
-        //   const li = document.createElement("li");
-        //   li.textContent = `${roomList} 와(과) 닉네임 입력 후 입장`;
-        //   lists.appendChild(li);
-        // });
       });
 
-      //사용자 리스트
-      // socket.on("userList", (userLists) => {
-      //   console.log(userLists);
-      //   const lists = document.querySelector("#userList");
-      //   lists.textContent = "";
-      //   let options = `<option value="all">전체</option>`;
-      //   for (let i of userLists) {
-      //     options += `<option value="${i.key}">${i.name}</option>`;
-      //   }
-      //   lists.innerHTML = options;
-      // });
       //메세지 띄우기
       socket.on("newMessage", (message, nick, bool) => {
         console.log(message, nick);
@@ -92,21 +74,15 @@
         notice.appendChild(div);
       });
 
-      ///폼 이벤트
-      // roomForm.addEventListener("submit", (e) => {
-      //   e.preventDefault();
-
-      // if (roomName.value === "" || userName.value === "") {
-      //   alert("방이름과 닉네임 적어주세요");
-      //   return;
-      // }
-      socket.emit("create", userid, usernick, () => {
-        // const main = document.querySelector("#main");
-        // const body = document.querySelector("#body");
-        // main.hidden = true;
-        // body.hidden = false;
+      //채팅방 생성
+      socket.emit("create", userid, usernick, () => {});
+      socket.on("create", (message, bool) => {
+        if (bool === false) {
+          alert(message);
+          socket.leave(socket.room);
+        }
       });
-      // });
+
       //메세지 보내기
       chatForm.addEventListener("submit", (e) => {
         e.preventDefault();
