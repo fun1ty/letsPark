@@ -80,25 +80,22 @@ exports.getInfo = async (req, res) => {
     console.log(err);
   }
 
-  //left outer join됨, attribute 적용안됬음
-  // let cleaningList;
-  // try {
-  //   cleaningList = await models.Cleaning.findAll({
-  //     include: [
-  //       {
-  //         model: models.ShareParking,
-  //         attributes: ["id", "lat", "lng"],
-  //       },
-  //     ],
-  //   });
-  // } catch (err) {
-  //   console.log(err);
-  // }
+  let cleaningList;
+  try {
+    cleaningList = await models.Cleaning.findAll({
+      include: [
+        {
+          model: models.ShareParking,
+          as :  'shareparking',
+          attributes: ['lat', 'lng'],
+        },
+      ],
+      attributes : { exclude : ['price', 'content'] },
+    });
+  } catch (err) {
+    console.log(err);
+  }
 
-  // let shareParkingIdList = [];
-  // for (let idx of cleaningList) {
-  //   shareParkingIdList.push(idx.shareparking_id);
-  // }
   let shareParkingList;
   try {
     shareParkingList = await models.ShareParking.findAll({
@@ -111,6 +108,26 @@ exports.getInfo = async (req, res) => {
     console.log(err);
   }
   let allLen = publicParkingList.length + shareParkingList.length;
+
+  console.log(cleaningList);
+  res.json({publicParkingList, shareParkingList, cleaningList, allLen});
+
+};
+
+exports.chat = (req, res) => {
+  res.render("chat");
+  socketModule(io);
+};
+
+function socketModule(io) {
+  // 클라이언트 연결 이벤트 핸들링
+  io.on("connection", (socket) => {
+    console.log("라우터접속");
+    // connection 함수 호출
+    connection(io, socket);
+
+  });
+
 
   res.json({ publicParkingList, shareParkingList, allLen });
 };
@@ -174,7 +191,7 @@ exports.ppdb = async (req, res) => {
         name: value.name,
         address: value.address,
         type: value.type,
-        tel: value.type,
+        tel: value.tel,
         questatus: value.questatus,
         capacity: value.capacity,
         currentparking: value.currentparking,
