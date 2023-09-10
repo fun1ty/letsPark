@@ -131,7 +131,7 @@
     <div class="search-results" id="search-results"></div>
 
     <script>
-      var mapContainer = document.getElementById('map'),
+      var mapContainer = document.getElementById("map"),
         mapOption = {
           center: new kakao.maps.LatLng(37.547771, 126.942069),
           level: 4,
@@ -164,14 +164,13 @@
       // 변수를 추가하여 메뉴 상태를 추적합니다.
       var isMenuVisible = false;
 
-
       // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
       var content =
         '<div class="customoverlay">' +
         '  <a href="https://kko.to/cf3Xnt9X8D" target="_blank" style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;">' +
         '    <span class="localname">대흥역</span>' +
-        '  </a>' +
-        '</div>';
+        "  </a>" +
+        "</div>";
 
       // 커스텀 오버레이가 표시될 위치입니다
       var position = new kakao.maps.LatLng(37.547771, 126.942069);
@@ -187,13 +186,12 @@
       // 변수를 추가하여 메뉴 상태를 추적합니다.
       var isMenuVisible = false;
 
-
       function toggleMenu() {
-        var menu = document.getElementById('menu-container');
+        var menu = document.getElementById("menu-container");
         if (!isMenuVisible) {
-          menu.style.right = '0';
+          menu.style.right = "0";
         } else {
-          menu.style.right = '-300px';
+          menu.style.right = "-300px";
         }
 
         // 메뉴 상태를 업데이트합니다.
@@ -202,30 +200,41 @@
 
       // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
       function closeMenu() {
-        var menu = document.getElementById('menu-container');
-        menu.style.right = '-300px';
+        var menu = document.getElementById("menu-container");
+        menu.style.right = "-300px";
         isMenuVisible = false;
       }
 
       // 회원 정보 수정 이동
       function profileEdit() {
-        location.href = '/user/edit';
+        location.href = "/user/edit";
       }
 
       // 예약내역조회 이동
       function userReservation() {
-        location.href = '/user/reservation';
+        location.href = "/user/reservation";
       }
 
       //공유주차장등록 이동
       function parkingAdd() {
-        location.href = '/mypage/parking/add';
+        location.href = "/mypage/parking/add";
       }
 
       //채팅방 이동
-      function chatBtn() {
+      async function chatBtn() {
         console.log("front 채팅방클릭");
-        location.href = "/chat";
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("로그인 해주세요");
+        } else {
+          const res = await axios({
+            method: "POST",
+            url: "/chat",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        }
       }
     </script>
   </body>

@@ -3,11 +3,25 @@ const models = require("../models/index");
 const jwt = require("jsonwebtoken");
 const { x64 } = require("crypto-js");
 const { Navigator } = require("node-navigator");
+const vt = require("../utils/JwtVerifyToken");
 require("dotenv").config();
 const env = process.env;
 
 exports.chat = (req, res) => {
-  res.render("chat");
+  const SECRET = "mySecret"; //토큰키
+  const token = req.headers.authorization.split(" ");
+  let userId;
+  const verify = jwt.verify(token[1], SECRET, (err, decoded) => {
+    if (err) return false;
+    userId = decoded.userid;
+    console.log("decoded", decoded);
+  });
+  if (verify === true) {
+    console.log("token", token, "userId", userId);
+    res.render("chat", { data: token, userId });
+  } else {
+    res.render("index");
+  }
 };
 
 exports.main = (req, res) => {
