@@ -132,7 +132,8 @@
             <br />
           </form> -->
         </div>
-
+        <input type="hidden" id="kakaoLat">
+        <input type="hidden" id="kakaoLng">
         <div id="search-bar">
           <form onsubmit="searchPlaces(); return false;">
             <div class="search-container">
@@ -156,139 +157,148 @@
         </div>
       </nav>
     </div>
-
+    <input type="hidden" id="check" value="0">
     <!-- map -->
     <div id="map" style="width: 100%; height: 100vh"></div>
 
     <div id="search-results"></div>
-
     <script>
+      var map;
+      function success({ coords, timestamp }) {
+        const lat = coords.latitude;   // 위도
+        const lng = coords.longitude; // 경도
+
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+                mapOption = {
+                  center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
+                  level: 3 // 지도의 확대 레벨
+                };
+
+// 지도를 생성합니다
+        map = new kakao.maps.Map(mapContainer, mapOption);
+        console.log(map);
+      }
+      function getUserLocation() {
+        if (!navigator.geolocation) {
+          throw "위치 정보가 지원되지 않습니다.";
+        }
+        navigator.geolocation.getCurrentPosition(success);
+      }
+
       (async function () {
         const result = await axios({
           method: "POST",
           url: "/",
         });
         console.log(result);
+        getUserLocation();
+        setTimeout(()=> {
+          //노상주차장 리스트 오버레이 설정
+          var publicParkingPositions = [];
+          for(let publicParking of result.data.publicParkingList) {
+            publicParkingPositions.push(
+                    {
+                      content :
+                              '<div class="customoverlay">' +
+                              `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="publicParkingDetail(${publicParking.id})">` +
+                              `    <span class="localname">${publicParking.currentparking} / ${publicParking.capacity}</span>` +
+                              "  </div>" +
+                              "</div>",
+                      latlng : new kakao.maps.LatLng(publicParking.lat, publicParking.lng),
+                    }
+            );
+          }
+          for(let i=0 ; i<publicParkingPositions.length ; i++) {
+            var customOverlay = new kakao.maps.CustomOverlay({
+              position : publicParkingPositions[i].latlng,
+              content : publicParkingPositions[i].content,
+            });
+
+            customOverlay.setMap(map);
+          };
+
+          var shareParkingPositions = [];
+          for(let shareParking of result.data.shareParkingList) {
+            console.log(shareParking.price);
+            shareParkingPositions.push(
+                    {
+                      content :
+                              '<div class="customoverlay" style="background-color: lightgreen">' +
+                              `  <div  style="text-decoration: none;  color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="shareParkingDetail(${shareParking.id})">` +
+                              `    <span class="localname">${shareParking.price}</span>` +
+                              "  </div>" +
+                              "</div>",
+                      latlng : new kakao.maps.LatLng(shareParking.lat, shareParking.lng),
+                    }
+            );
+          }
+          for(let i=0 ; i<shareParkingPositions.length ; i++) {
+            var customOverlay = new kakao.maps.CustomOverlay({
+              position : shareParkingPositions[i].latlng,
+              content : shareParkingPositions[i].content,
+            });
+
+            customOverlay.setMap(map);
+          };
+
+        }, 4000);
       })();
-    </script>
-
-    <script>
-      var mapContainer = document.getElementById("map"),
-        mapOption = {
-          center: new kakao.maps.LatLng(37.547771, 126.942069), // 초기 중심 위치 설정
-          level: 4,
-        };
-
-      //카카오 맵 기본 설정
-      var mapContainer = document.getElementById("map"),
-        mapOption = {
-          center: new kakao.maps.LatLng(
-            result.data.tempLat,
-            result.data.tempLng
-          ),
-          level: 4,
-        };
-      var map = new kakao.maps.Map(mapContainer, mapOption);
-
-      //클리닝 리스트 오버레이 설정
-      var cleaningPositions = [];
-      for (let cleaning of result.data.cleaningList) {
-        console.log(cleaning.lat);
-        console.log(cleaning.lng);
-        cleaningPositions.push({
-          content:
-            '<div class="customoverlay">' +
-            `  <div  style="text-decoration: none; color: mediumspringgreen; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="cleaningDetail(${cleaning.id})">` +
-            `    <span class="localname">클리닝 요청</span>` +
-            "  </div>" +
-            "</div>",
-          latlng: new kakao.maps.LatLng(cleaning.lat, cleaning.lng),
-        });
-      }
-
-      for (let i = 0; i < cleaningPositions.length; i++) {
-        var customOverlay = new kakao.maps.CustomOverlay({
-          position: cleaningPositions[i].latlng,
-          content: cleaningPositions[i].content,
-        });
-
-        customOverlay.setMap(map);
-      }
 
       // 장소 검색 객체를 생성합니다
       var ps = new kakao.maps.services.Places();
-
-      // 검색 버튼 클릭 시 검색을 수행하는 함수
+      // 키워드로 장소를 검색합니다
       function searchPlaces() {
-        var keyword = document.getElementById("search-input").value;
+        const val = document.getElementById('search-input').value;
 
-        if (!keyword.replace(/^\s+|\s+$/g, "")) {
-          alert("키워드를 입력해주세요!");
-          return false;
-        }
-
-        // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
-        ps.keywordSearch(keyword, placesSearchCB);
+      ps.keywordSearch(val, placesSearchCB);
       }
 
-      // 검색 결과를 처리하는 콜백 함수
-      function placesSearchCB(data, status, pagination) {
+      // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+      function placesSearchCB (data, status, pagination) {
         if (status === kakao.maps.services.Status.OK) {
-          // 검색 결과가 정상적으로 받아진 경우
 
-          // 검색 결과가 있는지 확인
-          if (data.length > 0) {
-            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기 위해 LatLngBounds 객체를 생성합니다
-            var bounds = new kakao.maps.LatLngBounds();
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+          // LatLngBounds 객체에 좌표를 추가합니다
+          var bounds = new kakao.maps.LatLngBounds();
 
-            // 검색된 모든 장소를 지도에 표시하고 bounds에 추가합니다
-            for (var i = 0; i < data.length; i++) {
-              var place = data[i];
-              var placePosition = new kakao.maps.LatLng(place.y, place.x);
-
-              // // 마커를 생성하고 지도에 표시합니다
-              // var marker = new kakao.maps.Marker({
-              //     position: placePosition,
-              // });
-              // marker.setMap(map);
-
-              // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해 LatLngBounds 객체에 좌표를 추가합니다
-              bounds.extend(placePosition);
-            }
-
-            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-            map.setBounds(bounds);
-          } else {
-            // 검색 결과가 없을 경우에 대한 처리
-            alert("검색 결과가 없습니다.");
+          for (var i=0; i<data.length; i++) {
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
           }
-        } else {
-          // 검색 중 오류가 발생한 경우에 대한 처리
-          alert("검색 중 오류가 발생했습니다.");
+
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+          map.setBounds(bounds);
         }
       }
+    </script>
 
-      //노상주차장 리스트 오버레이 설정
-      var publicParkingPositions = [];
-      for (let publicParking of result.data.publicParkingList) {
-        publicParkingPositions.push({
-          content:
-            '<div class="customoverlay">' +
-            `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="parkingDetail(${publicParking.id})">` +
-            `    <span class="localname">${publicParking.currentparking} / ${publicParking.capacity}</span>` +
-            "  </div>" +
-            "</div>",
-          latlng: new kakao.maps.LatLng(publicParking.lat, publicParking.lng),
-        });
-      }
-      for (let i = 0; i < publicParkingPositions.length; i++) {
-        var customOverlay = new kakao.maps.CustomOverlay({
-          position: publicParkingPositions[i].latlng,
-          content: publicParkingPositions[i].content,
-        });
+    <script>
+      // 클리닝 리스트 오버레이 설정
+      // var cleaningPositions = [];
+      // for(let cleaning of result.data.cleaningList) {
+      //   console.log(cleaning.lat);
+      //   console.log(cleaning.lng);
+      //   cleaningPositions.push(
+      //           {
+      //             content :
+      //                     '<div class="customoverlay">' +
+      //                     `  <div  style="text-decoration: none; color: mediumspringgreen; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="cleaningDetail(${cleaning.id})">` +
+      //                     `    <span class="localname">클리닝 요청</span>` +
+      //                     "  </div>" +
+      //                     "</div>",
+      //             latlng : new kakao.maps.LatLng(cleaning.lat, cleaning.lng),
+      //           }
+      //   )
+      // }
+      //
+      // for(let i=0 ; i<cleaningPositions.length ; i++) {
+      //   var customOverlay = new kakao.maps.CustomOverlay({
+      //     position : cleaningPositions[i].latlng,
+      //     content : cleaningPositions[i].content,
+      //   });
+      //
+      //   customOverlay.setMap(map);
+      // }
 
-        customOverlay.setMap(map);
-      }
     </script>
     <script>
       // 변수를 추가하여 메뉴 상태를 추적합니다.
@@ -305,10 +315,19 @@
         // 메뉴 상태를 업데이트합니다.
         isMenuVisible = !isMenuVisible;
       }
-      function parkingDetail(id) {
-        console.log("parkingDetail", id);
+
+
+      function publicParkingDetail(id) {
+        console.log('parkingDetail', id);
+
         location.href = `/publicparking/detail?id=${id}`;
       }
+
+      function shareParkingDetail(id) {
+        console.log('parkingDetail', id);
+        location.href = `/shareparking/detail?id=${id}`;
+      }
+
       // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
       function closeMenu() {
         var menu = document.getElementById("menu-container");

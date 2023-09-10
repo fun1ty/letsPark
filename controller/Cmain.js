@@ -49,48 +49,38 @@ exports.getInfo = async (req, res) => {
   }
 
   //left outer join됨, attribute 적용안됬음
-  let cleaningList;
-  try {
-    cleaningList = await models.Cleaning.findAll({
-      include: [
-        {
-          model: models.ShareParking,
-          attributes: ["id", "lat", "lng"],
-        },
-      ],
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  // let cleaningList;
+  // try {
+  //   cleaningList = await models.Cleaning.findAll({
+  //     include: [
+  //       {
+  //         model: models.ShareParking,
+  //         attributes: ["id", "lat", "lng"],
+  //       },
+  //     ],
+  //   });
+  // } catch (err) {
+  //   console.log(err);
+  // }
 
-  let shareParkingIdList = [];
-  for (let idx of cleaningList) {
-    shareParkingIdList.push(idx.shareparking_id);
-  }
+  // let shareParkingIdList = [];
+  // for (let idx of cleaningList) {
+  //   shareParkingIdList.push(idx.shareparking_id);
+  // }
   let shareParkingList;
   try {
     shareParkingList = await models.ShareParking.findAll({
-      attributes: ["id", "lat", "lng"],
+      attributes: ["id", "lat", "lng", 'price'],
       where: { status: "Y" },
     });
   } catch (err) {
     console.log(err);
 
   };
-  let allLen = cleaningList.length + publicParkingList.length + shareParkingList.length;
+  let allLen = publicParkingList.length + shareParkingList.length;
 
-  const navigator = new Navigator();
-  let tempLat;
-  let tempLng;
-  navigator.geolocation.getCurrentPosition((success, error) => {
-    if (error) console.error(error);
-    else {
-      tempLat = success.latitude;
-      tempLng = success.longitude;
-      console.log(cleaningList);
-      res.json({tempLat, tempLng, publicParkingList, cleaningList, shareParkingIdList, shareParkingList, allLen});
-    }
-  });
+  res.json({publicParkingList, shareParkingList, allLen});
+
 };
 
 exports.chat = (req, res) => {
@@ -215,3 +205,4 @@ exports.parking = async (req, res) => {
   }
   res.json({ data: arr });
 };
+

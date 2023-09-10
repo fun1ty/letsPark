@@ -15,6 +15,12 @@ exports.resultToObject = (result) => {
 
 exports.resultToObjectArray = (result) => {
     let objArray = [];
-
+    for(let idx of  result) {
+        let obj = new Object();
+        for(let [key, value] of Object.entries(idx.dataValues)) {
+            obj[`${key}`] = value;
+        }
+        objArray.push(obj);
+    }
     return objArray;
 }
