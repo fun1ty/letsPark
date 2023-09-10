@@ -107,10 +107,15 @@
               <li>💰 포인트</li>
             </ul>
           </div>
+          <h5>이용안내 및 문의하기</h5>
+          <button type="button" onclick="fetchUserInfo()">사용자조회</button>
+          <br />
+          <a href="/user/login">로그인하기</a><br />
+          <a href="/user/signup">회원가입</a>
           <h5 class="payButton">결제내역</h5>
           <div class="logoutBox">
             <span class="service">이용안내 및 문의하기</span>
-            <span class="logoutService">로그아웃</span>
+            <span class="logoutService" onclick="logout()">로그아웃</span>
           </div>
 
           <!-- 사용자 정보 조회 -->
@@ -132,8 +137,8 @@
             <br />
           </form> -->
         </div>
-        <input type="hidden" id="kakaoLat">
-        <input type="hidden" id="kakaoLng">
+        <input type="hidden" id="kakaoLat" />
+        <input type="hidden" id="kakaoLng" />
         <div id="search-bar">
           <form onsubmit="searchPlaces(); return false;">
             <div class="search-container">
@@ -157,92 +162,88 @@
         </div>
       </nav>
     </div>
-    <input type="hidden" id="check" value="0">
+    <input type="hidden" id="check" value="0" />
     <!-- map -->
     <div id="map" style="width: 100%; height: 100vh"></div>
 
     <div id="search-results"></div>
     <script>
-
       var map;
       function success({ coords, timestamp }) {
-        const lat = coords.latitude;   // 위도
+        const lat = coords.latitude; // 위도
         const lng = coords.longitude; // 경도
 
-
         var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-                mapOption = {
-                  center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
-                  level: 3 // 지도의 확대 레벨
-                };
+          mapOption = {
+            center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
+            level: 3, // 지도의 확대 레벨
+          };
 
-// 지도를 생성합니다
+        // 지도를 생성합니다
         map = new kakao.maps.Map(mapContainer, mapOption);
         console.log(map);
       }
       function getUserLocation() {
         if (!navigator.geolocation) {
-          throw "위치 정보가 지원되지 않습니다.";
+          throw '위치 정보가 지원되지 않습니다.';
         }
         navigator.geolocation.getCurrentPosition(success);
       }
 
       (async function () {
         const result = await axios({
-          method: "POST",
-          url: "/",
+          method: 'POST',
+          url: '/',
         });
         console.log(result);
         getUserLocation();
-        setTimeout(()=> {
+        setTimeout(() => {
           //노상주차장 리스트 오버레이 설정
           var publicParkingPositions = [];
-          for(let publicParking of result.data.publicParkingList) {
-            publicParkingPositions.push(
-                    {
-                      content :
-                              '<div class="customoverlay">' +
-                              `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="publicParkingDetail(${publicParking.id})">` +
-                              `    <span class="localname">${publicParking.currentparking} / ${publicParking.capacity}</span>` +
-                              "  </div>" +
-                              "</div>",
-                      latlng : new kakao.maps.LatLng(publicParking.lat, publicParking.lng),
-                    }
-            );
+          for (let publicParking of result.data.publicParkingList) {
+            publicParkingPositions.push({
+              content:
+                '<div class="customoverlay">' +
+                `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="publicParkingDetail(${publicParking.id})">` +
+                `    <span class="localname">${publicParking.currentparking} / ${publicParking.capacity}</span>` +
+                '  </div>' +
+                '</div>',
+              latlng: new kakao.maps.LatLng(
+                publicParking.lat,
+                publicParking.lng
+              ),
+            });
           }
-          for(let i=0 ; i<publicParkingPositions.length ; i++) {
+          for (let i = 0; i < publicParkingPositions.length; i++) {
             var customOverlay = new kakao.maps.CustomOverlay({
-              position : publicParkingPositions[i].latlng,
-              content : publicParkingPositions[i].content,
+              position: publicParkingPositions[i].latlng,
+              content: publicParkingPositions[i].content,
             });
 
             customOverlay.setMap(map);
-          };
+          }
 
           var shareParkingPositions = [];
-          for(let shareParking of result.data.shareParkingList) {
+          for (let shareParking of result.data.shareParkingList) {
             console.log(shareParking.price);
-            shareParkingPositions.push(
-                    {
-                      content :
-                              '<div class="customoverlay" style="background-color: lightgreen">' +
-                              `  <div  style="text-decoration: none;  color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="shareParkingDetail(${shareParking.id})">` +
-                              `    <span class="localname">${shareParking.price}</span>` +
-                              "  </div>" +
-                              "</div>",
-                      latlng : new kakao.maps.LatLng(shareParking.lat, shareParking.lng),
-                    }
-            );
+            shareParkingPositions.push({
+              content:
+                '<div class="customoverlay" style="background-color: lightgreen">' +
+                `  <div  style="text-decoration: none;  color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="shareParkingDetail(${shareParking.id})">` +
+                `    <span class="localname">${shareParking.price}</span>` +
+                '  </div>' +
+                '</div>',
+              latlng: new kakao.maps.LatLng(shareParking.lat, shareParking.lng),
+            });
           }
-          for(let i=0 ; i<shareParkingPositions.length ; i++) {
+          for (let i = 0; i < shareParkingPositions.length; i++) {
             var customOverlay = new kakao.maps.CustomOverlay({
-              position : shareParkingPositions[i].latlng,
-              content : shareParkingPositions[i].content,
+              position: shareParkingPositions[i].latlng,
+              content: shareParkingPositions[i].content,
             });
 
             customOverlay.setMap(map);
-          };
-
+          }
         }, 4000);
       })();
 
@@ -252,20 +253,17 @@
       function searchPlaces() {
         const val = document.getElementById('search-input').value;
 
-      ps.keywordSearch(val, placesSearchCB);
+        ps.keywordSearch(val, placesSearchCB);
       }
 
-
       // 키워드 검색 완료 시 호출되는 콜백함수 입니다
-      function placesSearchCB (data, status, pagination) {
+      function placesSearchCB(data, status, pagination) {
         if (status === kakao.maps.services.Status.OK) {
-
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
           // LatLngBounds 객체에 좌표를 추가합니다
           var bounds = new kakao.maps.LatLngBounds();
 
-
-          for (var i=0; i<data.length; i++) {
+          for (var i = 0; i < data.length; i++) {
             bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
           }
 
@@ -302,79 +300,115 @@
       //
       //   customOverlay.setMap(map);
       // }
-
     </script>
     <script>
       // 변수를 추가하여 메뉴 상태를 추적합니다.
       var isMenuVisible = false;
 
       function toggleMenu() {
-        var menu = document.getElementById("menu-container");
+        var menu = document.getElementById('menu-container');
         if (!isMenuVisible) {
-          menu.style.right = "0";
+          menu.style.right = '0';
         } else {
-          menu.style.right = "-300px";
+          menu.style.right = '-300px';
         }
-
         // 메뉴 상태를 업데이트합니다.
         isMenuVisible = !isMenuVisible;
       }
-
-
       function publicParkingDetail(id) {
         console.log('parkingDetail', id);
-
         location.href = `/publicparking/detail?id=${id}`;
       }
-
       function shareParkingDetail(id) {
         console.log('parkingDetail', id);
         location.href = `/shareparking/detail?id=${id}`;
       }
-
       // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
       function closeMenu() {
-        var menu = document.getElementById("menu-container");
-        menu.style.right = "-300px";
+        var menu = document.getElementById('menu-container');
+        menu.style.right = '-300px';
         isMenuVisible = false;
       }
-
       // 예약 알람 이동
       function reservationAlarm() {
-        location.href = "/user/reservation";
+        location.href = '/user/reservation';
       }
 
       // 회원 정보 수정 이동
       function profileEdit() {
-
-        location.href = "/mypage/:userid/edit";
-
+        location.href = '/mypage';
       }
 
       // 예약내역조회 이동
       function userReservation() {
-        location.href = "/user/reservation";
+        location.href = '/user/reservation';
       }
 
       //공유주차장등록 이동
-      function parkingAdd() {
-        location.href = "/mypage/parking/add";
-      }
+      function parkingAdd() {}
 
-      //채팅방 이동
-      async function chatBtn() {
-        console.log("front 채팅방클릭");
-        const token = localStorage.getItem("token");
+      // 서버로부터 사용자 정보를 가져오는 함수
+      async function fetchUserInfo() {
+        const token = localStorage.getItem('token');
+        console.log('클라이언트', token);
+
         if (!token) {
-          alert("로그인 해주세요");
-        } else {
-          const res = await axios({
-            method: "POST",
-            url: "/chat",
+          console.log('토큰이 없습니다.');
+          return;
+        }
+
+        try {
+          const response = await axios.get('/', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
+
+          if (response.data && response.data.userid) {
+            const userInfo = response.data;
+            console.log('사용자 정보:', userInfo);
+
+            const decodedToken = jwt.verify(token, 'SECRET');
+            console.log('디코딩된 토큰:', decodedToken);
+
+            const userIdDisplay = document.getElementById('userIdDisplay');
+            userIdDisplay.value = userInfo.userid;
+          } else {
+            console.log('토큰이 유효하지 않습니다.');
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      //로그아웃
+      function logout() {
+        localStorage.removeItem('token');
+      }
+
+      //채팅방 이동
+      function chatBtn() {
+        console.log('front 채팅방클릭');
+        location.href = '/chat';
+        function parkingAdd() {
+          location.href = '/mypage/parking/add';
+        }
+
+        //채팅방 이동
+        async function chatBtn() {
+          console.log('front 채팅방클릭');
+          const token = localStorage.getItem('token');
+          if (!token) {
+            alert('로그인 해주세요');
+          } else {
+            const res = await axios({
+              method: 'POST',
+              url: '/chat',
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+          }
         }
       }
     </script>

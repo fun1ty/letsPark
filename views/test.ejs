@@ -4,6 +4,10 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script
+  type="text/javascript"
+  src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_MAPS_API_KEY"
+></script>
         <title>Document</title>
     </head>
     <body>
@@ -13,7 +17,7 @@
         </form>
         <br />
         <input type="text" id="comment" placeholder="">
-        <div style="width: 50px; height: 50px; background-color: red" onclick='enrollReview(<%= publicParkingDetailResult.id%>)'>리뷰작성</div>
+        <div style="width: 50px; height: 50px; background-color: red" onclick='enrollReview(<%= publicParkingDetailResult.id %>)'>리뷰작성</div>
         <input type="text" id="score">
         <div class="result"></div>
         <div><%= publicParkingDetailResult.id%></div>
