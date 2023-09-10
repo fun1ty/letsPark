@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsonwebtoken@8.5.1"></script>
+
     <title>Document</title>
   </head>
   <body>
@@ -18,7 +20,12 @@
         placeholder="아이디"
         readonly
       /><br />
-      <input type="password" id="password" placeholder="비밀번호" /><br />
+      <input
+        type="password"
+        id="password"
+        value="<%= user.password %>"
+        placeholder="비밀번호"
+      /><br />
       <input
         type="text"
         id="name"
@@ -42,15 +49,15 @@
     </form>
 
     <script>
-      const urlParams = new URLSearchParams(window.location.search);
-      const userid = urlParams.get('userid');
+      const token = localStorage.getItem('token');
+      const userInfo = res.data.data;
+      const userid = userInfo.userid;
 
       function loadUserInfo() {
         axios
           .get(`/mypage/${userid}`)
           .then((res) => {
             if (res.data.result) {
-              const userInfo = res.data.data;
               document.querySelector('#userid').value = userInfo.userid;
               document.querySelector('#name').value = userInfo.name;
               document.querySelector('#nickname').value = userInfo.nickname;
@@ -86,7 +93,7 @@
         }).then((res) => {
           if (res.data.result) {
             alert('수정이 완료되었습니다.');
-            document.location.reload(0);
+            window.location.href = '/';
           }
         });
       }
@@ -104,6 +111,7 @@
         }).then((res) => {
           if (res.data.result) {
             alert('회원 탈퇴 완료되었습니다.');
+            window.location.href = '/';
           }
         });
       }
