@@ -1,14 +1,14 @@
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-const SECRET = 'SECRET';
+require('dotenv').config();
+
 //쿠키 설정
 const cookieConfig = {
   httpOnly: true,
   maxAge: 24 * 60 * 60 * 1000, //24시간으로 설정
 };
-
+const SECRET = process.env.SECRETKEY;
 //GET
 exports.signup = (req, res) => {
   res.render('signup');
@@ -22,6 +22,17 @@ exports.success = (req, res) => {
   res.render('success', { userid, nickname });
 };
 exports.profile = async (req, res) => {
+  //const token = req.headers.authorization.split(' ')[1];
+  const token =
+    req.headers.authorization && req.headers.authorization.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: '인증되지 않은 요청입니다.' });
+  }
+
+  const userId = vt.verifyToken(token);
+  console.log(userId);
+
   try {
     const { userid } = req.params;
 

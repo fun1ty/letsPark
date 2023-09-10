@@ -49,15 +49,18 @@
     </form>
 
     <script>
-      const token = localStorage.getItem('token');
-      const userInfo = res.data.data;
-      const userid = userInfo.userid;
+      function jwt_decode(token) {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(atob(base64));
+      }
 
       function loadUserInfo() {
         axios
-          .get(`/mypage/${userid}`)
+          .get(`/mypage/${token.userid}`)
           .then((res) => {
             if (res.data.result) {
+              const userInfo = res.data.data;
               document.querySelector('#userid').value = userInfo.userid;
               document.querySelector('#name').value = userInfo.name;
               document.querySelector('#nickname').value = userInfo.nickname;
@@ -79,7 +82,7 @@
 
         axios({
           method: 'PATCH',
-          url: `/mypage/${userid}/edit`,
+          url: `/mypage/${token.userid}/edit`,
           data: {
             userid: form.userid.value,
             password: form.password.value,
@@ -104,7 +107,7 @@
         }
         axios({
           method: 'DELETE',
-          url: `/mypage/${userid}/drop`,
+          url: `/mypage/${token.userid}/drop`,
           data: {
             userid: document.querySelector('#userid').value,
           },

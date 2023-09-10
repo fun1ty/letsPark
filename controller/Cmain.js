@@ -48,18 +48,14 @@ exports.chat = (req, res) => {
 // };
 
 exports.main = async (req, res) => {
-  const user = req.user;
-  const userInfo = { userid: user.userid, nickname: user.nickname };
-  console.log('user: ', user);
-  if (!user) {
-    console.log('토큰 디코드 오류');
-  } else {
-    const authHeader = req.headers.authorization;
-    console.log('controller authHeader: ', authHeader);
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = await verifyToken(token);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('인증 헤더 없음');
-    }
+    const nickname = decoded.nickname;
+    console.log(nickname);
+  } catch (error) {
+    console.log('토큰 검증 오류', error);
   }
 
   // const navigator = new Navigator();

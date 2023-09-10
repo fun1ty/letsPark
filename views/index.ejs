@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="/index.css" />
     <link rel="stylesheet" href="/map.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2"></script>
+
     <script src="/socket.io/socket.io.js"></script>
 
     <script
@@ -71,7 +73,7 @@
               </div>
               <div>
                 <div class="userNick">파킹퍼시블님</div>
-                <div class="userEmail">parkinghaka@gmail.com</div>
+                <!-- <div class="userEmail">parkinghaka@gmail.com</div> -->
               </div>
             </button>
           </div>
@@ -108,14 +110,13 @@
             </ul>
           </div>
           <h5>이용안내 및 문의하기</h5>
-          <button type="button" onclick="fetchUserInfo()">사용자조회</button>
           <br />
-          <a href="/user/login">로그인하기</a><br />
+          <!-- <a href="/user/login">로그인하기</a><br /> -->
           <a href="/user/signup">회원가입</a>
           <h5 class="payButton">결제내역</h5>
           <div class="logoutBox">
             <span class="service">이용안내 및 문의하기</span>
-            <span class="logoutService" onclick="logout()">로그아웃</span>
+            <span class="logoutService" onclick="logout()">로그인</span>
           </div>
 
           <!-- 사용자 정보 조회 -->
@@ -336,7 +337,10 @@
 
       // 회원 정보 수정 이동
       function profileEdit() {
-        location.href = '/mypage';
+        const token = localStorage.getItem('token');
+        const decodedToken = jwt_decode(token);
+        const userid = decodedToken.userid;
+        location.href = `/mypage/${token.userid}`;
       }
 
       // 예약내역조회 이동
@@ -347,43 +351,52 @@
       //공유주차장등록 이동
       function parkingAdd() {}
 
-      // 서버로부터 사용자 정보를 가져오는 함수
-      async function fetchUserInfo() {
+      // // 서버로부터 사용자 정보를 가져오는 함수
+      // async function fetchUserInfo() {
+      //   const token = localStorage.getItem('token');
+      //   console.log('클라이언트', token);
+
+      //   if (!token) {
+      //     console.log('토큰이 없습니다.');
+      //     return;
+      //   }
+
+      //   try {
+      //     const response = await axios.get('/', {
+      //       headers: {
+      //         Authorization: `Bearer ${token}`,
+      //       },
+      //     });
+
+      //     if (response.data && response.data.userid) {
+      //       const userInfo = response.data;
+      //       console.log('사용자 정보:', userInfo);
+
+      //       const decodedToken = jwt.verify(token, 'SECRET');
+      //       console.log('디코딩된 토큰:', decodedToken);
+
+      //       const userIdDisplay = document.getElementById('userIdDisplay');
+      //       userIdDisplay.value = userInfo.userid;
+      //     } else {
+      //       console.log('토큰이 유효하지 않습니다.');
+      //     }
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // }
+
+      //로그아웃/로그인 서비스
+      function logoutService() {
         const token = localStorage.getItem('token');
-        console.log('클라이언트', token);
 
-        if (!token) {
-          console.log('토큰이 없습니다.');
-          return;
+        if (token) {
+          localStorage.remove('token');
+          document.getElementById('logoutService').textContent = '로그인';
+          alert('로그아웃되었습니다.');
+        } else {
+          alert('로그인 페이지로 이동하거나 로그인 작업을 수행하세요');
+          document.getElementById('logoutService').textContent = '로그아웃';
         }
-
-        try {
-          const response = await axios.get('/', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (response.data && response.data.userid) {
-            const userInfo = response.data;
-            console.log('사용자 정보:', userInfo);
-
-            const decodedToken = jwt.verify(token, 'SECRET');
-            console.log('디코딩된 토큰:', decodedToken);
-
-            const userIdDisplay = document.getElementById('userIdDisplay');
-            userIdDisplay.value = userInfo.userid;
-          } else {
-            console.log('토큰이 유효하지 않습니다.');
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      //로그아웃
-      function logout() {
-        localStorage.removeItem('token');
       }
 
       //채팅방 이동
