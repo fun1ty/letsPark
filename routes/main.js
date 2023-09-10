@@ -1,6 +1,11 @@
 const express = require('express');
 const controller = require('../controller/Cmain');
 const router = express.Router();
+
+
+router.post("/", controller.getInfo);
+
+
 const jwt = require('jsonwebtoken');
 const SECRET = 'SECRET';
 //토큰 검증 함수
@@ -32,5 +37,6 @@ router.get('/', authenticateToken, controller.main);
 router.get('/chat', controller.chat);
 
 router.get('/ppdb', controller.ppdb);
+
 
 module.exports = router;

@@ -6,25 +6,37 @@ const roomList = [];
 exports.connection = (io, socket) => {
   try {
     console.log("접속");
-    //채팅방 목록 보내기
-    // socket.emit("roomList", roomList);
+    socket.on("jwt", ({ token }, cb) => {
+      console.log(`클라이언트로부터 JWT 토큰을 수신: ${token}`);
+      //jwt토큰 확인
+      const SECRET = "mySecret"; //토큰키
+      const token = socket.handshake.query.token;
+
+      // const decoded = jwt.verify(token, config.TOKEN_KEY);
+      const decoded = jwt.verify(token, SECRET);
+      socket.decoded = decoded;
+      console.log("decoded", decoded);
+
+      console.log("result", result);
+      let userId;
+      const resultValue = User.findOne({
+        where: { id: userId },
+      }); //회원이 있는지 검증
+
+      console.log("resultValue", resultValue);
+      cb();
+    });
 
     //채팅방 만들기 생성
-    socket.on("create", async (roomName, userName, cb) => {
+    socket.on("create", (roomName, userName, cb) => {
       //join(방이름) 해당 방이름으로 없다면 생성. 존재하면 입장
       //socket.rooms에 socket.id값과 방이름 확인가능
       socket.join(roomName);
       //socket은 객체이며 원하는 값을 할당할 수 있음
       socket.room = roomName;
       socket.user = userName;
-      //jwt토큰 확인
-      const token = req.headers.authorization.split(" ")[1];
-      //토큰 인증
-      const userId = vt.verifyToken(token);
-      const resultValue = User.findOne({
-        where: { id: userId },
-      }); //회원이 있는지 검증
-      console.log(result);
+      //온라인 유저 확인
+      const onlineUsers = { roomId: roomName, socketId: socket.id };
 
       socket.to(roomName).emit("notice", `${socket.id}님이 입장하셨습니다`);
 

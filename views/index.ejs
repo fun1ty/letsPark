@@ -173,7 +173,9 @@
         const lat = coords.latitude; // 위도
         const lng = coords.longitude; // 경도
 
+
         var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+
           mapOption = {
             center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
             level: 3, // 지도의 확대 레벨
@@ -206,8 +208,10 @@
                 '<div class="customoverlay">' +
                 `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="publicParkingDetail(${publicParking.id})">` +
                 `    <span class="localname">${publicParking.currentparking} / ${publicParking.capacity}</span>` +
+
                 '  </div>' +
                 '</div>',
+
               latlng: new kakao.maps.LatLng(
                 publicParking.lat,
                 publicParking.lng
@@ -231,8 +235,10 @@
                 '<div class="customoverlay" style="background-color: lightgreen">' +
                 `  <div  style="text-decoration: none;  color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="shareParkingDetail(${shareParking.id})">` +
                 `    <span class="localname">${shareParking.price}</span>` +
+
                 '  </div>' +
                 '</div>',
+
               latlng: new kakao.maps.LatLng(shareParking.lat, shareParking.lng),
             });
           }
@@ -251,7 +257,7 @@
       var ps = new kakao.maps.services.Places();
       // 키워드로 장소를 검색합니다
       function searchPlaces() {
-        const val = document.getElementById('search-input').value;
+        const val = document.getElementById("search-input").value;
 
         ps.keywordSearch(val, placesSearchCB);
       }
@@ -315,12 +321,14 @@
         // 메뉴 상태를 업데이트합니다.
         isMenuVisible = !isMenuVisible;
       }
+
       function publicParkingDetail(id) {
         console.log('parkingDetail', id);
+
         location.href = `/publicparking/detail?id=${id}`;
       }
       function shareParkingDetail(id) {
-        console.log('parkingDetail', id);
+        console.log("parkingDetail", id);
         location.href = `/shareparking/detail?id=${id}`;
       }
       // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
@@ -336,7 +344,8 @@
 
       // 회원 정보 수정 이동
       function profileEdit() {
-        location.href = '/mypage';
+        location.href = "/mypage/:userid/edit";
+
       }
 
       // 예약내역조회 이동
@@ -344,71 +353,64 @@
         location.href = '/user/reservation';
       }
 
-      //공유주차장등록 이동
-      function parkingAdd() {}
 
       // 서버로부터 사용자 정보를 가져오는 함수
-      async function fetchUserInfo() {
-        const token = localStorage.getItem('token');
-        console.log('클라이언트', token);
+      //async function fetchUserInfo() {
+        //const token = localStorage.getItem('token');
+        //console.log('클라이언트', token);
 
-        if (!token) {
-          console.log('토큰이 없습니다.');
-          return;
-        }
+        //if (!token) {
 
-        try {
-          const response = await axios.get('/', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
 
-          if (response.data && response.data.userid) {
-            const userInfo = response.data;
-            console.log('사용자 정보:', userInfo);
+          //console.log('토큰이 없습니다.');
+          //return;
+        //}
 
-            const decodedToken = jwt.verify(token, 'SECRET');
-            console.log('디코딩된 토큰:', decodedToken);
+        //try {
+         // const response = await axios.get('/', {
+            //headers: {
+              //Authorization: `Bearer ${token}`,
+           // },
+         // });
 
-            const userIdDisplay = document.getElementById('userIdDisplay');
-            userIdDisplay.value = userInfo.userid;
-          } else {
-            console.log('토큰이 유효하지 않습니다.');
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
+          //if (response.data && response.data.userid) {
+          //  const userInfo = response.data;
+           // console.log('사용자 정보:', userInfo);
+
+           // const decodedToken = jwt.verify(token, 'SECRET');
+           // console.log('디코딩된 토큰:', decodedToken);
+
+          //  const userIdDisplay = document.getElementById('userIdDisplay');
+          //  userIdDisplay.value = userInfo.userid;
+         // } else {
+          //  console.log('토큰이 유효하지 않습니다.');
+         // }
+       // } catch (error) {
+       //   console.log(error);
+       // }
+     // }
 
       //로그아웃
       function logout() {
         localStorage.removeItem('token');
       }
 
-      //채팅방 이동
-      function chatBtn() {
-        console.log('front 채팅방클릭');
-        location.href = '/chat';
-        function parkingAdd() {
-          location.href = '/mypage/parking/add';
+         //공유주차장등록 이동
+      function parkingAdd() {
+        location.href = "/mypage/parking/add";
+      }
+        
+        //채팅방 이동
+      async function chatBtn() {
+        console.log("front 채팅방클릭");
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("로그인 해주세요");
+        } else {
+          console.log("chat이동");
+          location.href = "/chat";
         }
 
-        //채팅방 이동
-        async function chatBtn() {
-          console.log('front 채팅방클릭');
-          const token = localStorage.getItem('token');
-          if (!token) {
-            alert('로그인 해주세요');
-          } else {
-            const res = await axios({
-              method: 'POST',
-              url: '/chat',
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-          }
         }
       }
     </script>
