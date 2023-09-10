@@ -61,17 +61,17 @@ db.PublicParking.hasOne(db.OperationTime, {
   foreignKey: "publicparking_id",
   sourceKey: "id",
 });
-db.PublicParking.hasOne(db.Price, {
-  foreignKey: "publicparking_id",
-  sourceKey: "id",
-});
 db.OperationTime.belongsTo(db.PublicParking, {
+  foreignKey: "publicparking_id",
+  targetKey : "id",
+});
+db.PublicParking.hasOne(db.Price, {
   foreignKey: "publicparking_id",
   sourceKey: "id",
 });
 db.Price.belongsTo(db.PublicParking, {
   foreignKey: "publicparking_id",
-  sourceKey: "id",
+  targetKey: "id",
 });
 db.User.hasMany(db.ParkingReview, { foreignKey: "user_id", sourceKey: "id" });
 db.ParkingReview.belongsTo(db.User, { foreignKey: "user_id", sourceKey: "id" });

@@ -193,13 +193,40 @@
         console.log(result);
         getUserLocation();
         setTimeout(()=> {
+          let set = new Set();
+          // 클리닝 리스트 오버레이 설정
+          var cleaningPositions = [];
+          for(let cleaning of result.data.cleaningList) {
+            set.add(cleaning.shareparking_id);
+            cleaningPositions.push(
+                    {
+                      content :
+                              '<div class="customoverlay shareparking" style="position: relative; background-color: white; border-radius: 20px; border: 2px solid lightgreen; width: 100px; height: 26px">' +
+                              `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="">` +
+                              `    <span class="localname" style="color: black;">청소요청</span>` +
+                              "  </div>" +
+                              "</div>",
+                      latlng : new kakao.maps.LatLng(cleaning.shareparking.lat, cleaning.shareparking.lng),
+                    }
+            )
+          }
+
+          for(let i=0 ; i<cleaningPositions.length ; i++) {
+            var customOverlay = new kakao.maps.CustomOverlay({
+              position : cleaningPositions[i].latlng,
+              content : cleaningPositions[i].content,
+            });
+
+            customOverlay.setMap(map);
+          }
+
           //노상주차장 리스트 오버레이 설정
           var publicParkingPositions = [];
           for(let publicParking of result.data.publicParkingList) {
             publicParkingPositions.push(
                     {
                       content :
-                              '<div class="customoverlay">' +
+                              '<div class="customoverlay publicparking" style="position: relative; background-color: #8783f5; border-radius: 20px; width: 100px; height: 26px">' +
                               `  <div  style="text-decoration: none; color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="publicParkingDetail(${publicParking.id})">` +
                               `    <span class="localname">${publicParking.currentparking} / ${publicParking.capacity}</span>` +
                               "  </div>" +
@@ -219,11 +246,12 @@
 
           var shareParkingPositions = [];
           for(let shareParking of result.data.shareParkingList) {
-            console.log(shareParking.price);
+            if(set.has(shareParking.id))
+              continue;
             shareParkingPositions.push(
                     {
                       content :
-                              '<div class="customoverlay" style="background-color: lightgreen">' +
+                              '<div class="customoverlay shareparking" style="position: relative; background-color: lightgreen; border-radius: 20px; width: 100px; height: 26px;">' +
                               `  <div  style="text-decoration: none;  color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="shareParkingDetail(${shareParking.id})">` +
                               `    <span class="localname">${shareParking.price}</span>` +
                               "  </div>" +
@@ -272,32 +300,7 @@
     </script>
 
     <script>
-      // 클리닝 리스트 오버레이 설정
-      // var cleaningPositions = [];
-      // for(let cleaning of result.data.cleaningList) {
-      //   console.log(cleaning.lat);
-      //   console.log(cleaning.lng);
-      //   cleaningPositions.push(
-      //           {
-      //             content :
-      //                     '<div class="customoverlay">' +
-      //                     `  <div  style="text-decoration: none; color: mediumspringgreen; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="cleaningDetail(${cleaning.id})">` +
-      //                     `    <span class="localname">클리닝 요청</span>` +
-      //                     "  </div>" +
-      //                     "</div>",
-      //             latlng : new kakao.maps.LatLng(cleaning.lat, cleaning.lng),
-      //           }
-      //   )
-      // }
-      //
-      // for(let i=0 ; i<cleaningPositions.length ; i++) {
-      //   var customOverlay = new kakao.maps.CustomOverlay({
-      //     position : cleaningPositions[i].latlng,
-      //     content : cleaningPositions[i].content,
-      //   });
-      //
-      //   customOverlay.setMap(map);
-      // }
+
 
     </script>
     <script>
