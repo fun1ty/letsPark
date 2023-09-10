@@ -1,0 +1,315 @@
+/* 헤더 */
+/* 헤더 스타일링 */
+.header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+}
+
+.headbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    background-color: #8783f5;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 1px 1px 1px 1px rgb(199, 199, 199);
+}
+
+/* 검색창 스타일링 */
+#search-bar {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.search-container {
+    position: relative;
+    display: inline-block;
+}
+
+#search-input {
+    padding: 10px 60px;
+    width: 300px;
+    border: none;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 1px 1px 1px 1px rgba(210, 210, 210, 0.272);
+}
+
+#search-input::placeholder {
+    text-align: center;
+}
+
+#search-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 25px;
+    background-image: url("https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Search.svg");
+    background-color: white;
+    background-size: cover;
+    border: none;
+    cursor: pointer;
+}
+
+.filter-icon {
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 25px;
+}
+
+.logo {
+    width: 140px;
+    height: auto;
+}
+/* 메뉴 아이콘 스타일링 */
+.menu-icons {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    position: absolute;
+    right: 40px;
+}
+
+.menu-icon {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.headermenu {
+    display: flex;
+    align-items: center;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: right 0.3s ease;
+    z-index: 1000;
+    text-align: center;
+}
+
+#menu-button {
+    border: none;
+    background-color: #8783f5;
+}
+#close-button {
+    border: none;
+    background-color: white;
+    float: right;
+    margin-top: 6px;
+}
+
+.mypageEdit {
+    width: 225px;
+    height: 60px;
+    margin: 20px;
+    background-color: #ebf0fe;
+    border: none;
+    border-radius: 10px;
+}
+
+.userNick,
+.userEmail {
+    text-align: left;
+    color: #333;
+}
+
+.menu ul li {
+    margin: 10px 0;
+}
+
+.reservationButton {
+    width: 225px;
+    height: 30px;
+    color: #8783f5;
+    border-radius: 4px;
+    border: 1px solid #8783f5;
+    background-color: white;
+}
+
+.noticeBox {
+    width: auto;
+    height: 120px;
+    background-color: #f8f8f8;
+}
+
+.menuContainer {
+    margin: 20px;
+    padding: 20px;
+    text-align: left;
+    color: #333;
+}
+
+.chevronRight {
+    float: right;
+}
+
+.mypageEdit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+}
+
+.mypageEdit div:first-child {
+    margin-right: 10px;
+}
+
+.payButton {
+    margin-top: 14px;
+    text-align: left;
+    margin-left: 40px;
+    color: #333;
+}
+
+.service {
+    margin-right: 60px;
+    color: #333;
+}
+
+.logoutService {
+    color: #333;
+}
+
+.logoutBox {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 10px;
+}
+
+.test {
+    margin: 20px;
+}
+
+.taCenter {
+    text-align: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.stars-outer {
+    position: relative;
+    display: inline-block;
+}
+.stars-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0; /* 별점 비율을 이 부분에서 설정하세요 */
+}
+.star {
+    height: 24px;  /* 10% 더 큰 크기 */
+    width: 24px;   /* 10% 더 큰 크기 */
+    /*margin-right: 2px;*/
+}
+
+#modalOpenButton, #modalCloseButton {
+    cursor: pointer;
+}
+
+.modalBtn{
+    width: 40%;
+    height: 30px;
+    background-color: #8783f5;;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bolder;
+    font-size : 15px;
+    padding-top: 10px;
+}
+#modalContainer {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#modalContent {
+    position: absolute;
+    background-color: #ffffff;
+    width: 400px;
+    height: 600px;
+    padding: 15px;
+}
+
+#modalContainer.hidden {
+    display: none;
+}
+
+.rating {
+    position: relative;
+    width: 180px;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .3em;
+    padding: 5px;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 0 2px #b3acac;
+}
+
+.rating__result {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(-10px) translateX(-5px);
+    z-index: -9;
+    font: 3em Arial, Helvetica, sans-serif;
+    color: #ebebeb8e;
+    pointer-events: none;
+}
+
+.rating__star {
+    font-size: 1.3em;
+    cursor: pointer;
+    color: #dabd18b2;
+    transition: filter linear .3s;
+}
+
+.rating__star:hover {
+    filter: drop-shadow(1px 1px 4px gold);
+}
+
+.textContent{
+    border: none;
+    background-color: #ebf0fe;;
+}
+.textContent:focus {
+    outline: none;
+}
+
+hr {
+    background-color: #8783f5;
+}

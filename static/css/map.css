@@ -190,15 +190,15 @@
 }
 
 /* //////////////////////// */
-.customoverlay {
-  position: relative;
-  background: #8783f5;
-  border-radius: 20px;
-  width: 100px;
-  height: 26px;
-}
+/*.customoverlay {*/
+/*  position: relative;*/
+/*  background: #8783f5;*/
+/*  border-radius: 20px;*/
+/*  width: 100px;*/
+/*  height: 26px;*/
+/*}*/
 
-.customoverlay:after {
+.publicparking:after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -207,6 +207,19 @@
   height: 0;
   border: 8px solid transparent;
   border-top-color: #8783f5;
+  border-bottom: 0;
+  margin-left: -8px;
+  margin-bottom: -8px;
+}
+.shareparking:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-top-color: lightgreen;
   border-bottom: 0;
   margin-left: -8px;
   margin-bottom: -8px;
