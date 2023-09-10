@@ -1,13 +1,18 @@
 const jwt = require('jsonwebtoken');
-const SECRETKEY = process.env.SECRETKEY;
-const token = 'token';
+const env = process.env;
+require('dotenv').config();
+const SECRETKEY = env.SECRETKEY;
 
 exports.verifyToken = (token) => {
+  console.log('토큰검증 실행');
   let userId;
-  jwt.verify(token, SECRETKEY, (err, decoded) => {
-    if (err) return false;
-    userId = decoded.id;
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, SECRETKEY, (err, decoded) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(decoded.id);
+      }
+    });
   });
-
-  return userId;
 };

@@ -9,11 +9,17 @@ exports.detail = async (req, res) => {
   let publicParkingDetailResult;
   try {
     const result = await models.PublicParking.findOne({
+      where: { id : id },
       include: [
-        {model: models.OperationTime},
-        {model: models.Price},
-      ],
-      where: {id},
+        {
+          model: models.OperationTime,
+          attributes : ['weekday_begin', 'weekday_end', 'weekend_begin', 'weekend_end', 'holiday_begin', 'holiday_end'],
+        },
+        {
+          model : models.Price,
+          attributes: ['rates', 'timerate', 'addrates', 'addtimerate', 'daymax'],
+        },
+          ]
     });
     publicParkingDetailResult = rto.resultToObject((result));
   } catch (error) {
@@ -38,8 +44,8 @@ exports.detail = async (req, res) => {
       average = average / len;
       average = Math.round(average * 100) / 100;
     }
-
-    res.render('test', { publicParkingDetailResult, result, average })
+    console.log(publicParkingDetailResult.operationtime.weekend_begin);
+    res.render('publicParkingDetail', { publicParkingDetailResult, result, average })
   } catch (err) {
     console.log(err);
   };
