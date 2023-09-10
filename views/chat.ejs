@@ -24,8 +24,8 @@
 
     <script>
       const socket = io();
-      const userid = "dfdf";
-      const usernick = "영치코";
+      let userid;
+      let usernick;
       console.log(socket);
       const token = localStorage.getItem("token");
       const chatForm = document.querySelector("#chat");
@@ -64,16 +64,14 @@
 
       //jwt토큰검증
       socket.emit("jwt", { token }, () => {
-        console.log("JWT 토큰을 서버로 전송했습니다.");
+        console.log("JWT 토큰 서버로 전송");
       });
+      socket.on("jwt", (message, bool) => {});
 
       //채팅방 생성
       socket.emit("create", userid, usernick, () => {});
-      socket.on("create", (message, bool) => {
-        if (bool === false) {
-          alert(message);
-          socket.leave(socket.room);
-        }
+      socket.on("create", (resultValue) => {
+        console.log(resultValue);
       });
 
       //메세지 보내기

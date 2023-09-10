@@ -3,56 +3,48 @@ const jwt = require("jsonwebtoken");
 const vt = require("../utils/JwtVerifyToken");
 const roomList = [];
 
+let id;
 exports.connection = (io, socket) => {
-  try {
-    console.log("접속");
-    socket.on("jwt", ({ token }, cb) => {
-      console.log(`클라이언트로부터 JWT 토큰을 수신: ${token}`);
-      //jwt토큰 확인
-      const SECRET = "mySecret"; //토큰키
-      const token = socket.handshake.query.token;
+  console.log("접속");
 
-      // const decoded = jwt.verify(token, config.TOKEN_KEY);
-      const decoded = jwt.verify(token, SECRET);
-      socket.decoded = decoded;
-      console.log("decoded", decoded);
+  socket.on("jwt", async ({ token }, cb) => {
+    console.log(`클라이언트로부터 JWT 토큰을 수신: ${token}`);
+    //jwt토큰 확인
+    const userId = await vt.verifyToken(token);
+    console.log("userId: ", userId);
+    const resultValue = await models.User.findOne({
+      where: { id: userId },
+    }); //회원이 있는지 검증
 
-      console.log("result", result);
-      let userId;
-      const resultValue = User.findOne({
-        where: { id: userId },
-      }); //회원이 있는지 검증
+    console.log("resultValue", resultValue);
 
-      console.log("resultValue", resultValue);
-      cb();
-    });
+    socket.emit("jwt", resultValue);
+    cb();
+  });
 
-    //채팅방 만들기 생성
-    socket.on("create", (roomName, userName, cb) => {
-      //join(방이름) 해당 방이름으로 없다면 생성. 존재하면 입장
-      //socket.rooms에 socket.id값과 방이름 확인가능
-      socket.join(roomName);
-      //socket은 객체이며 원하는 값을 할당할 수 있음
-      socket.room = roomName;
-      socket.user = userName;
-      //온라인 유저 확인
-      const onlineUsers = { roomId: roomName, socketId: socket.id };
+  //채팅방 만들기 생성
+  socket.on("create", (roomName, userName, cb) => {
+    //join(방이름) 해당 방이름으로 없다면 생성. 존재하면 입장
+    //socket.rooms에 socket.id값과 방이름 확인가능
+    socket.join(roomName);
+    //socket은 객체이며 원하는 값을 할당할 수 있음
+    socket.room = roomName;
+    socket.user = userName;
+    //온라인 유저 확인
+    const onlineUsers = { roomId: roomName, socketId: socket.id };
 
-      socket.to(roomName).emit("notice", `${socket.id}님이 입장하셨습니다`);
+    socket.to(roomName).emit("notice", `${socket.user}님이 입장하셨습니다`);
 
-      //채팅방 목록 갱신
-      if (!roomList.includes(roomName)) {
-        roomList.push(roomName);
-        //갱신된 목록은 전체가 봐야함
-        io.emit("roomList", roomList);
-      }
-      const usersInRoom = getUsersInRoom(roomName);
-      io.to(roomName).emit("userList", usersInRoom);
-      cb();
-    });
-  } catch (error) {
-    console.log("roomList에러: ", error);
-  }
+    //채팅방 목록 갱신
+    if (!roomList.includes(roomName)) {
+      roomList.push(roomName);
+      //갱신된 목록은 전체가 봐야함
+      io.emit("roomList", roomList);
+    }
+    const usersInRoom = getUsersInRoom(roomName);
+    io.to(roomName).emit("userList", usersInRoom);
+    cb();
+  });
 
   socket.on("sendMessage", (message) => {
     try {
