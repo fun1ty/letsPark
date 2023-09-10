@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/map.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script
       type="text/javascript"
@@ -81,7 +80,11 @@
             </ul>
           </div>
           <h5>이용안내 및 문의하기</h5>
-          <h5>로그아웃</h5>
+          <h5 onclick="logout()">로그아웃</h5>
+          <button type="button" onclick="fetchUserInfo()">사용자조회</button>
+          <br />
+          <a href="/user/login">로그인하기</a><br />
+          <a href="/user/signup">회원가입</a>
 
           <!-- 사용자 정보 조회 -->
           <!-- <form name="user-info-form">
@@ -142,8 +145,8 @@
       (async function () {
         const arr = [];
         const result = await axios({
-          method: "GET",
-          url: "/parking",
+          method: 'GET',
+          url: '/parking',
         });
         console.log(result);
         const { data } = result.data;
@@ -163,7 +166,6 @@
 
       // 변수를 추가하여 메뉴 상태를 추적합니다.
       var isMenuVisible = false;
-
 
       // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
       var content =
@@ -187,7 +189,6 @@
       // 변수를 추가하여 메뉴 상태를 추적합니다.
       var isMenuVisible = false;
 
-
       function toggleMenu() {
         var menu = document.getElementById('menu-container');
         if (!isMenuVisible) {
@@ -209,7 +210,7 @@
 
       // 회원 정보 수정 이동
       function profileEdit() {
-        location.href = '/user/edit';
+        location.href = '/mypage';
       }
 
       // 예약내역조회 이동
@@ -218,14 +219,51 @@
       }
 
       //공유주차장등록 이동
-      function parkingAdd() {
-        location.href = '/mypage/parking/add';
+      function parkingAdd() {}
+
+      // 서버로부터 사용자 정보를 가져오는 함수
+      async function fetchUserInfo() {
+        const token = localStorage.getItem('token');
+        console.log('클라이언트', token);
+
+        if (!token) {
+          console.log('토큰이 없습니다.');
+          return;
+        }
+
+        try {
+          const response = await axios.get('/', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.data && response.data.userid) {
+            const userInfo = response.data;
+            console.log('사용자 정보:', userInfo);
+
+            const decodedToken = jwt.verify(token, 'SECRET');
+            console.log('디코딩된 토큰:', decodedToken);
+
+            const userIdDisplay = document.getElementById('userIdDisplay');
+            userIdDisplay.value = userInfo.userid;
+          } else {
+            console.log('토큰이 유효하지 않습니다.');
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      //로그아웃
+      function logout() {
+        localStorage.removeItem('token');
       }
 
       //채팅방 이동
       function chatBtn() {
-        console.log("front 채팅방클릭");
-        location.href = "/chat";
+        console.log('front 채팅방클릭');
+        location.href = '/chat';
       }
     </script>
   </body>

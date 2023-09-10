@@ -1,13 +1,12 @@
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const SECRET = 'SECRET';
 //쿠키 설정
 const cookieConfig = {
   httpOnly: true,
   maxAge: 24 * 60 * 60 * 1000, //24시간으로 설정
 };
-const SECRET = 'mySecret'; //토큰키
 
 //GET
 exports.signup = (req, res) => {
@@ -103,13 +102,9 @@ exports.editProfile = (req, res) => {
         if (!user) {
           res.json({ result: false, message: '사용자가 존재하지 않습니다.' });
         } else {
+          const maskedPassword = '*'.repeat(password.length);
           User.update(
-            {
-              password: bcryptPassword(password),
-              name,
-              nickname,
-              phone,
-            },
+            { password: maskedPassword, name, nickname, phone },
             { where: { userid: result.userid } }
           )
             .then(() => {
