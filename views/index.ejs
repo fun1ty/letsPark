@@ -186,13 +186,16 @@
         map = new kakao.maps.Map(mapContainer, mapOption);
         console.log(map);
       }
+      function error(err) {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+      }
       function getUserLocation() {
         if (!navigator.geolocation) {
           console.log('----------------------[');
           throw "위치 정보가 지원되지 않습니다.";
         }
         console.log('getUserLoation');
-        navigator.geolocation.getCurrentPosition(success);
+        navigator.geolocation.getCurrentPosition(success, error);
       }
 
       (async function () {
