@@ -2,7 +2,9 @@ const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const SECRET = 'SECRET';
+require("dotenv").config();
+const env = process.env;
+const SECRETKEY = env.SECRETKEY;
 //쿠키 설정
 const cookieConfig = {
   httpOnly: true,
@@ -79,7 +81,7 @@ exports.postLogin = async (req, res) => {
             nickname: user.nickname,
             name: user.name,
           },
-          SECRET
+            SECRETKEY
         );
         res.json({ result: true, token, data: user });
       } else {

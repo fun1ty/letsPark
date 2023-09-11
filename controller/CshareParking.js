@@ -21,18 +21,9 @@ exports.detail = async (req, res) => {
 
 //공유주차장 등록 페이지 이동
 exports.shareParking = async (req, res) => {
-    //토큰 인증 추가해야함
-    const id = req.query.id;
-    try {
-        const result = await models.User.findOne({
-            attributes : ['phone'],
-           where : { id },
-        });
 
-        res.render('enrollShareParking', { data : rto.resultToObject(result), javascriptkey : env.JAVASCRIPTKEY });
-    } catch (error) {
-        console.log(error);
-    }
+    res.render('enrollShareParking', { javascriptkey : env.JAVASCRIPTKEY });
+
 }
 
 exports.test = async (req, res) => {
@@ -40,24 +31,9 @@ exports.test = async (req, res) => {
 }
 //공유주차장 등록
 exports.enrollShareParking = async (req, res) => {
-    // const token = req.headers.authorization.split(' ')[1];
-    //
-    //jwt 토큰값 검증, 검증완료 시 userId 저장
-    // const userId = vt.verifyToken(token);
-    // if(userId === false) {
-    //
-    // }
+    const token = req.headers.authorization;
 
-    // let id;
-    // try {
-    //     const result = await models.User.findOne({
-    //         attributes : ['id'],
-    //         where : { userid : userId },
-    //     });
-    //     id = result.id;
-    // } catch (err) {
-    //     console.log(err);
-    // }
+    const id = await vt.verifyToken(token);
 
     const location = req.file.location;
     const {shareparkname, address, price, lat, lng} = req.body;
@@ -69,7 +45,7 @@ exports.enrollShareParking = async (req, res) => {
         });
 
         console.log(result);
-        res.send({ result });
+        res.send({ result : true });
     } catch (err) {
         console.log(err);
     }

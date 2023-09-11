@@ -315,7 +315,7 @@
             </div>
         </div>
         <div style="display: flex; justify-content: center">
-            <textarea rows="20" cols="40" class="textContent"></textarea>
+            <textarea rows="20" cols="40" class="textContent" id="comment"></textarea>
         </div>
         <div style="display: flex; justify-content: space-evenly; padding-top: 20px;">
             <div class="modalBtn" id="modalCloseButton">취소하기</div>
@@ -379,15 +379,15 @@
                 comment : document.getElementById('comment').value,
             },
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                Authorization: `${localStorage.getItem('token')}`,
             },
         })
         console.log(result);
-        // if(result) {
-        //
-        // } else {
-        //
-        // }
+
+        if(result) {
+            alert('리뷰가 정상적으로 작성되었습니다.');
+            document.location.href = `/publicparking/detail?id=${id}`;
+        }
     }
     // 변수를 추가하여 메뉴 상태를 추적합니다.
     var isMenuVisible = false;
