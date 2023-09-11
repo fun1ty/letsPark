@@ -9,11 +9,16 @@ const env = process.env;
 exports.detail = async (req, res) => {
     const id = req.query.id;
     try {
-        const result = await models.ShareParking.findOne({
+        const result1 = await models.ShareParking.findOne({
             where : { id },
         });
 
-        res.render('shareParkingDetail', { result });
+        const result2 = await models.User.findOne({
+            where : { 'id' : result1.user_id },
+            attributes : ['nickname'],
+        });
+
+        res.render('shareParkingDetail', { result1, 'nickname' : result2.nickname });
     } catch (error) {
         console.log(error);
     }
