@@ -168,43 +168,25 @@
 
     <div id="search-results"></div>
     <script>
+
       var map;
-      function success({ coords, timestamp }) {
-        const lat = coords.latitude; // 위도
-        const lng = coords.longitude; // 경도
 
-        console.log('lat : ',lat);
-        console.log('lng : ',lng);
+      var mapContainer = document.getElementById("map"), // 지도를 표시할 div
+              mapOption = {
+                center: new kakao.maps.LatLng(37.54764046237589, 126.94578430114157), // 지도의 중심좌표
+                level: 3, // 지도의 확대 레벨
+              };
 
-        var mapContainer = document.getElementById("map"), // 지도를 표시할 div
-          mapOption = {
-            center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
-            level: 3, // 지도의 확대 레벨
-          };
-
-        // 지도를 생성합니다
-        map = new kakao.maps.Map(mapContainer, mapOption);
-        console.log(map);
-      }
-      function error(err) {
-        console.log(`ERROR(${err.code}): ${err.message}`);
-      }
-      function getUserLocation() {
-        if (!navigator.geolocation) {
-          console.log('----------------------[');
-          throw "위치 정보가 지원되지 않습니다.";
-        }
-        console.log('getUserLoation');
-        navigator.geolocation.getCurrentPosition(success, error);
-      }
-
+      // 지도를 생성합니다
+      map = new kakao.maps.Map(mapContainer, mapOption);
+      // 장소 검색 객체를 생성합니다
+      var ps = new kakao.maps.services.Places();
       (async function () {
         const result = await axios({
           method: "POST",
           url: "/",
         });
         console.log(result);
-        getUserLocation();
 
         setTimeout(()=> {
           let set = new Set();
@@ -288,8 +270,7 @@
         }, 4000);
       })();
 
-      // 장소 검색 객체를 생성합니다
-      var ps = new kakao.maps.services.Places();
+
       // 키워드로 장소를 검색합니다
       function searchPlaces() {
         const val = document.getElementById("search-input").value;
