@@ -23,7 +23,6 @@ exports.detail = async (req, res) => {
 exports.shareParking = async (req, res) => {
 
     res.render('enrollShareParking', { javascriptkey : env.JAVASCRIPTKEY });
-
 }
 
 exports.test = async (req, res) => {
@@ -34,6 +33,16 @@ exports.enrollShareParking = async (req, res) => {
     const token = req.headers.authorization;
 
     const id = await vt.verifyToken(token);
+    try {
+        const result = await models.User.findOne({
+            where : { id },
+        });
+        if(result === null) {
+            res.send({ result : false });
+        }
+    } catch (err) {
+        console.log(err);
+    };
 
     const location = req.file.location;
     const {shareparkname, address, price, lat, lng} = req.body;
@@ -41,7 +50,7 @@ exports.enrollShareParking = async (req, res) => {
     try {
         const result = await models.ShareParking.create({
             shareparkname, address, price, lat, lng, location,
-            userid : 1, status : 'Y',
+            user_id : id , status : 'Y',
         });
 
         console.log(result);
