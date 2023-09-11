@@ -56,6 +56,9 @@ app.use("/publicparking", publicParkingRouter);
 const shareParkingRouter = require("./routes/shareParking");
 app.use("/shareparking", shareParkingRouter);
 
+const parkingPayRouter = require("./routes/parkingPay");
+app.use("/parkingpay", parkingPayRouter);
+
 //404
 app.get("*", (req, res) => {
   res.render("404");
