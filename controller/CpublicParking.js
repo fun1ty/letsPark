@@ -77,23 +77,19 @@ exports.reviews = async (req, res) => {
 
 //노상주차장 리뷰 작성
 exports.writeReview = async (req, res) => {
-  //추후 객체구조분해할당으로 변경해야함
+
   const {publicParkingId, score, comment} = req.body;
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization;
 
-  const userId = vt.verifyToken(token);
-  if(userId === false) {
+  const id = await vt.verifyToken(token);
 
-  }
-  //닉네임, id 가져오기
-  let nickname, id;
+  let nickname;
   try {
     const result = await models.User.findOne({
-      attributes : ['nickname', 'id'],
-      where : { userid : userid },
+      attributes : ['nickname'],
+      where : { id },
     });
     nickname = result.nickname;
-    id = result.id;
   } catch(error) {
     console.log(error);
   }
@@ -107,7 +103,7 @@ exports.writeReview = async (req, res) => {
       comment,
       user_id : id,
     });
-    res.send({result});
+    res.send({result : true});
   } catch (error) {
     console.log(error);
   }

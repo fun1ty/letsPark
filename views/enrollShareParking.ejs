@@ -13,7 +13,6 @@
 </head>
 <body>
     <input type="text" id="sharePakringName" placeholder="주차장 이름">
-    <input type="text" id="phone" placeholder="<%= data.phone%>">
     <input type="text" id="address" readonly placeholder="주소" onclick="getLatLng()">
     <input type="number" id="price">
     <input type="file" id="files" /><br />
@@ -42,13 +41,25 @@
 
     async function enrollShareParking() {
         const shareParkingName = document.getElementById('sharePakringName').value;
-        const phone = document.getElementById('phone').value;
+        if(shareParkingName === '') {
+            alert('주차장 이름을 입력해주세요.');
+            return;
+        }
         const address = document.getElementById('address').value;
+        if(address === '') {
+            alert('주소를 입력해주세요.');
+            return;
+        }
         const price = document.getElementById('price').value;
+        if(price === '') {
+            alert('가격을 입력해주세요.');
+            return;
+        }
         const file = document.querySelector('#files');
-
-        //모든 input값 다 들어왔는지 검증
-
+        if(file.files[0] === undefined) {
+            alert('주차장 이미지를 첨부해주세요.');
+            return;
+        }
         const formData = new FormData();
 
         formData.append('file', file.files[0]);
@@ -65,9 +76,14 @@
                 data : formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    // Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `${localStorage.getItem('token')}`,
                 },
-            })
+            });
+
+            if(result) {
+                alert('공유주차장 등록이 완료되었습니다. ');
+                document.location.href = '/';
+            }
         } catch (err) {
             console.log(err);
         }
