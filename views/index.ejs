@@ -188,6 +188,7 @@
       }
       function getUserLocation() {
         if (!navigator.geolocation) {
+          console.log('----------------------[');
           throw "위치 정보가 지원되지 않습니다.";
         }
         navigator.geolocation.getCurrentPosition(success);
