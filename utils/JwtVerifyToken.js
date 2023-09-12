@@ -11,7 +11,6 @@ exports.verifyToken = (token) => {
     jwt.verify(token, SECRETKEY, (err, decoded) => {
       if (err) {
         reject(err);
-        console.log("verifyToken", err);
       } else {
         resolve(decoded.id);
       }
