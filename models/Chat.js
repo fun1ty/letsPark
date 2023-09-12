@@ -17,16 +17,12 @@ const Model = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    CONTENT: {
+    content: {
       type: DataTypes.STRING(500),
       allowNull: true,
     },
     FILE: {
       type: DataTypes.STRING(500),
-      allowNull: true,
-    },
-    joinuser: {
-      type: DataTypes.INTEGER,
       allowNull: true,
     },
   });

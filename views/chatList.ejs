@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>채팅내역</title>
+  </head>
+  <body>
+    <h1>채팅</h1>
+    <hr />
+    <% for (let i = 0; i < chatListDB.length; i++) { %>
+    <button
+      id="<%= chatListDB[i].roomid %>"
+      onclick="chatBtn(`<%= chatListDB[i].roomid %>`)"
+    >
+      <div><%= chatListDB[i].joinusernick %></div>
+      <div><%= chatListDB[i].chatroom.chats.content %></div>
+    </button>
+    <% } %>
+
+    <script>
+      //채팅방 이동
+      async function chatBtn(roomid) {
+        console.log("chat이동");
+        location.href = `/chat`;
+      }
+    </script>
+  </body>
+</html>
