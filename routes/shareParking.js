@@ -24,4 +24,7 @@ router.post('/pay', shareParkingController.pay);
 //공유주차장 등록 테스트용
 router.get('/test', shareParkingController.test);
 
+//공유주차장 리뷰 등록
+router.post('/detail/reviews', shareParkingController.reviews);
+
 module.exports = router;
