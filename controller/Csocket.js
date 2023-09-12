@@ -7,9 +7,10 @@ const number = parseInt(randomBytes.toString("hex"), 16);
 // const roomList = [];
 const user = [];
 let roomName;
-// let roomFind;
+let roomFind;
 let msg;
 let roomDBInsert;
+let profile;
 
 console.log(user);
 const generateRandomString = (num) => {
@@ -34,9 +35,11 @@ exports.connection = (io, socket) => {
       const resultValue = await models.User.findOne({
         where: { id: userId },
       }); //회원이 있는지 검증
+
       userId = console.log("resultValue", resultValue);
       if (!user.includes(resultValue.id)) {
         user.push(resultValue.id);
+        profile = resultValue.profile;
         console.log("user", user[0], user[1]);
       }
       socket.emit("jwt", resultValue);
@@ -90,7 +93,15 @@ exports.connection = (io, socket) => {
       msg = message.message;
       console.log("sendMessage", message);
       await chatDBInsert(FILE, msg);
-      io.to(socket.room).emit("newMessage", message.message, message.nick);
+
+      io.to(socket.room).emit(
+        "newMessage",
+        message.message,
+        message.nick,
+        profile
+      );
+      // //자기자신한테 메세지 띄우기
+      // socket.emit("newMessage", message.message, message.nick, true);
     } catch (error) {
       console.log("newMessage에러: ", error);
     }
@@ -104,7 +115,7 @@ exports.connection = (io, socket) => {
 
   //채팅 유저DB 삽입
   function chatUserDBInsert() {
-    if (roomDBInsert) {
+    if (!roomFind.roomid) {
       models.ChatUser.create({
         roomid: roomFind.id,
         userid: user[0],
@@ -125,13 +136,26 @@ exports.connection = (io, socket) => {
         roomid: roomFind.id,
         CONTENT: msg,
         FILE: FILE,
-        joinuser: user[user.length - 1],
       }).then((result) => {
         console.log("chatDBInsert", result);
       });
     } else {
       console.log("chatDBInsert null");
     }
+  }
+
+  //채팅 히스토리
+  function chatHistory() {
+    if (roomFind) {
+      const history = models.Chat.findAll({
+        attributes: ["userid", "roomid", "CONTENT", "FILE"],
+        where: {
+          roomid: roomFind.id,
+        },
+      });
+      return history;
+    }
+    io.to(socket.room).emit("history", history);
   }
 
   function getUsersInRoom(room) {

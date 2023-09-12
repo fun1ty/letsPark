@@ -25,10 +25,6 @@ const Model = (sequelize) => {
       type: DataTypes.STRING(500),
       allowNull: true,
     },
-    joinuser: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
   });
 };
 

@@ -96,7 +96,7 @@
                 />
               </li>
 
-              <li type="button" id="chat" onclick="chatBtn()">
+              <li type="button" id="chat" onclick="chatListBtn()">
                 💬 채팅방
                 <img
                   src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
@@ -363,8 +363,12 @@
         location.href = "/shareparking";
       }
 
+      //my채팅내역
+      function chatListBtn() {
+        console.log("front 채팅방리스트 클릭");
+      }
       //채팅방 이동
-      async function chatBtn() {
+      function chatBtn() {
         console.log("front 채팅방클릭");
         const token = localStorage.getItem("token");
         if (!token) {
