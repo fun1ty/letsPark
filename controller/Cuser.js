@@ -3,13 +3,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const vt = require('../utils/JwtVerifyToken');
 require('dotenv').config();
-
+const env = process.env;
+const SECRETKEY = env.SECRETKEY;
 //쿠키 설정
 const cookieConfig = {
   httpOnly: true,
   maxAge: 24 * 60 * 60 * 1000, //24시간으로 설정
 };
-const SECRET = process.env.SECRETKEY;
+
 //GET
 exports.signup = (req, res) => {
   res.render('signup');
@@ -101,7 +102,7 @@ exports.postLogin = async (req, res) => {
             nickname: user.nickname,
             name: user.name,
           },
-          SECRET
+          SECRETKEY
         );
         res.json({ result: true, token, data: user });
       } else {
