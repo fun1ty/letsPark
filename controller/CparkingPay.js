@@ -1,47 +1,82 @@
 const db = require("../models");
+const vt = require("../utils/JwtVerifyToken");
+
 const Price = db.Price;
 const ParkingPay = db.ParkingPay;
+const ShareParking = db.ShareParking;
+const User = db.User;
 
 const CparkingPay = {
   calculateParkingFee: async (req, res) => {
     try {
-      console.log("요청:", req);
-      console.log("요청 바디:", req.body);
+      // 요청 데이터 추출
+      const { price, shareparkname, minutes } = req.body;
 
-      // 주차 시작 시간과 종료 시간을 요청에서 받아옴
-      const { startTime, endTime } = req.body;
+      // 헤더에서 토큰 추출 및 검증
+      const token = req.headers.authorization.split(" ")[1];
+      const userId = await vt.verifyToken(token);
 
-      // 가격 정보 가져오기 (Price 모델을 사용)
-      const priceInfo = await Price.findOne();
+      // 주차장 정보 조회
+      const priceInfo = await Price.findOne({
+        where: { shareparkname: shareparkname },
+      });
 
-      // 주차 시간(분) 계산
-      const parkingMinutes =
-        (new Date(endTime) - new Date(startTime)) / (1000 * 60);
-
-      // 주차 요금 계산 (30분 단위)
-      let totalFee =
-        priceInfo.rates * Math.ceil(parkingMinutes / priceInfo.timerate);
-
-      // 월 정기권 및 일 최대 요금 확인
-      if (totalFee > priceInfo.daymax) {
-        totalFee = priceInfo.daymax;
-      } else if (totalFee > priceInfo.monthfulltime) {
-        totalFee = priceInfo.monthfulltime;
+      if (!priceInfo) {
+        return res.status(404).json({
+          status: "failure",
+          error: "주차장 정보를 찾을 수 없습니다.",
+        });
       }
+
+      // 주차장 ID 조회
+      const parkingId = await ShareParking.findOne({
+        where: { shareparkname: shareparkname },
+      });
+
+      if (!parkingId) {
+        return res.status(404).json({
+          status: "failure",
+          error: "주차장 정보를 찾을 수 없습니다.",
+        });
+      }
+
+      // 사용자 정보 조회
+      const user = await User.findByPk(userId);
+
+      if (!user) {
+        return res.status(404).json({
+          status: "failure",
+          error: "사용자 정보를 찾을 수 없습니다.",
+        });
+      }
+
+      // 주차 요금 계산
+      const baseAmount = price * minutes;
+      const remainder = minutes % priceInfo.timerate;
+      const additionalAmount =
+        remainder > 0 ? price * (priceInfo.timerate - remainder) : 0;
+      const totalFee = baseAmount + additionalAmount;
 
       // 주차 내역 저장
       await ParkingPay.create({
-        rates: totalFee,
-        timerate: parkingMinutes,
+        payamount: totalFee,
+        status: "success",
+        userId: userId,
+        publicParkingId: parkingId.id,
       });
 
-      res.json({ success: true, totalFee });
+      res.json({ status: "success", totalFee });
     } catch (error) {
       console.error("주차 요금 계산 및 저장 오류:", error);
-      res
-        .status(500)
-        .json({ success: false, error: "주차 요금 계산 및 저장 중 오류 발생" });
+      res.status(500).json({
+        status: "failure",
+        error: "서버에서 주차 요금 계산 및 저장 중 오류 발생",
+        details: error.message,
+      });
     }
+  },
+  parkingPay: async (req, res) => {
+    res.render("parkingpay");
   },
 };
 
