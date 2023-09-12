@@ -49,15 +49,12 @@
     </form>
 
     <script>
-      const token = localStorage.getItem('token');
-      const userInfo = res.data.data;
-      const userid = userInfo.userid;
-
       function loadUserInfo() {
         axios
           .get(`/mypage/${userid}`)
           .then((res) => {
             if (res.data.result) {
+              const userInfo = res.data.data;
               document.querySelector('#userid').value = userInfo.userid;
               document.querySelector('#name').value = userInfo.name;
               document.querySelector('#nickname').value = userInfo.nickname;

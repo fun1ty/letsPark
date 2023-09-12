@@ -9,6 +9,7 @@
     <title>채팅</title>
   </head>
   <body>
+    <h2 id="sendUser"></h2>
     <div id="main">
       <ul id="lists"></ul>
     </div>
@@ -19,6 +20,9 @@
       <form id="chat">
         <input type="text" id="message" placeholder="메세지 입력" />
         <button>입력</button>
+      </form>
+      <form onsubmit="fileupload(event)">
+        <input type="file" id="files" multiple /><br />
       </form>
     </div>
 
@@ -31,28 +35,39 @@
       const chatForm = document.querySelector("#chat");
       const msg = document.querySelector("#msg");
       const notice = document.querySelector("#notice");
+      const sendUserh2 = document.querySelector("#sendUser");
 
-      let myName;
+      //room이름 생성
+      // const generateRandomString = (num) => {
+      //   const characters =
+      //     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+      //   let result = "";
+      //   const charactersLength = characters.length;
+      //   for (let i = 0; i < num; i++) {
+      //     result += characters.charAt(
+      //       Math.floor(Math.random() * charactersLength)
+      //     );
+      //   }
+      //   return result;
+      // };
 
       //메세지 띄우기
-      socket.on("newMessage", (message, nick, bool) => {
+      socket.on("newMessage", (message, nick) => {
         console.log(message, nick);
         const div = document.createElement("div"); //밖div
         const p = document.createElement("p"); //안쪽p
-        console.log("닉", myName);
-        if (myName === nick) {
+        console.log("닉", usernick);
+        if (usernick === nick) {
           div.classList.add("my-chat");
         } else {
           div.classList.add("other-chat");
-        }
-        if (bool) {
-          div.classList.add("secret-chat");
         }
         //채팅텍스트
         p.textContent = `${nick} : ${message}`;
         div.appendChild(p);
         msg.appendChild(div);
       });
+
       //입장 메세지 이벤트
       socket.on("notice", (message) => {
         const div = document.createElement("div");
@@ -66,12 +81,14 @@
       socket.emit("jwt", { token }, () => {
         console.log("JWT 토큰 서버로 전송");
       });
-      socket.on("jwt", (message, bool) => {});
-
-      //채팅방 생성
-      socket.emit("create", userid, usernick, () => {});
-      socket.on("create", (resultValue) => {
-        console.log(resultValue);
+      socket.on("jwt", (resultValue) => {
+        userid = resultValue.id;
+        usernick = resultValue.nickname;
+        sendUserh2.innerHTML = `${usernick}`;
+        //채팅방 생성
+        socket.emit("create", userid, usernick, () => {
+          console.log("userid,usernick", userid, usernick);
+        });
       });
 
       //메세지 보내기
@@ -79,15 +96,49 @@
         e.preventDefault();
         const user = userid;
         const message = document.querySelector("#message");
-        console.log(user.value);
         const msg = {
           nick: usernick,
           userid: userid,
           message: message.value,
+          file: null,
         };
         socket.emit("sendMessage", msg);
         message.value = "";
       });
+
+      //파일전송
+      async function fileupload(e) {
+        e.preventDefault();
+        //파일에 접근
+        const file = document.querySelector("#files");
+        console.log(file.files);
+        //폼 데이터 생성
+        const formData = new FormData();
+        //파일이 여러개이므로 반복문을 사용
+        for (let i = 0; i < file.files.length; i++) {
+          formData.append("files", file.files[i]);
+        }
+
+        try {
+          const res = await axios({
+            method: "POST",
+            url: "/upload",
+            data: formData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          console.log("res");
+          res.data.forEach((elem) => {
+            const img = document.createElement("img");
+            img.src = elem.location; //aws는 location!!
+            img.style.width = "500px";
+            resultBox.appendChild(img);
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
     </script>
   </body>
 </html>

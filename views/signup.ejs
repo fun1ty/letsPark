@@ -9,21 +9,23 @@
   <body>
     <!-- 회원 가입 페이지 -->
     <h2>가입 정보 입력하기</h2>
-    <form name="register">
-      <input type="text" id="userid" placeholder="아이디" /><br />
-      <input type="password" id="password" placeholder="비밀번호" /><br />
-      <input
-        type="password"
-        id="passwordCheck"
-        placeholder="비밀번호 확인"
-        oninput="checkPassword()"
-      /><br />
-      <span id="passwordError"></span><br />
-      <input type="text" id="name" placeholder="이름" /><br />
-      <input type="text" id="nickname" placeholder="닉네임" /><br />
-      <input type="text" id="phone" placeholder="휴대폰번호" /><br />
-      <button type="button" onclick="registerFunc()">회원가입</button>
-    </form>
+    <input type="text" id="userid" placeholder="아이디" /><br />
+    <input type="password" id="password" placeholder="비밀번호" /><br />
+    <input
+      type="password"
+      id="passwordCheck"
+      placeholder="비밀번호 확인"
+      oninput="checkPassword()"
+    /><br />
+    <span id="passwordError"></span><br />
+    <input type="text" id="name" placeholder="이름" /><br />
+    <input type="text" id="nickname" placeholder="닉네임" /><br />
+    <input id="phone" placeholder="휴대폰번호" /><br />
+    프로필 사진: <input type="file" id="profile" /><br />
+    <button type="button" onclick="registerFunc()">회원가입</button>
+
+    <br />
+    <div class="result"></div>
 
     <script>
       function checkPassword() {
@@ -43,35 +45,48 @@
       }
 
       async function registerFunc() {
-        const form = document.forms['register'];
-        const password = form.password.value;
+        const password = document.getElementById('password').value;
 
-        if (
-          password.length < 8 ||
-          !/[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password)
-        ) {
-          alert(
-            '비밀번호는 8자리 이상이어야 하며, 특수 기호를 하나 이상 포함해야 합니다.'
-          );
-          return;
-        }
+        //비밀번호 숫자 제한, 특수기호 포함 알림입니다. 테스트하는 중에는 주석 처리해서 사용하시면 됩니다.
+        // if (
+        //   password.length < 8 ||
+        //   !/[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password)
+        // ) {
+        //   alert(
+        //     '비밀번호는 8자리 이상이어야 하며, 특수 기호를 하나 이상 포함해야 합니다.'
+        //   );
+        //   return;
+        // }
+
+        const profilePicInput = document.getElementById('profile');
+        const userId = document.getElementById('userid').value;
+        const pw = document.getElementById('password').value;
+        const name = document.getElementById('name').value;
+        const nickname = document.getElementById('nickname').value;
+        const phone = document.getElementById('phone').value;
+        const profile = document.querySelector('#profile');
+
+        const formData = new FormData();
+        formData.append('userid', userId);
+        formData.append('password', pw);
+        formData.append('name', name);
+        formData.append('nickname', nickname);
+        formData.append('phone', phone);
+        formData.append('profile', profile.files[0]);
 
         axios({
           method: 'POST',
           url: '/user/signup',
-          data: {
-            userid: form.userid.value,
-            password: form.password.value,
-            name: form.name.value,
-            nickname: form.nickname.value,
-            phone: form.phone.value,
+          data: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
           },
         })
           .then((res) => {
             if (res.data.result) {
               console.log('회원가입 성공');
-              const userid = form.userid.value;
-              const nickname = form.nickname.value;
+              const userid = document.getElementById('userid').value;
+              const nickname = document.getElementById('nickname').value;
               document.location.href = `/user/${userid}/${nickname}/success`;
             }
           })

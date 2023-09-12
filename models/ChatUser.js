@@ -11,6 +11,10 @@ const Model = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    joinuser: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   });
 };
 
