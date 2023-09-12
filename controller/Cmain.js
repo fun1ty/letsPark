@@ -30,6 +30,7 @@ exports.userData = async (req, res) => {
       userData = {
         userid: user.userid,
         nickname: user.nickname,
+        profile: user.profile,
       };
 
       console.log('user Data', userData);

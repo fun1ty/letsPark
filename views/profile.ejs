@@ -6,13 +6,16 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/jsonwebtoken@8.5.1"></script> -->
 
-    <title>Document</title>
+    <title>profile</title>
   </head>
   <body>
     <!-- 회원 정보 수정하기, (탈퇴하기 버튼) -->
-    <h2>회원 정보</h2>
+    <h2><%= data.nickname %>님 안녕하세요!</h2>
     <br />
     <form name="profileView">
+      <img id="profileImage" src="<%= data.profile %>" alt="프로필 이미지" />
+      <br />
+      <label for="userid">아이디</label><br />
       <input
         type="text"
         id="userid"
@@ -20,81 +23,72 @@
         placeholder="아이디"
         readonly
       /><br />
-      <input
+      <!-- <input
         type="password"
         id="password"
         value="<%= data.password %>"
         placeholder="비밀번호"
-      /><br />
+      /><br /> -->
+      <label for="name">이름</label><br />
       <input
         type="text"
         id="name"
         value="<%= data.name %>"
         placeholder="이름"
       /><br />
+      <label for="nickname">닉네임</label><br />
       <input
         type="text"
         id="nickname"
         value="<%= data.nickname %>"
         placeholder="닉네임"
       /><br />
+      <label for="phone">휴대폰 번호</label><br />
       <input
         type="text"
         id="phone"
         value="<%= data.phone %>"
         placeholder="휴대폰번호"
       /><br />
-      <button type="button" onclick="edit()">수정하기</button>
+      <button type="button" onclick="editPage()">수정하기</button>
       <button type="button" onclick="drop()">탈퇴하기</button>
     </form>
 
     <script>
-      // function loadUserInfo() {
-      //   axios
-      //     .get(`/mypage/${userid}`)
-      //     .then((res) => {
-      //       if (res.data.result) {
-      //         const userInfo = res.data.data;
-      //         document.querySelector('#userid').value = userInfo.userid;
-      //         document.querySelector('#name').value = userInfo.name;
-      //         document.querySelector('#nickname').value = userInfo.nickname;
-      //         document.querySelector('#phone').value = userInfo.phone;
-
-      //         console.log(userid);
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       console.log(error);
-      //     });
-      // }
-
-      // loadUserInfo();
+      function editPage() {
+        const userid = document.getElementById('userid').value;
+        window.location.href = `/mypage/${userid}/edit`;
+      }
 
       // 회원 수정 버튼
-      function edit() {
-        const form = document.forms['profileView'];
-        const userid = document.querySelector('#userid').value;
+      // function edit() {
+      //   if (!confirm('회원정보를 수정하시겠습니까?')) {
+      //     return;
+      //   }
+      //   const form = document.forms['profileView'];
+      //   const userid = document.querySelector('#userid').value;
 
-        axios({
-          method: 'PATCH',
-          url: `/mypage/${userid}/edit`,
-          data: {
-            userid: form.userid.value,
-            password: form.password.value,
-            name: form.name.value,
-            nickname: form.nickname.value,
-            phone: form.phone.value,
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }).then((res) => {
-          if (res.data.result) {
-            alert('수정이 완료되었습니다.');
-            window.location.href = '/';
-          }
-        });
-      }
+      //   axios({
+      //     method: 'PATCH',
+      //     url: `/mypage/${userid}/edit`,
+      //     data: {
+      //       userid: form.userid.value,
+      //       //password: form.password.value,
+      //       name: form.name.value,
+      //       nickname: form.nickname.value,
+      //       phone: form.phone.value,
+      //       //profile: form.profile.value,
+      //     },
+      //     headers: {
+      //       Authorization: `Bearer ${localStorage.getItem('token')}`,
+      //     },
+      //   }).then((res) => {
+      //     if (res.data.result) {
+      //       alert('수정이 완료되었습니다.');
+      //       window.location.href = '/';
+      //     }
+      //   });
+      // }
       // 회원 탈퇴 버튼
       function drop() {
         if (!confirm('회원 탈퇴 하시겠습니까?')) {
