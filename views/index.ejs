@@ -249,7 +249,7 @@
               content:
                 '<div class="customoverlay shareparking" style="position: relative; background-color: lightgreen; border-radius: 20px; width: 100px; height: 26px;">' +
                 `  <div  style="text-decoration: none;  color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="shareParkingDetail(${shareParking.id})">` +
-                `    <span class="localname">${shareParking.price}</span>` +
+                `    <span class="localname">${shareParking.price.toLocaleString('ko-KR')}원</span>` +
                 "  </div>" +
                 "</div>",
               latlng: new kakao.maps.LatLng(shareParking.lat, shareParking.lng),

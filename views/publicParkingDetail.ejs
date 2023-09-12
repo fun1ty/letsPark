@@ -191,9 +191,9 @@
             <div class="otherTitle" style="text-align: end; padding-bottom: 4px;">총 주차면 갯수 - <%= publicParkingDetailResult.capacity%></div>
             <div style="display: flex; justify-content: space-between">
                 <div>
-                    <p style="background-color: lightgray; border: 1px solid lightgray; border-radius: 4px;">공영</p>
+                    <span style="background-color: lightgray; border: 1px solid lightgray; border-radius: 4px;">공영</span>
                     <% if(publicParkingDetailResult.payyn === 'N') {%>
-                        <p style="background-color: lightgray; border: 1px solid lightgray; border-radius: 4px;">무료</p>
+                        <span style="background-color: lightgray; border: 1px solid lightgray; border-radius: 4px;">무료</span>
                     <% }%>
                 </div>
                 <p class="spaceb otherTitle">현재 주차가능 면 갯수 - <%= publicParkingDetailResult.currentparking%></p>
@@ -203,7 +203,7 @@
                 <% if(publicParkingDetailResult.payyn === 'N') {%>
                     <span class="spContent">무료</span>
                 <% } else {%>
-                    <span class="spContent"><%= publicParkingDetailResult.price.timerate%>분당 <%= publicParkingDetailResult.price.rates%>원</span>
+                    <span class="spContent"><%= publicParkingDetailResult.price.timerate%>분당 <%= publicParkingDetailResult.price.rates.toLocaleString('ko-KR')%>원</span>
                 <% }%>
             </div>
             <br>
@@ -214,13 +214,25 @@
                 <% let weekEndEnd = publicParkingDetailResult.operationtime.weekend_end%>
                 <% let holidayBegin = publicParkingDetailResult.operationtime.holiday_begin%>
                 <% let holidayEnd = publicParkingDetailResult.operationtime.holiday_end%>
+                <% if(weekdayBegin === '0000' && weekdayEnd === '0000') {%>
+                <div class="spContent" style="text-align: end; padding: 3px;">평일  - 종일 운영</div>
+                <%} else {%>
                 <div class="spContent" style="text-align: end; padding: 3px;">평일  <%= weekdayBegin.substring(0, 2)%>:<%= weekdayBegin.substring(2, 4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2, 4)%></div>
+                <% }%>
             </div>
             <div style="padding: 3px; display: flex; justify-content: space-between">
                 <span class="otherTitle">운영시간</span>
+                <% if(weekendBegin === '0000' && weekEndEnd === '0000') {%>
+                <span class="spContent">주말  - 종일 운영</span>
+                <% } else {%>
                 <span class="spContent">주말  <%= weekendBegin.substring(0, 2)%>:<%= weekEndEnd.substring(2, 4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2, 4)%></span>
+                <% }%>
             </div>
+            <% if(holidayBegin === '0000' && holidayEnd === '0000') {%>
+            <div class="spContent" style="text-align: end; padding: 3px">공휴일  - 종일 운영</div>
+            <% } else {%>
             <div class="spContent" style="text-align: end; padding: 3px">공휴일  <%= holidayBegin.substring(0, 2)%>:<%= holidayEnd.substring(2, 4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2, 4)%></div>
+            <% }%>
         </div>
         <hr class="hr">
         <div class="child2">
