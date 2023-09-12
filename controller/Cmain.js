@@ -12,9 +12,38 @@ exports.chat = async (req, res) => {
 };
 
 exports.main = async (req, res) => {
-  
-
   res.render('index', { javascriptkey: env.JAVASCRIPTKEY });
+};
+
+exports.userData = async (req, res) => {
+  let userData;
+
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const userId = await vt.verifyToken(token);
+
+    console.log('userid', userId);
+
+    const user = await models.User.findOne({ where: { id: userId } });
+    console.log(user);
+    if (user) {
+      userData = {
+        userid: user.userid,
+        nickname: user.nickname,
+      };
+
+      console.log('user Data', userData);
+
+      //클라이언트로 전송할 데이터 객체
+      const responseData = {
+        data: userData,
+      };
+      res.json({ responseData });
+    }
+  } catch (error) {
+    console.log('토큰 검증 오류', error);
+    console.log('error');
+  }
 };
 
 exports.getInfo = async (req, res) => {
