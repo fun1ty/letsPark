@@ -56,8 +56,8 @@ app.use('/publicparking', publicParkingRouter);
 const shareParkingRouter = require('./routes/shareParking');
 app.use('/shareparking', shareParkingRouter);
 
-const parkingPayRouter = require("./routes/parkingPay");
-app.use("/parkingpay", parkingPayRouter);
+const parkingPayRouter = require('./routes/parkingPay');
+app.use('/parkingpay', parkingPayRouter);
 
 //404
 app.get('*', (req, res) => {
@@ -68,7 +68,7 @@ app.get('*', (req, res) => {
 //const updateInfoJob = require('./utils/schedule');
 
 //server start
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ force: false }).then(() => {
   server.listen(PORT, () => {
     console.log(`http://localhost:${PORT}`);
   });
