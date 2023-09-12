@@ -49,15 +49,9 @@
     </form>
 
     <script>
-      function jwt_decode(token) {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace('-', '+').replace('_', '/');
-        return JSON.parse(atob(base64));
-      }
-
       function loadUserInfo() {
         axios
-          .get(`/mypage/${token.userid}`)
+          .get(`/mypage/${userid}`)
           .then((res) => {
             if (res.data.result) {
               const userInfo = res.data.data;
@@ -82,7 +76,7 @@
 
         axios({
           method: 'PATCH',
-          url: `/mypage/${token.userid}/edit`,
+          url: `/mypage/${userid}/edit`,
           data: {
             userid: form.userid.value,
             password: form.password.value,
@@ -107,7 +101,7 @@
         }
         axios({
           method: 'DELETE',
-          url: `/mypage/${token.userid}/drop`,
+          url: `/mypage/${userid}/drop`,
           data: {
             userid: document.querySelector('#userid').value,
           },

@@ -340,10 +340,7 @@
 
       // 회원 정보 수정 이동
       function profileEdit() {
-        const token = localStorage.getItem('token');
-        const decodedToken = jwt_decode(token);
-        const userid = decodedToken.userid;
-        location.href = `/mypage/${token.userid}`;
+        location.href = `/mypage/${userid}`;
       }
 
       // 예약내역조회 이동
@@ -351,40 +348,23 @@
         location.href = '/user/reservation';
       }
 
-      // 서버로부터 사용자 정보를 가져오는 함수
-      //async function fetchUserInfo() {
-      //const token = localStorage.getItem('token');
-      //console.log('클라이언트', token);
-
-      //if (!token) {
-
-      //console.log('토큰이 없습니다.');
-      //return;
-      //}
-
-      //try {
-      // const response = await axios.get('/', {
-      //headers: {
-      //Authorization: `Bearer ${token}`,
-      // },
-      // });
-
-      //if (response.data && response.data.userid) {
-      //  const userInfo = response.data;
-      // console.log('사용자 정보:', userInfo);
-
-      // const decodedToken = jwt.verify(token, 'SECRET');
-      // console.log('디코딩된 토큰:', decodedToken);
-
-      //  const userIdDisplay = document.getElementById('userIdDisplay');
-      //  userIdDisplay.value = userInfo.userid;
-      // } else {
-      //  console.log('토큰이 유효하지 않습니다.');
-      // }
-      // } catch (error) {
-      //   console.log(error);
-      // }
-      // }
+      //토큰으로 닉네임 값 받아오기
+      // const token = localStorage.getItem('token');
+      // console.log('토큰', token);
+      // axios
+      //   .get('/', {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   })
+      //   .then((response) => {
+      //     const userNickname = response.data.userNickname;
+      //     console.log('사용자 닉네임', userNickname);
+      //     document.querySelector('.userNick').innerText = userNickname;
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
 
       //로그아웃
       function logout() {
