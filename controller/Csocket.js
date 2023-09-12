@@ -74,14 +74,6 @@ exports.connection = (io, socket) => {
       socket.user = usernick;
 
       io.to(socket.room).emit("notice", `${socket.user}님이 입장하셨습니다`);
-
-      //채팅방 목록 갱신
-      // if (!roomList.includes(roomFind.id)) {
-      //   roomList.push(roomFind.id);
-      //   // //갱신된 목록은 전체가 봐야함
-      // }
-      // const usersInRoom = getUsersInRoom(chatRoomId);
-      // io.to(roomFind.id).emit("userList", usersInRoom);
     } catch (error) {
       console.log(error);
     }
@@ -114,12 +106,25 @@ exports.connection = (io, socket) => {
   });
 
   //채팅 유저DB 삽입
-  function chatUserDBInsert() {
+  async function chatUserDBInsert() {
+    let joinUserId;
+    console.log("joinuser", user[1]);
+
+    joinUserId = await models.User.findOne({
+      where: {
+        id: user[1],
+      },
+    }).then((result) => {
+      console.log("joinusernick", result);
+      return result;
+    });
+
     if (!roomFind.roomid) {
-      models.ChatUser.create({
+      await models.ChatUser.create({
         roomid: roomFind.id,
         userid: user[0],
         joinuser: user[user.length - 1],
+        joinusernick: joinUserId.nickname,
       }).then((result) => {
         console.log("chatUserDBInsert", result);
       });

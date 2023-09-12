@@ -4,6 +4,7 @@ const { x64 } = require("crypto-js");
 const { Navigator } = require("node-navigator");
 const vt = require("../utils/JwtVerifyToken");
 const jwt = require("jsonwebtoken");
+const { Sequelize, literal } = require("sequelize");
 require("dotenv").config();
 const env = process.env;
 
@@ -11,47 +12,66 @@ exports.chat = async (req, res) => {
   res.render("chat");
 };
 
-exports.main = async (req, res) => {
+exports.chatList = async (req, res) => {
+  let chatListDB;
+  let joinUserId;
 
-  let chatList;
   try {
-    //조인으로 가져오기 ChatRoom, ChatUser
-    (chatList = await models.ChatUser.findAll({
-      roomid,
-      userid,
-      joinuser,
-      include: [{ model: ChatRoom, attributes: ["roomname"] }],
+    const { userId } = req.params;
+    console.log("chatListuserid", userId);
+
+    chatListDB = await models.ChatUser.findAll({
       where: {
-        roomid: roomFind.id,
+        userid: userId,
       },
-    })),
-      res.render("index", { javascriptkey: env.JAVASCRIPTKEY });
+      include: [
+        {
+          model: models.ChatRoom,
+          attributes: ["roomname"],
+          include: [
+            {
+              model: models.Chat,
+              attributes: ["content"],
+              order: [[Sequelize.literal("createdAt"), "DESC"]],
+              limit: 1,
+            },
+          ],
+        },
+      ],
+    });
+    console.log("roomid", chatListDB[0].roomid);
+    console.log("roomname", chatListDB[0].chatroom.roomname);
+    console.log("content", chatListDB[0].chatroom.chats.content);
+    res.render("chatList", { chatListDB });
   } catch (error) {
-    console.log("Cmain에러", error);
+    console.log("chatList에러", error);
   }
+};
 
-  res.render('index', { javascriptkey: env.JAVASCRIPTKEY });
-
+exports.main = async (req, res) => {
+  res.render("index", { javascriptkey: env.JAVASCRIPTKEY });
 };
 
 exports.userData = async (req, res) => {
   let userData;
 
   try {
-    const token = req.headers.authorization.split(' ')[1];
+    const token = req.headers.authorization.split(" ")[1];
     const userId = await vt.verifyToken(token);
 
-    console.log('userid', userId);
+    console.log("userid", userId);
 
     const user = await models.User.findOne({ where: { id: userId } });
     console.log(user);
     if (user) {
       userData = {
+        id: user.id,
         userid: user.userid,
         nickname: user.nickname,
       };
 
-      console.log('user Data', userData);
+      console.log("user Data", userData);
+      console.log("user", user);
 
       //클라이언트로 전송할 데이터 객체
       const responseData = {
@@ -60,8 +80,8 @@ exports.userData = async (req, res) => {
       res.json({ responseData });
     }
   } catch (error) {
-    console.log('토큰 검증 오류', error);
-    console.log('error');
+    console.log("토큰 검증 오류", error);
+    console.log("error");
   }
 };
 
@@ -105,22 +125,6 @@ exports.getInfo = async (req, res) => {
   console.log(cleaningList);
   res.json({ publicParkingList, shareParkingList, cleaningList, allLen });
 };
-
-exports.chat = (req, res) => {
-  res.render("chat");
-  socketModule(io);
-};
-
-function socketModule(io) {
-  // 클라이언트 연결 이벤트 핸들링
-  io.on("connection", (socket) => {
-    console.log("라우터접속");
-    // connection 함수 호출
-    connection(io, socket);
-  });
-
-  res.json({ publicParkingList, shareParkingList, allLen });
-}
 
 exports.ppdb = async (req, res) => {
   let map = new Map();

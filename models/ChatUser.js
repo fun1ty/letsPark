@@ -13,7 +13,11 @@ const Model = (sequelize) => {
     },
     joinuser: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
+    },
+    joinusernick: {
+      type: DataTypes.STRING(30),
+      allowNull: false,
     },
   });
 };
