@@ -14,21 +14,22 @@
       <button type="submit">로그인하기</button>
     </form>
     <br />
+    아이디가 없으신가요?
+    <a href="/user/signup">회원가입하기</a>
 
     <script>
       function login(e) {
         e.preventDefault();
 
         axios({
-          method: "POST",
-          url: "/user/login",
+          method: 'POST',
+          url: '/user/login',
           data: {
-            userid: document.querySelector("#userid").value,
-            password: document.querySelector("#password").value,
+            userid: document.querySelector('#userid').value,
+            password: document.querySelector('#password').value,
           },
         }).then((res) => {
           if (res.data.result) {
-
             localStorage.setItem('token', res.data.token);
             alert('로그인 성공');
             window.location.href = '/';

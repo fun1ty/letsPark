@@ -7,8 +7,6 @@
     <link rel="stylesheet" type="text/css" href="/index.css" />
     <link rel="stylesheet" href="/map.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2"></script>
-
     <script src="/socket.io/socket.io.js"></script>
 
     <script
@@ -72,7 +70,7 @@
                 />
               </div>
               <div>
-                <div class="userNick">파킹퍼시블님</div>
+                <div class="userNick">파킹퍼시블</div>
                 <!-- <div class="userEmail">parkinghaka@gmail.com</div> -->
               </div>
             </button>
@@ -112,11 +110,14 @@
           <h5>이용안내 및 문의하기</h5>
           <br />
           <!-- <a href="/user/login">로그인하기</a><br /> -->
-          <a href="/user/signup">회원가입</a>
           <h5 class="payButton">결제내역</h5>
           <div class="logoutBox">
-            <span class="service">이용안내 및 문의하기</span>
-            <span class="logoutService" onclick="logout()">로그인</span>
+            <span
+              id="loginLogoutButton"
+              class="logoutService"
+              onclick="logout()"
+              >로그인/회원가입</span
+            >
           </div>
 
           <!-- 사용자 정보 조회 -->
@@ -327,7 +328,22 @@
 
       // 회원 정보 수정 이동
       function profileEdit() {
-        location.href = `/mypage/${userid}`;
+        const token = localStorage.getItem('token');
+
+        axios
+          .get('/data', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            const userId = response.data.responseData.data.userid;
+            console.log(userId);
+            location.href = `/mypage/${userId}`;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
 
       // 예약내역조회 이동
@@ -336,27 +352,50 @@
       }
 
       //토큰으로 닉네임 값 받아오기
-      // const token = localStorage.getItem('token');
-      // console.log('토큰', token);
-      // axios
-      //   .get('/', {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   })
-      //   .then((response) => {
-      //     const userNickname = response.data.userNickname;
-      //     console.log('사용자 닉네임', userNickname);
-      //     document.querySelector('.userNick').innerText = userNickname;
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      const token = localStorage.getItem('token');
+      console.log('클라이언트 토큰', token);
+
+      axios
+        .get('/data', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          const userNickname = response.data.responseData.data.nickname;
+          console.log('사용자 닉네임', userNickname);
+          document.querySelector('.userNick').innerText = userNickname;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
       //로그아웃
+      //로그인 상태 시 로컬 스토리지 토큰 비우도록
+      //로그아웃 상태 시 /user/login 이동
       function logout() {
-        localStorage.removeItem('token');
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+        if (token) {
+          localStorage.removeItem('token');
+          loginLogoutButton.innerText = '로그인/회원가입';
+
+          alert('로그아웃 되었습니다.!');
+        } else {
+          location.href = '/user/login';
+        }
       }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+        if (token) {
+          loginLogoutButton.innerText = '로그아웃';
+        }
+      });
 
       //공유주차장등록 이동
       function parkingAdd() {
