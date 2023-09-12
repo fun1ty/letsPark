@@ -1,18 +1,37 @@
-const axios = require('axios');
-const models = require('../models/index');
-const { x64 } = require('crypto-js');
-const { Navigator } = require('node-navigator');
-const vt = require('../utils/JwtVerifyToken');
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const axios = require("axios");
+const models = require("../models/index");
+const { x64 } = require("crypto-js");
+const { Navigator } = require("node-navigator");
+const vt = require("../utils/JwtVerifyToken");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 const env = process.env;
 
 exports.chat = async (req, res) => {
-  res.render('chat');
+  res.render("chat");
 };
 
 exports.main = async (req, res) => {
+
+  let chatList;
+  try {
+    //조인으로 가져오기 ChatRoom, ChatUser
+    (chatList = await models.ChatUser.findAll({
+      roomid,
+      userid,
+      joinuser,
+      include: [{ model: ChatRoom, attributes: ["roomname"] }],
+      where: {
+        roomid: roomFind.id,
+      },
+    })),
+      res.render("index", { javascriptkey: env.JAVASCRIPTKEY });
+  } catch (error) {
+    console.log("Cmain에러", error);
+  }
+
   res.render('index', { javascriptkey: env.JAVASCRIPTKEY });
+
 };
 
 exports.userData = async (req, res) => {
@@ -50,7 +69,7 @@ exports.getInfo = async (req, res) => {
   let publicParkingList;
   try {
     publicParkingList = await models.PublicParking.findAll({
-      attributes: ['id', 'capacity', 'currentparking', 'lat', 'lng'],
+      attributes: ["id", "capacity", "currentparking", "lat", "lng"],
     });
   } catch (err) {
     console.log(err);
@@ -62,11 +81,11 @@ exports.getInfo = async (req, res) => {
       include: [
         {
           model: models.ShareParking,
-          as: 'shareparking',
-          attributes: ['lat', 'lng'],
+          as: "shareparking",
+          attributes: ["lat", "lng"],
         },
       ],
-      attributes: { exclude: ['price', 'content'] },
+      attributes: { exclude: ["price", "content"] },
     });
   } catch (err) {
     console.log(err);
@@ -75,8 +94,8 @@ exports.getInfo = async (req, res) => {
   let shareParkingList;
   try {
     shareParkingList = await models.ShareParking.findAll({
-      attributes: ['id', 'lat', 'lng', 'price'],
-      where: { status: 'Y' },
+      attributes: ["id", "lat", "lng", "price"],
+      where: { status: "Y" },
     });
   } catch (err) {
     console.log(err);
@@ -88,14 +107,14 @@ exports.getInfo = async (req, res) => {
 };
 
 exports.chat = (req, res) => {
-  res.render('chat');
+  res.render("chat");
   socketModule(io);
 };
 
 function socketModule(io) {
   // 클라이언트 연결 이벤트 핸들링
-  io.on('connection', (socket) => {
-    console.log('라우터접속');
+  io.on("connection", (socket) => {
+    console.log("라우터접속");
     // connection 함수 호출
     connection(io, socket);
   });
@@ -106,9 +125,9 @@ function socketModule(io) {
 exports.ppdb = async (req, res) => {
   let map = new Map();
   for (let i = 1; i < 18000; i += 1000) {
-    console.log('----------------------------', i);
+    console.log("----------------------------", i);
     await axios({
-      method: 'GET',
+      method: "GET",
       url: `http://openapi.seoul.go.kr:8088/466354715470617039364d6b517341/json/GetParkingInfo/${i}/${
         i + 999
       }/`,
@@ -196,9 +215,9 @@ exports.ppdb = async (req, res) => {
 
 //지도 핀 데이터
 exports.parking = async (req, res) => {
-  console.log('hi');
+  console.log("hi");
   const result = await models.PublicParking.findAll();
-  console.log('reulst', result);
+  console.log("reulst", result);
   const arr = [];
   for (let i = 0; i < result.length; i++) {
     const a = {
