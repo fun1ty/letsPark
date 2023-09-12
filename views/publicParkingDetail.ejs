@@ -1,119 +1,134 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
     <link rel="stylesheet" type="text/css" href="/reset.css" />
     <link rel="stylesheet" type="text/css" href="/font.css" />
-    <link rel="stylesheet" media="screen and (max-width: 768px)" type="text/css" href="/publicParkingDetail.css" />
-    <link rel="stylesheet" media="screen and (min-width: 768px)" type="text/css" href="/mqPublicParkingDetail.css" />
+    <link
+      rel="stylesheet"
+      media="screen and (max-width: 768px)"
+      type="text/css"
+      href="/publicParkingDetail.css"
+    />
+    <link
+      rel="stylesheet"
+      media="screen and (min-width: 768px)"
+      type="text/css"
+      href="/mqPublicParkingDetail.css"
+    />
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
-</head>
-<body>
-<!-- header -->
-<div class="header-container">
-    <nav class="headbox">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- header -->
+    <div class="header-container">
+      <nav class="headbox">
         <div class="headermenu">
-            <img
-                    src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/W_text_logo.svg"
-                    alt="로고"
-                    class="logo"
-            />
+          <img
+            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/W_text_logo.svg"
+            alt="로고"
+            class="logo"
+          />
 
-            <div class="menu-icons">
-                <div class="menu-icon" onclick="reservationAlarm()">
-                    <img
-                            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/bell.svg"
-                            alt="알람"
-                            width="25px"
-                            height="25px"
-                    />
-                </div>
-                <div class="menu-icon">
-                    <button id="menu-button" onclick="toggleMenu()">
-                        <img
-                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/menu.svg"
-                                alt="메뉴"
-                                width="25px"
-                                height="25px"
-                        />
-                    </button>
-                </div>
+          <div class="menu-icons">
+            <div class="menu-icon" onclick="reservationAlarm()">
+              <img
+                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/bell.svg"
+                alt="알람"
+                width="25px"
+                height="25px"
+              />
             </div>
+            <div class="menu-icon">
+              <button id="menu-button" onclick="toggleMenu()">
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/menu.svg"
+                  alt="메뉴"
+                  width="25px"
+                  height="25px"
+                />
+              </button>
+            </div>
+          </div>
         </div>
 
         <div id="menu-container" class="menu">
-            <button id="close-button" onclick="closeMenu()">
+          <button id="close-button" onclick="closeMenu()">
+            <img
+              src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/X.svg"
+              alt="닫기"
+              width="25px"
+              height="25px"
+            />
+          </button>
+
+          <div style="margin: 20px">
+            <button class="mypageEdit" onclick="profileEdit()">
+              <div>
                 <img
-                        src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/X.svg"
-                        alt="닫기"
-                        width="25px"
-                        height="25px"
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg"
+                  alt="profile"
+                  width="30px"
+                  height="30px"
                 />
+              </div>
+              <div>
+                <div class="userNick">파킹퍼시블님</div>
+                <div class="userEmail">parkinghaka@gmail.com</div>
+              </div>
             </button>
+          </div>
 
-            <div style="margin: 20px">
-                <button class="mypageEdit" onclick="profileEdit()">
-                    <div>
-                        <img
-                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg"
-                                alt="profile"
-                                width="30px"
-                                height="30px"
-                        />
-                    </div>
-                    <div>
-                        <div class="userNick">파킹퍼시블님</div>
-                        <div class="userEmail">parkinghaka@gmail.com</div>
-                    </div>
-                </button>
-            </div>
+          <div>
+            <button class="reservationButton" onclick="userReservation()">
+              예약 내역 보기
+            </button>
+          </div>
+          <div class="noticeBox">
+            <ul class="menuContainer">
+              <li onclick="parkingAdd()">
+                🚙 공유주차장 등록
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
 
-            <div>
-                <button class="reservationButton" onclick="userReservation()">
-                    예약 내역 보기
-                </button>
-            </div>
-            <div class="noticeBox">
-                <ul class="menuContainer">
-                    <li onclick="parkingAdd()">
-                        🚙 공유주차장 등록
-                        <img
-                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
-                                alt="이동"
-                                width="14px"
-                                height="14px"
-                                class="chevronRight"
-                        />
-                    </li>
+              <li type="button" id="chat" onclick="chatBtn()">
+                💬 채팅방
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+              <li>💰 포인트</li>
+            </ul>
+          </div>
+          <h5 class="payButton">결제내역</h5>
+          <div class="logoutBox">
+            <span class="service">이용안내 및 문의하기</span>
+            <span class="logoutService">로그아웃</span>
+          </div>
 
-                    <li type="button" id="chat" onclick="chatBtn()">
-                        💬 채팅방
-                        <img
-                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
-                                alt="이동"
-                                width="14px"
-                                height="14px"
-                                class="chevronRight"
-                        />
-                    </li>
-                    <li>💰 포인트</li>
-                </ul>
-            </div>
-            <h5 class="payButton">결제내역</h5>
-            <div class="logoutBox">
-                <span class="service">이용안내 및 문의하기</span>
-                <span class="logoutService">로그아웃</span>
-            </div>
-
-            <!-- 사용자 정보 조회 -->
-            <!-- <form name="user-info-form">
+          <!-- 사용자 정보 조회 -->
+          <!-- <form name="user-info-form">
               <label for="userid">User ID:</label>
               <input type="text" id="userid" name="userid" readonly />
               <br />
@@ -130,63 +145,381 @@
               <input type="text" id="phone" name="phone" readonly />
               <br />
             </form> -->
-            </div>
-        </nav>
+        </div>
+      </nav>
     </div>
     <div class="test">
-        <div class="child1">
-            <div class="taCenter title" style="font-size: 25px;"><%= publicParkingDetailResult.name%></div>
-            <div class="taCenter otherTitle"><%= publicParkingDetailResult.address%></div>
-            <div class="taCenter otherTitle"><%= publicParkingDetailResult.tel%></div>
-            <div style="display: flex; justify-content: center">
-                <div class="taCenter spContent" style="padding-top: 5px;">평점(<%= result.length%>) : <%= average%>&nbsp;&nbsp;</div>
-                <div class="stars-outer">
+      <div class="child1">
+        <div class="taCenter title" style="font-size: 25px">
+          <%= publicParkingDetailResult.name%>
+        </div>
+        <div class="taCenter otherTitle">
+          <%= publicParkingDetailResult.address%>
+        </div>
+        <div class="taCenter otherTitle">
+          <%= publicParkingDetailResult.tel%>
+        </div>
+        <div style="display: flex; justify-content: center">
+          <div class="taCenter spContent" style="padding-top: 5px">
+            평점(<%= result.length%>) : <%= average%>&nbsp;&nbsp;
+          </div>
+          <div class="stars-outer">
+            <!-- 5개의 회색 별 -->
+            <!-- 별 1 -->
+            <svg class="star" viewBox="0 0 25 25">
+              <path
+                d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                stroke="#ccc"
+                fill="#ccc"
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                stroke-width="1"
+              ></path>
+            </svg>
+            <!-- 별 2 -->
+            <svg class="star" viewBox="0 0 25 25">
+              <path
+                d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                stroke="#ccc"
+                fill="#ccc"
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                stroke-width="1"
+              ></path>
+            </svg>
+            <!-- 별 3 -->
+            <svg class="star" viewBox="0 0 25 25">
+              <path
+                d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                stroke="#ccc"
+                fill="#ccc"
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                stroke-width="1"
+              ></path>
+            </svg>
+            <!-- 별 4 -->
+            <svg class="star" viewBox="0 0 25 25">
+              <path
+                d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                stroke="#ccc"
+                fill="#ccc"
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                stroke-width="1"
+              ></path>
+            </svg>
+            <!-- 별 5 -->
+            <svg class="star" viewBox="0 0 25 25">
+              <path
+                d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                stroke="#ccc"
+                fill="#ccc"
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                stroke-width="1"
+              ></path>
+            </svg>
+
+            <div class="stars-inner" style="width: <%= average * 10 * 2%>%">
+              <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
+              <!-- 5개의 노란색 별 -->
+              <!-- 별 1 -->
+              <svg class="star" viewBox="0 0 25 25">
+                <path
+                  d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                  stroke="#F7D358"
+                  fill="#F7D358"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="1"
+                ></path>
+              </svg>
+              <!-- 별 2 -->
+              <svg class="star" viewBox="0 0 25 25">
+                <path
+                  d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                  stroke="#F7D358"
+                  fill="#F7D358"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="1"
+                ></path>
+              </svg>
+              <!-- 별 3 -->
+              <svg class="star" viewBox="0 0 25 25">
+                <path
+                  d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                  stroke="#F7D358"
+                  fill="#F7D358"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="1"
+                ></path>
+              </svg>
+              <!-- 별 4 -->
+              <svg class="star" viewBox="0 0 25 25">
+                <path
+                  d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                  stroke="#F7D358"
+                  fill="#F7D358"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="1"
+                ></path>
+              </svg>
+              <!-- 별 5 -->
+              <svg class="star" viewBox="0 0 25 25">
+                <path
+                  d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                  stroke="#F7D358"
+                  fill="#F7D358"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="1"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="otherTitle" style="text-align: end; padding-bottom: 4px">
+          총 주차면 갯수 - <%= publicParkingDetailResult.capacity%>
+        </div>
+        <div style="display: flex; justify-content: space-between">
+          <div>
+            <p
+              style="
+                background-color: lightgray;
+                border: 1px solid lightgray;
+                border-radius: 4px;
+              "
+            >
+              공영
+            </p>
+            <% if(publicParkingDetailResult.payyn === 'N') {%>
+            <p
+              style="
+                background-color: lightgray;
+                border: 1px solid lightgray;
+                border-radius: 4px;
+              "
+            >
+              무료
+            </p>
+            <% }%>
+          </div>
+          <p class="spaceb otherTitle">
+            현재 주차가능 면 갯수 - <%=
+            publicParkingDetailResult.currentparking%>
+          </p>
+        </div>
+        <hr />
+        <div style="text-align: end">
+          <% if(publicParkingDetailResult.payyn === 'N') {%>
+          <span class="spContent">무료</span>
+          <% } else {%>
+          <span class="spContent"
+            ><%= publicParkingDetailResult.price.timerate%>분당 <%=
+            publicParkingDetailResult.price.rates%>원</span
+          >
+          <% }%>
+        </div>
+        <br />
+        <div>
+          <% let weekdayBegin =
+          publicParkingDetailResult.operationtime.weekday_begin%> <% let
+          weekdayEnd = publicParkingDetailResult.operationtime.weekday_end%> <%
+          let weekendBegin =
+          publicParkingDetailResult.operationtime.weekend_begin%> <% let
+          weekEndEnd = publicParkingDetailResult.operationtime.weekend_end%> <%
+          let holidayBegin =
+          publicParkingDetailResult.operationtime.holiday_begin%> <% let
+          holidayEnd = publicParkingDetailResult.operationtime.holiday_end%>
+          <div class="spContent" style="text-align: end; padding: 3px">
+            평일 <%= weekdayBegin.substring(0, 2)%>:<%=
+            weekdayBegin.substring(2, 4)%> ~ <%= weekdayEnd.substring(0,
+            2)%>:<%= weekdayEnd.substring(2, 4)%>
+          </div>
+        </div>
+        <div
+          style="padding: 3px; display: flex; justify-content: space-between"
+        >
+          <span class="otherTitle">운영시간</span>
+          <span class="spContent"
+            >주말 <%= weekendBegin.substring(0, 2)%>:<%= weekEndEnd.substring(2,
+            4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2,
+            4)%></span
+          >
+        </div>
+        <div class="spContent" style="text-align: end; padding: 3px">
+          공휴일 <%= holidayBegin.substring(0, 2)%>:<%= holidayEnd.substring(2,
+          4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2,
+          4)%>
+        </div>
+      </div>
+      <hr class="hr" />
+      <div class="child2">
+        <div style="display: flex; justify-content: space-between">
+          <div class="otherTitle">리뷰</div>
+          <div class="otherTitle" onclick="modalOpen()" style="cursor: pointer">
+            리뷰작성
+            <img
+              src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/PencilSquare.svg"
+              style="width: 20px; height: 20px"
+            />
+          </div>
+        </div>
+        <hr />
+        <% if(result.length === 0) {%>
+        <div style="padding-top: 40px">
+          <div class="title" style="text-align: center; font-size: 35px">
+            작성된 리뷰가 없습니다
+          </div>
+          <div class="title" style="text-align: center; font-size: 35px">
+            리뷰를 작성해 다른 이용자에게 도움을 주세요 !
+          </div>
+        </div>
+        <% } else {%>
+        <div>
+          <% for(let review of result) {%>
+          <div style="display: flex">
+            <div class="profileImage" style="width: 40px; height: 40px"></div>
+            <div>
+              <div style="display: flex; justify-content: space-between">
+                <div class="dovego" style="padding-top: 5px">
+                  <%= review.nickname%>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+                <div>
+                  <div class="stars-outer">
                     <!-- 5개의 회색 별 -->
                     <!-- 별 1 -->
                     <svg class="star" viewBox="0 0 25 25">
-                        <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
+                      <path
+                        d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                        stroke="#ccc"
+                        fill="#ccc"
+                        stroke-linejoin="round"
+                        stroke-linecap="round"
+                        stroke-width="1"
+                      ></path>
                     </svg>
                     <!-- 별 2 -->
                     <svg class="star" viewBox="0 0 25 25">
-                        <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
+                      <path
+                        d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                        stroke="#ccc"
+                        fill="#ccc"
+                        stroke-linejoin="round"
+                        stroke-linecap="round"
+                        stroke-width="1"
+                      ></path>
                     </svg>
                     <!-- 별 3 -->
                     <svg class="star" viewBox="0 0 25 25">
-                        <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
+                      <path
+                        d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                        stroke="#ccc"
+                        fill="#ccc"
+                        stroke-linejoin="round"
+                        stroke-linecap="round"
+                        stroke-width="1"
+                      ></path>
                     </svg>
                     <!-- 별 4 -->
                     <svg class="star" viewBox="0 0 25 25">
-                        <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
+                      <path
+                        d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                        stroke="#ccc"
+                        fill="#ccc"
+                        stroke-linejoin="round"
+                        stroke-linecap="round"
+                        stroke-width="1"
+                      ></path>
                     </svg>
                     <!-- 별 5 -->
                     <svg class="star" viewBox="0 0 25 25">
-                        <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
+                      <path
+                        d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                        stroke="#ccc"
+                        fill="#ccc"
+                        stroke-linejoin="round"
+                        stroke-linecap="round"
+                        stroke-width="1"
+                      ></path>
                     </svg>
 
-                    <div class="stars-inner" style="width: <%= average * 10 * 2%>%;"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
-                        <!-- 5개의 노란색 별 -->
-                        <!-- 별 1 -->
-                        <svg class="star" viewBox="0 0 25 25">
-                            <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#F7D358" fill="#F7D358" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                        </svg>
-                        <!-- 별 2 -->
-                        <svg class="star" viewBox="0 0 25 25">
-                            <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#F7D358" fill="#F7D358" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                        </svg>
-                        <!-- 별 3 -->
-                        <svg class="star" viewBox="0 0 25 25">
-                            <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#F7D358" fill="#F7D358" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                        </svg>
-                        <!-- 별 4 -->
-                        <svg class="star" viewBox="0 0 25 25">
-                            <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#F7D358" fill="#F7D358" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                        </svg>
-                        <!-- 별 5 -->
-                        <svg class="star" viewBox="0 0 25 25">
-                            <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#F7D358" fill="#F7D358" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                        </svg>
+                    <div
+                      class="stars-inner"
+                      style="width: <%= review.score * 10 * 2%>%"
+                    >
+                      <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
+                      <!-- 5개의 노란색 별 -->
+                      <!-- 별 1 -->
+                      <svg class="star" viewBox="0 0 25 25">
+                        <path
+                          d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                          stroke="#F7D358"
+                          fill="#F7D358"
+                          stroke-linejoin="round"
+                          stroke-linecap="round"
+                          stroke-width="1"
+                        ></path>
+                      </svg>
+                      <!-- 별 2 -->
+                      <svg class="star" viewBox="0 0 25 25">
+                        <path
+                          d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                          stroke="#F7D358"
+                          fill="#F7D358"
+                          stroke-linejoin="round"
+                          stroke-linecap="round"
+                          stroke-width="1"
+                        ></path>
+                      </svg>
+                      <!-- 별 3 -->
+                      <svg class="star" viewBox="0 0 25 25">
+                        <path
+                          d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                          stroke="#F7D358"
+                          fill="#F7D358"
+                          stroke-linejoin="round"
+                          stroke-linecap="round"
+                          stroke-width="1"
+                        ></path>
+                      </svg>
+                      <!-- 별 4 -->
+                      <svg class="star" viewBox="0 0 25 25">
+                        <path
+                          d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                          stroke="#F7D358"
+                          fill="#F7D358"
+                          stroke-linejoin="round"
+                          stroke-linecap="round"
+                          stroke-width="1"
+                        ></path>
+                      </svg>
+                      <!-- 별 5 -->
+                      <svg class="star" viewBox="0 0 25 25">
+                        <path
+                          d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                          stroke="#F7D358"
+                          fill="#F7D358"
+                          stroke-linejoin="round"
+                          stroke-linecap="round"
+                          stroke-width="1"
+                        ></path>
+                      </svg>
                     </div>
+                  </div>
                 </div>
+              </div>
+              <div
+                class="cafe24"
+                style="padding-top: 10px; padding-bottom: 10px"
+              >
+                <%= review.comment%>
+              </div>
             </div>
             <div class="otherTitle" style="text-align: end; padding-bottom: 4px;">총 주차면 갯수 - <%= publicParkingDetailResult.capacity%></div>
             <div style="display: flex; justify-content: space-between">
@@ -233,226 +566,173 @@
             <% } else {%>
             <div class="spContent" style="text-align: end; padding: 3px">공휴일  <%= holidayBegin.substring(0, 2)%>:<%= holidayEnd.substring(2, 4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2, 4)%></div>
             <% }%>
+          </div>
+          <% }%>
         </div>
-        <hr class="hr">
-        <div class="child2">
-            <div style="display: flex; justify-content: space-between">
-                <div class="otherTitle">리뷰</div>
-                <div class="otherTitle" onclick="modalOpen()" style="cursor: pointer;">
-                    리뷰작성
-                    <img src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/PencilSquare.svg" style="width: 20px; height: 20px;">
-                </div>
-            </div>
-            <hr>
-            <% if(result.length === 0) {%>
-            <div style="padding-top: 40px;">
-                <div class="title" style="text-align: center; font-size: 35px;">작성된 리뷰가 없습니다</div>
-                <div class="title" style="text-align: center; font-size: 35px;">리뷰를 작성해 다른 이용자에게 도움을 주세요 !</div>
-            </div>
-            <% } else {%>
-            <div>
-                <% for(let review of result) {%>
-                    <div style="display: flex;">
-                        <div class="profileImage" style="width: 40px; height: 40px"></div>
-                        <div>
-                            <div style="display : flex; justify-content: space-between">
-                                <div class="dovego" style="padding-top: 5px"><%= review.nickname%> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-                                <div>
-                                    <div class="stars-outer">
-                                        <!-- 5개의 회색 별 -->
-                                        <!-- 별 1 -->
-                                        <svg class="star" viewBox="0 0 25 25">
-                                            <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                                        </svg>
-                                        <!-- 별 2 -->
-                                        <svg class="star" viewBox="0 0 25 25">
-                                            <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                                        </svg>
-                                        <!-- 별 3 -->
-                                        <svg class="star" viewBox="0 0 25 25">
-                                            <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                                        </svg>
-                                        <!-- 별 4 -->
-                                        <svg class="star" viewBox="0 0 25 25">
-                                            <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                                        </svg>
-                                        <!-- 별 5 -->
-                                        <svg class="star" viewBox="0 0 25 25">
-                                            <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                                        </svg>
-
-                                        <div class="stars-inner" style="width: <%= review.score * 10 * 2%>%;"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
-                                            <!-- 5개의 노란색 별 -->
-                                            <!-- 별 1 -->
-                                            <svg class="star" viewBox="0 0 25 25">
-                                                <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#F7D358" fill="#F7D358" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                                            </svg>
-                                            <!-- 별 2 -->
-                                            <svg class="star" viewBox="0 0 25 25">
-                                                <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#F7D358" fill="#F7D358" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                                            </svg>
-                                            <!-- 별 3 -->
-                                            <svg class="star" viewBox="0 0 25 25">
-                                                <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#F7D358" fill="#F7D358" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                                            </svg>
-                                            <!-- 별 4 -->
-                                            <svg class="star" viewBox="0 0 25 25">
-                                                <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#F7D358" fill="#F7D358" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                                            </svg>
-                                            <!-- 별 5 -->
-                                            <svg class="star" viewBox="0 0 25 25">
-                                                <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#F7D358" fill="#F7D358" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="cafe24" style="padding-top: 10px; padding-bottom: 10px;"><%= review.comment%></div>
-                        </div>
-                    </div>
-                <% }%>
-            </div>
-            <%}%>
-        </div>
-
+        <%}%>
+      </div>
     </div>
 
-
-<div id="modalContainer" class="hidden">
-    <div id="modalContent">
-        <p class="title" style="padding: 20px; font-size: 30px;">소중한 리뷰를 남겨주세요</p>
-        <p style="padding: 20px; font-weight: bolder;"><span class="otherTitle" style="color: #8783f5"><%= publicParkingDetailResult.name%> </span>어떠셨나요?</p>
-        <div style="display: flex; justify-content: space-between; margin : 20px;">
-            <div class="otherTitle" style="font-size: 20px;">평점</div>
-            <div class="rating">
-                <span class="rating__result"></span>
-                <i class="rating__star far fa-star"></i>
-                <i class="rating__star far fa-star"></i>
-                <i class="rating__star far fa-star"></i>
-                <i class="rating__star far fa-star"></i>
-                <i class="rating__star far fa-star"></i>
-            </div>
+    <div id="modalContainer" class="hidden">
+      <div id="modalContent">
+        <p class="title" style="padding: 20px; font-size: 30px">
+          소중한 리뷰를 남겨주세요
+        </p>
+        <p style="padding: 20px; font-weight: bolder">
+          <span class="otherTitle" style="color: #8783f5"
+            ><%= publicParkingDetailResult.name%> </span
+          >어떠셨나요?
+        </p>
+        <div
+          style="display: flex; justify-content: space-between; margin: 20px"
+        >
+          <div class="otherTitle" style="font-size: 20px">평점</div>
+          <div class="rating">
+            <span class="rating__result"></span>
+            <i class="rating__star far fa-star"></i>
+            <i class="rating__star far fa-star"></i>
+            <i class="rating__star far fa-star"></i>
+            <i class="rating__star far fa-star"></i>
+            <i class="rating__star far fa-star"></i>
+          </div>
         </div>
         <div style="display: flex; justify-content: center">
-            <textarea  rows="20" cols="40" class="textContent spContent" id="comment"></textarea>
+          <textarea
+            rows="20"
+            cols="40"
+            class="textContent spContent"
+            id="comment"
+          ></textarea>
         </div>
-        <div style="display: flex; justify-content: space-evenly; padding-top: 20px;">
-            <div class="modalBtn spBtn" id="modalCloseButton">취소하기</div>
-            <div class="modalBtn spBtn" onclick="enrollReview(<%= publicParkingDetailResult.id%>)">리뷰작성</div>
+        <div
+          style="
+            display: flex;
+            justify-content: space-evenly;
+            padding-top: 20px;
+          "
+        >
+          <div class="modalBtn spBtn" id="modalCloseButton">취소하기</div>
+          <div
+            class="modalBtn spBtn"
+            onclick="enrollReview(<%= publicParkingDetailResult.id%>)"
+          >
+            리뷰작성
+          </div>
         </div>
+      </div>
     </div>
-</div>
-<input type="hidden" id="score">
-</body>
-<script>
-    const ratingStars = [...document.getElementsByClassName("rating__star")];
-    const ratingResult = document.querySelector(".rating__result");
+    <input type="hidden" id="score" />
+  </body>
+  <script>
+    const ratingStars = [...document.getElementsByClassName('rating__star')];
+    const ratingResult = document.querySelector('.rating__result');
 
     printRatingResult(ratingResult);
 
     function executeRating(stars, result) {
-        const starClassActive = "rating__star fas fa-star";
-        const starClassUnactive = "rating__star far fa-star";
-        const starsLength = stars.length;
-        let i;
-        stars.map((star) => {
-            star.onclick = () => {
-                i = stars.indexOf(star);
+      const starClassActive = 'rating__star fas fa-star';
+      const starClassUnactive = 'rating__star far fa-star';
+      const starsLength = stars.length;
+      let i;
+      stars.map((star) => {
+        star.onclick = () => {
+          i = stars.indexOf(star);
 
-                if (star.className.indexOf(starClassUnactive) !== -1) {
-                    printRatingResult(result, i + 1);
-                    for (i; i >= 0; --i) stars[i].className = starClassActive;
-                } else {
-                    printRatingResult(result, i);
-                    for (i; i < starsLength; ++i) stars[i].className = starClassUnactive;
-                }
-            };
-        });
+          if (star.className.indexOf(starClassUnactive) !== -1) {
+            printRatingResult(result, i + 1);
+            for (i; i >= 0; --i) stars[i].className = starClassActive;
+          } else {
+            printRatingResult(result, i);
+            for (i; i < starsLength; ++i)
+              stars[i].className = starClassUnactive;
+          }
+        };
+      });
     }
 
     function printRatingResult(result, num = 0) {
-        result.textContent = `${num}/5`;
-        const score = document.getElementById('score');
-        score.value = `${num}`;
+      result.textContent = `${num}/5`;
+      const score = document.getElementById('score');
+      score.value = `${num}`;
     }
 
     executeRating(ratingStars, ratingResult);
 
     function modalOpen() {
-        const modalCloseButton = document.getElementById('modalCloseButton');
-        const modal = document.getElementById('modalContainer');
-        modal.classList.remove('hidden');
+      const modalCloseButton = document.getElementById('modalCloseButton');
+      const modal = document.getElementById('modalContainer');
+      modal.classList.remove('hidden');
 
-        modalCloseButton.addEventListener('click', ()=> {
-           modal.classList.add('hidden');
-        });
+      modalCloseButton.addEventListener('click', () => {
+        modal.classList.add('hidden');
+      });
     }
 
     async function enrollReview(id) {
-        const result = await axios({
-            method: 'POST',
-            url: '/publicparking/detail/reviews',
-            data : {
-                publicParkingId : id,
-                score : document.getElementById('score').value,
-                comment : document.getElementById('comment').value,
-            },
-            headers: {
-                Authorization: `${localStorage.getItem('token')}`,
-            },
-        })
-        console.log(result);
+      const result = await axios({
+        method: 'POST',
+        url: '/publicparking/detail/reviews',
+        data: {
+          publicParkingId: id,
+          score: document.getElementById('score').value,
+          comment: document.getElementById('comment').value,
+        },
+        headers: {
+          Authorization: `${localStorage.getItem('token')}`,
+        },
+      });
+      console.log(result);
 
-        if(result) {
-            alert('리뷰가 정상적으로 작성되었습니다.');
-            document.location.href = `/publicparking/detail?id=${id}`;
-        }
+      if (result) {
+        alert('리뷰가 정상적으로 작성되었습니다.');
+        document.location.href = `/publicparking/detail?id=${id}`;
+      }
     }
     // 변수를 추가하여 메뉴 상태를 추적합니다.
     var isMenuVisible = false;
 
     function toggleMenu() {
-        var menu = document.getElementById("menu-container");
-        if (!isMenuVisible) {
-            menu.style.right = "0";
-        } else {
-            menu.style.right = "-300px";
-        }
+      var menu = document.getElementById('menu-container');
+      if (!isMenuVisible) {
+        menu.style.right = '0';
+      } else {
+        menu.style.right = '-300px';
+      }
 
-        // 메뉴 상태를 업데이트합니다.
-        isMenuVisible = !isMenuVisible;
+      // 메뉴 상태를 업데이트합니다.
+      isMenuVisible = !isMenuVisible;
     }
     // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
     function closeMenu() {
-        var menu = document.getElementById("menu-container");
-        menu.style.right = "-300px";
-        isMenuVisible = false;
+      var menu = document.getElementById('menu-container');
+      menu.style.right = '-300px';
+      isMenuVisible = false;
     }
 
     // 예약 알람 이동
     function reservationAlarm() {
-        location.href = "/user/reservation";
+      location.href = '/user/reservation';
     }
 
     // 회원 정보 수정 이동
     function profileEdit() {
-        location.href = "/mypage/:userid/edit";
+      location.href = '/mypage/:userid/edit';
     }
 
     // 예약내역조회 이동
     function userReservation() {
-        location.href = "/user/reservation";
+      location.href = '/user/reservation';
     }
 
     //공유주차장등록 이동
     function parkingAdd() {
-        location.href = "/mypage/parking/add";
+      location.href = '/mypage/parking/add';
     }
 
     //채팅방 이동
     function chatBtn() {
-        console.log("front 채팅방클릭");
-        location.href = "/chat";
+      console.log('front 채팅방클릭');
+      location.href = '/chat';
     }
-</script>
+  </script>
 </html>
