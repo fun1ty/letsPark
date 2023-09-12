@@ -238,18 +238,37 @@ input[type="number"]::-webkit-inner-spin-button {
     font-family: 'GmarketSansMedium';
 }
 
+.reserv{
+    ;padding-top: 20px;
+    padding-bottom: 20px;
+}
+
 .spContent {
     font-family: 'S-CoreDream-3Light';
 }
 
-.dovego {
-    font-family: 'Dovemayo_gothic';
+.child1 {
+    width: 400px;
+    padding-right: 20px;
 }
 
-.cafe24 {
-    font-family: 'Cafe24Oneprettynight';
+.child2 {
+    width: 550px;
+    padding-left: 20px;
+    padding-top: 15%;
 }
 
+.test {
+    margin: 80px;
+    display: flex;
+    justify-content: space-evenly;
+    height: 800px;
+}
+
+.image{
+
+    padding-bottom: 40px;
+}
 
 
 .stars-outer {
@@ -298,8 +317,8 @@ input[type="number"]::-webkit-inner-spin-button {
 #modalContent {
     position: absolute;
     background-color: #ffffff;
-    width: 400px;
-    height: 700px;
+    width: 700px;
+    height: 600px;
     padding: 15px;
 }
 
@@ -349,4 +368,17 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 .textContent:focus {
     outline: none;
+}
+
+textarea {
+    width: 500px;
+    height: 300px;
+}
+
+.dovego {
+    font-family: 'Dovemayo_gothic';
+}
+
+.cafe24 {
+    font-family: 'Cafe24Oneprettynight';
 }

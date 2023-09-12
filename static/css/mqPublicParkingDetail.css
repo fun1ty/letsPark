@@ -189,20 +189,32 @@
     color: #333;
 }
 
-#count {
-    border : 0;
-    width: 25px;
-    font-size: 20px;
-    text-align: center;
+.logoutBox {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 10px;
 }
 
-#count:focus {
-    outline: none;
+.child1 {
+    width: 400px;
+    padding-right: 20px;
 }
 
-svg {
-    padding-top: 7px;
-    cursor: pointer;
+.child2 {
+    width: 550px;
+    padding-left: 20px;
+}
+
+.test {
+    margin: 80px;
+    display: flex;
+    justify-content: space-evenly;
+    height: 500px;
 }
 
 .taCenter {
@@ -211,46 +223,10 @@ svg {
     padding-bottom: 3px;
 }
 
-.spBtn {
-    background-color: #8783f5;
-    width: 40%;
-    height: 40px;
-    text-align: center;
-    font-size: 15px;
-    line-height: 40px;
-    border-radius: 10px;
-    font-weight: bold;
-    font-family: 'yg-jalnan';
-    color: white;
+textarea {
+    width: 500px;
+    height: 300px;
 }
-
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.title {
-    font-family: 'KBO-Dia-Gothic_bold';
-}
-
-.otherTitle {
-    font-family: 'GmarketSansMedium';
-}
-
-.spContent {
-    font-family: 'S-CoreDream-3Light';
-}
-
-.dovego {
-    font-family: 'Dovemayo_gothic';
-}
-
-.cafe24 {
-    font-family: 'Cafe24Oneprettynight';
-}
-
-
 
 .stars-outer {
     position: relative;
@@ -276,6 +252,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .modalBtn{
     width: 40%;
+    height: 30px;
     background-color: #8783f5;;
     border-radius: 5px;
     text-align: center;
@@ -298,8 +275,8 @@ input[type="number"]::-webkit-inner-spin-button {
 #modalContent {
     position: absolute;
     background-color: #ffffff;
-    width: 400px;
-    height: 700px;
+    width: 700px;
+    height: 600px;
     padding: 15px;
 }
 
@@ -350,3 +327,28 @@ input[type="number"]::-webkit-inner-spin-button {
 .textContent:focus {
     outline: none;
 }
+
+hr {
+    background-color: #8783f5;
+}
+
+.title {
+    font-family: 'KBO-Dia-Gothic_bold';
+}
+
+.otherTitle {
+    font-family: 'GmarketSansMedium';
+}
+
+.spContent {
+    font-family: 'S-CoreDream-3Light';
+}
+
+.dovego {
+    font-family: 'Dovemayo_gothic';
+}
+
+.cafe24 {
+    font-family: 'Cafe24Oneprettynight';
+}
+

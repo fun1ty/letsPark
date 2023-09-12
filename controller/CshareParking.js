@@ -18,7 +18,24 @@ exports.detail = async (req, res) => {
             attributes : ['nickname'],
         });
 
-        res.render('shareParkingDetail', { result1, 'nickname' : result2.nickname });
+        const result = await models.ParkingReview.findAll({
+            attributes : ['nickname', 'score', 'comment'],
+            where : {
+                type : 2,
+                parkid : id,
+            }
+        });
+        let average = 0;
+        let len = result.length;
+
+        for (let obj of result) {
+            average += obj.score;
+        }
+        if(average !== 0) {
+            average = average / len;
+            average = Math.round(average * 100) / 100;
+        }
+        res.render('shareParkingDetail', { result1, 'nickname' : result2.nickname, result, average });
     } catch (error) {
         console.log(error);
     }
@@ -110,4 +127,36 @@ exports.pay = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
 
     const userId = vt.verifyToken(token);
+};
+
+exports.reviews = async (req, res) => {
+    const {shareParkId, score, comment} = req.body;
+    const token = req.headers.authorization;
+
+    const id = await vt.verifyToken(token);
+
+    let nickname;
+    try {
+        const result = await models.User.findOne({
+            attributes : ['nickname'],
+            where : { id },
+        });
+        nickname = result.nickname;
+    } catch(error) {
+        console.log(error);
+    }
+
+    try {
+        const result = await models.ParkingReview.create({
+            type : 2,
+            parkid : shareParkId,
+            nickname,
+            score,
+            comment,
+            user_id : id,
+        });
+        res.send({result : true});
+    } catch (error) {
+        console.log(error);
+    }
 };
