@@ -201,7 +201,8 @@
 }
 
 .test {
-    margin: 20px;
+    margin: auto;
+    width: 500px;
 }
 
 .taCenter {
@@ -258,7 +259,7 @@
     position: absolute;
     background-color: #ffffff;
     width: 400px;
-    height: 600px;
+    height: 700px;
     padding: 15px;
 }
 
@@ -333,3 +334,4 @@ hr {
 .cafe24 {
     font-family: 'Cafe24Oneprettynight';
 }
+
