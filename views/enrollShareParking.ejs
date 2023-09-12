@@ -6,21 +6,161 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/reset.css" />
+    <link rel="stylesheet" type="text/css" href="/font.css" />
+    <link rel="stylesheet" type="text/css" href="/enrollShareParking.css" />
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=<%= javascriptkey%>&libraries=services"></script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <title>Document</title>
 
 </head>
 <body>
-    <input type="text" id="sharePakringName" placeholder="주차장 이름">
-    <input type="text" id="phone" placeholder="<%= data.phone%>">
-    <input type="text" id="address" readonly placeholder="주소" onclick="getLatLng()">
-    <input type="number" id="price">
-    <input type="file" id="files" /><br />
+<div class="header-container">
+    <nav class="headbox">
+        <div class="headermenu">
+            <img
+                    src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/W_text_logo.svg"
+                    alt="로고"
+                    class="logo"
+            />
 
-    <button onclick="enrollShareParking()">공유주차장등록</button>
+            <div class="menu-icons">
+                <div class="menu-icon" onclick="reservationAlarm()">
+                    <img
+                            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/bell.svg"
+                            alt="알람"
+                            width="25px"
+                            height="25px"
+                    />
+                </div>
+                <div class="menu-icon">
+                    <button id="menu-button" onclick="toggleMenu()">
+                        <img
+                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/menu.svg"
+                                alt="메뉴"
+                                width="25px"
+                                height="25px"
+                        />
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="menu-container" class="menu">
+            <button id="close-button" onclick="closeMenu()">
+                <img
+                        src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/X.svg"
+                        alt="닫기"
+                        width="25px"
+                        height="25px"
+                />
+            </button>
+
+            <div style="margin: 20px">
+                <button class="mypageEdit" onclick="profileEdit()">
+                    <div>
+                        <img
+                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg"
+                                alt="profile"
+                                width="30px"
+                                height="30px"
+                        />
+                    </div>
+                    <div>
+                        <div class="userNick">파킹퍼시블님</div>
+                        <div class="userEmail">parkinghaka@gmail.com</div>
+                    </div>
+                </button>
+            </div>
+
+            <div>
+                <button class="reservationButton" onclick="userReservation()">
+                    예약 내역 보기
+                </button>
+            </div>
+            <div class="noticeBox">
+                <ul class="menuContainer">
+                    <li onclick="parkingAdd()">
+                        🚙 공유주차장 등록
+                        <img
+                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                                alt="이동"
+                                width="14px"
+                                height="14px"
+                                class="chevronRight"
+                        />
+                    </li>
+
+                    <li type="button" id="chat" onclick="chatBtn()">
+                        💬 채팅방
+                        <img
+                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                                alt="이동"
+                                width="14px"
+                                height="14px"
+                                class="chevronRight"
+                        />
+                    </li>
+                    <li>💰 포인트</li>
+                </ul>
+            </div>
+            <h5 class="payButton">결제내역</h5>
+            <div class="logoutBox">
+                <span class="service">이용안내 및 문의하기</span>
+                <span class="logoutService">로그아웃</span>
+            </div>
+
+            <!-- 사용자 정보 조회 -->
+            <!-- <form name="user-info-form">
+              <label for="userid">User ID:</label>
+              <input type="text" id="userid" name="userid" readonly />
+              <br />
+              <label for="password">Password:</label>
+              <input type="text" id="password" name="password" readonly />
+              <br />
+              <label for="name">Name:</label>
+              <input type="text" id="name" name="name" readonly />
+              <br />
+              <label for="nickname">Nickname:</label>
+              <input type="text" id="nickname" name="nickname" readonly />
+              <br />
+              <label for="phone">Phone:</label>
+              <input type="text" id="phone" name="phone" readonly />
+              <br />
+            </form> -->
+        </div>
+    </nav>
+</div>
+    <div style="padding: 30px;" >
+        <h2 style="font-size: 30px; padding: 20px;">공유주차장 등록하기</h2>
+        <div>주차공간 이름</div>
+        <input type="text" class="inputall" id="sharePakringName" placeholder="주차장 이름">
+        <div>주소</div>
+        <input type="text" class="inputall" id="address" readonly placeholder="주소" onclick="getLatLng()">
+        <div>가격</div>
+        <input type="number" class="inputall" id="price" dir="rtl"> <span style="font-size: 25px;">원</span><br/>
+        <span>주차장 사진</span>
+        <input type="file" id="files" style="padding-top: 5px; padding-bottom: 5px;" accept="image/*" onchange="loadFile(this)"/><br />
+        <div id="imgArea" style="display: flex; justify-content: center;">
+
+        </div>
+
+        <div style="background-color: #8783f5; text-align: center; height: 60px; line-height: 60px; border-radius: 10px; margin-top: 40px;" onclick="enrollShareParking()">공유주차장 등록</div>
+    </div>
 </body>
 <script>
+    function loadFile(input) {
+        const div = document.getElementById('imgArea');
+        div.innerHTML = '';
+        let file = input.files[0];
+        let img = document.createElement('img');
+        img.setAttribute('class', 'img');
+
+        img.src = URL.createObjectURL(file);
+        img.style.width = '350px';
+        img.style.height = '250px';
+        div.appendChild(img);
+    }
     let lat = 0, lng = 0;
     var geocoder = new kakao.maps.services.Geocoder();
     function getLatLng() {
@@ -42,13 +182,25 @@
 
     async function enrollShareParking() {
         const shareParkingName = document.getElementById('sharePakringName').value;
-        const phone = document.getElementById('phone').value;
+        if(shareParkingName === '') {
+            alert('주차장 이름을 입력해주세요.');
+            return;
+        }
         const address = document.getElementById('address').value;
+        if(address === '') {
+            alert('주소를 입력해주세요.');
+            return;
+        }
         const price = document.getElementById('price').value;
+        if(price === '') {
+            alert('가격을 입력해주세요.');
+            return;
+        }
         const file = document.querySelector('#files');
-
-        //모든 input값 다 들어왔는지 검증
-
+        if(file.files[0] === undefined) {
+            alert('주차장 이미지를 첨부해주세요.');
+            return;
+        }
         const formData = new FormData();
 
         formData.append('file', file.files[0]);
@@ -65,13 +217,68 @@
                 data : formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    // Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `${localStorage.getItem('token')}`,
                 },
-            })
+            });
+
+            if(result) {
+                alert('공유주차장 등록이 완료되었습니다. ');
+                document.location.href = '/';
+            } else {
+                alert('등록된 회원이 아닙니다. 회원가입을 진행해주세요. ');
+                document.location.href = '/signup';
+            }
         } catch (err) {
             console.log(err);
         }
+    }
+</script>
+<script>
+    // 변수를 추가하여 메뉴 상태를 추적합니다.
+    var isMenuVisible = false;
 
+    function toggleMenu() {
+        var menu = document.getElementById("menu-container");
+        if (!isMenuVisible) {
+            menu.style.right = "0";
+        } else {
+            menu.style.right = "-300px";
+        }
+
+        // 메뉴 상태를 업데이트합니다.
+        isMenuVisible = !isMenuVisible;
+    }
+    // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
+    function closeMenu() {
+        var menu = document.getElementById("menu-container");
+        menu.style.right = "-300px";
+        isMenuVisible = false;
+    }
+
+    // 예약 알람 이동
+    function reservationAlarm() {
+        location.href = "/user/reservation";
+    }
+
+    // 회원 정보 수정 이동
+    function profileEdit() {
+        location.href = "/mypage/:userid/edit";
+    }
+
+    // 예약내역조회 이동
+    function userReservation() {
+        location.href = "/user/reservation";
+    }
+
+    //공유주차장등록 이동
+    function parkingAdd() {
+        location.href = "/mypage/parking/add";
+    }
+
+    //채팅방 이동
+    function chatBtn() {
+        console.log("front 채팅방클릭");
+        location.href = "/chat";
     }
 </script>
 </html>

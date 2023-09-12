@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- PortOne SDK -->
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+
+    <meta charset="UTF-8" />
+    <title>Sample Payment</title>
+  </head>
+  <body>
+    <!-- 가격, 공유주차장id, 분 단위 -->
+    <input type="number" id="priceInput" />
+    <input type="text" id="parkingIdInput" />
+    <input type="number" id="minuteInput" />
+
+    <!-- 결제하기 버튼 생성 -->
+    <button onclick="requestPay()">결제하기</button>
+
+    <script>
+      var IMP = window.IMP;
+      IMP.init("imp55871858");
+
+      // 랜덤 문자열 생성 함수
+      function generateRandomString(length) {
+        let result = "";
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for (let i = 0; i < length; i++) {
+          const randomIndex = Math.floor(Math.random() * characters.length);
+          result += characters.charAt(randomIndex);
+        }
+        return result;
+      }
+
+      // 기존 merchant_uid 값
+      const originalMerchantUid = "57008833-33004";
+
+      // 새로운 merchant_uid 값 생성
+      const randomSuffix = generateRandomString(6);
+      const newMerchantUid = originalMerchantUid + "-" + randomSuffix;
+
+      function requestPay() {
+        // 가격, 공유주차장 ID, 분 단위 입력값 가져오기
+        const price = parseFloat(document.getElementById("priceInput").value);
+        const parkingId = document.getElementById("parkingIdInput").value;
+        const minutes = parseInt(document.getElementById("minuteInput").value);
+
+        // 가격 계산 (30분 단위로 가격을 계산하며 나머지가 있으면 다음 30분 단위로 올림)
+        const baseAmount = price * minutes;
+        const remainder = minutes % 30;
+        const additionalAmount = remainder > 0 ? price * (30 - remainder) : 0;
+        const amount = baseAmount + additionalAmount;
+
+        IMP.request_pay(
+          {
+            pg: "html5_inicis.INIpayTest",
+            pay_method: "card",
+            merchant_uid: newMerchantUid,
+            name: "당근 10kg",
+            amount: amount,
+            buyer_email: "Iamport@chai.finance",
+            buyer_name: "포트원 기술지원팀",
+            buyer_tel: "010-1234-5678",
+            buyer_addr: "서울특별시 강남구 삼성동",
+            buyer_postcode: "123-456",
+          },
+          function (rsp) {
+            // 결제 요청 결과를 콘솔에 출력
+            console.log(rsp);
+
+            // 서버로 결제 정보를 전송
+            if (rsp.success) {
+              sendPaymentDataToServer(newMerchantUid, amount);
+            } else {
+              // 결제 실패 시 오류 메시지를 표시
+              displayErrorMessage(rsp.error_msg);
+            }
+          }
+        );
+      }
+
+      async function sendPaymentDataToServer(merchantUid, amount) {
+        try {
+          const response = await fetch("/payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              merchantUid: merchantUid,
+              amount: amount,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("서버 응답이 실패했습니다.");
+          }
+
+          const data = await response.json();
+
+          if (data.success) {
+            console.log("결제 성공:", data.message);
+          } else {
+            console.error("결제 실패:", data.error);
+            displayErrorMessage(data.error);
+          }
+        } catch (error) {
+          console.error("서버 요청 실패:", error);
+          displayErrorMessage("서버 요청 중 오류 발생");
+        }
+      }
+    </script>
+  </body>
+</html>

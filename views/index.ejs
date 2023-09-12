@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="/index.css" />
     <link rel="stylesheet" href="/map.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2"></script>
+
     <script src="/socket.io/socket.io.js"></script>
 
     <script
@@ -71,7 +73,7 @@
               </div>
               <div>
                 <div class="userNick">파킹퍼시블님</div>
-                <div class="userEmail">parkinghaka@gmail.com</div>
+                <!-- <div class="userEmail">parkinghaka@gmail.com</div> -->
               </div>
             </button>
           </div>
@@ -108,14 +110,13 @@
             </ul>
           </div>
           <h5>이용안내 및 문의하기</h5>
-          <button type="button" onclick="fetchUserInfo()">사용자조회</button>
           <br />
-          <a href="/user/login">로그인하기</a><br />
+          <!-- <a href="/user/login">로그인하기</a><br /> -->
           <a href="/user/signup">회원가입</a>
           <h5 class="payButton">결제내역</h5>
           <div class="logoutBox">
             <span class="service">이용안내 및 문의하기</span>
-            <span class="logoutService" onclick="logout()">로그아웃</span>
+            <span class="logoutService" onclick="logout()">로그인</span>
           </div>
 
           <!-- 사용자 정보 조회 -->
@@ -169,34 +170,23 @@
     <div id="search-results"></div>
     <script>
       var map;
-      function success({ coords, timestamp }) {
-        const lat = coords.latitude; // 위도
-        const lng = coords.longitude; // 경도
 
-        var mapContainer = document.getElementById("map"), // 지도를 표시할 div
-          mapOption = {
-            center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
-            level: 3, // 지도의 확대 레벨
-          };
+      var mapContainer = document.getElementById("map"), // 지도를 표시할 div
+        mapOption = {
+          center: new kakao.maps.LatLng(37.54764046237589, 126.94578430114157), // 지도의 중심좌표
+          level: 3, // 지도의 확대 레벨
+        };
 
-        // 지도를 생성합니다
-        map = new kakao.maps.Map(mapContainer, mapOption);
-        console.log(map);
-      }
-      function getUserLocation() {
-        if (!navigator.geolocation) {
-          throw "위치 정보가 지원되지 않습니다.";
-        }
-        navigator.geolocation.getCurrentPosition(success);
-      }
-
+      // 지도를 생성합니다
+      map = new kakao.maps.Map(mapContainer, mapOption);
+      // 장소 검색 객체를 생성합니다
+      var ps = new kakao.maps.services.Places();
       (async function () {
         const result = await axios({
           method: "POST",
           url: "/",
         });
         console.log(result);
-        getUserLocation();
 
         setTimeout(() => {
           let set = new Set();
@@ -276,8 +266,6 @@
         }, 4000);
       })();
 
-      // 장소 검색 객체를 생성합니다
-      var ps = new kakao.maps.services.Places();
       // 키워드로 장소를 검색합니다
       function searchPlaces() {
         const val = document.getElementById("search-input").value;
@@ -339,7 +327,7 @@
 
       // 회원 정보 수정 이동
       function profileEdit() {
-        location.href = "/mypage/:userid/edit";
+        location.href = `/mypage/${userid}`;
       }
 
       // 예약내역조회 이동
@@ -347,40 +335,23 @@
         location.href = "/user/reservation";
       }
 
-      // 서버로부터 사용자 정보를 가져오는 함수
-      //async function fetchUserInfo() {
-      //const token = localStorage.getItem('token');
-      //console.log('클라이언트', token);
-
-      //if (!token) {
-
-      //console.log('토큰이 없습니다.');
-      //return;
-      //}
-
-      //try {
-      // const response = await axios.get('/', {
-      //headers: {
-      //Authorization: `Bearer ${token}`,
-      // },
-      // });
-
-      //if (response.data && response.data.userid) {
-      //  const userInfo = response.data;
-      // console.log('사용자 정보:', userInfo);
-
-      // const decodedToken = jwt.verify(token, 'SECRET');
-      // console.log('디코딩된 토큰:', decodedToken);
-
-      //  const userIdDisplay = document.getElementById('userIdDisplay');
-      //  userIdDisplay.value = userInfo.userid;
-      // } else {
-      //  console.log('토큰이 유효하지 않습니다.');
-      // }
-      // } catch (error) {
-      //   console.log(error);
-      // }
-      // }
+      //토큰으로 닉네임 값 받아오기
+      // const token = localStorage.getItem('token');
+      // console.log('토큰', token);
+      // axios
+      //   .get('/', {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   })
+      //   .then((response) => {
+      //     const userNickname = response.data.userNickname;
+      //     console.log('사용자 닉네임', userNickname);
+      //     document.querySelector('.userNick').innerText = userNickname;
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
 
       //로그아웃
       function logout() {
@@ -389,7 +360,7 @@
 
       //공유주차장등록 이동
       function parkingAdd() {
-        location.href = "/mypage/parking/add";
+        location.href = "/shareparking";
       }
 
       //채팅방 이동
@@ -400,7 +371,7 @@
           alert("로그인 해주세요");
         } else {
           console.log("chat이동");
-          location.href = `/chat`;
+          location.href = "/chat";
         }
       }
     </script>

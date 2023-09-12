@@ -132,11 +132,11 @@
         </nav>
     </div>
     <div class="test">
-        <div class="taCenter" style="font-size: 25px;"><%= publicParkingDetailResult.name%></div>
-        <div class="taCenter"><%= publicParkingDetailResult.address%></div>
-        <div class="taCenter"><%= publicParkingDetailResult.tel%></div>
+        <div class="taCenter title" style="font-size: 25px;"><%= publicParkingDetailResult.name%></div>
+        <div class="taCenter otherTitle"><%= publicParkingDetailResult.address%></div>
+        <div class="taCenter otherTitle"><%= publicParkingDetailResult.tel%></div>
         <div style="display: flex; justify-content: center">
-            <div class="taCenter" style="padding-top: 5px;">평점(<%= result.length%>) : <%= average%>&nbsp;&nbsp;</div>
+            <div class="taCenter spContent" style="padding-top: 5px;">평점(<%= result.length%>) : <%= average%>&nbsp;&nbsp;</div>
             <div class="stars-outer">
                 <!-- 5개의 회색 별 -->
                 <!-- 별 1 -->
@@ -185,7 +185,7 @@
                 </div>
             </div>
         </div>
-        <div style="text-align: end; padding-bottom: 4px;">총 주차면 갯수 - <%= publicParkingDetailResult.capacity%></div>
+        <div class="otherTitle" style="text-align: end; padding-bottom: 4px;">총 주차면 갯수 - <%= publicParkingDetailResult.capacity%></div>
         <div style="display: flex; justify-content: space-between">
             <div>
                 <p style="background-color: lightgray; border: 1px solid lightgray; border-radius: 4px;">공영</p>
@@ -193,14 +193,14 @@
                 <p style="background-color: lightgray; border: 1px solid lightgray; border-radius: 4px;">무료</p>
                 <% }%>
             </div>
-            <p class="spaceb">현재 주차가능 면 갯수 - <%= publicParkingDetailResult.currentparking%></p>
+            <p class="spaceb otherTitle">현재 주차가능 면 갯수 - <%= publicParkingDetailResult.currentparking%></p>
         </div>
         <hr>
         <div style="text-align: end">
             <% if(publicParkingDetailResult.payyn === 'N') {%>
-                <span>무료</span>
+                <span class="spContent">무료</span>
             <% } else {%>
-            <span><%= publicParkingDetailResult.price.timerate%>분당 <%= publicParkingDetailResult.price.rates%>원</span>
+            <span class="spContent"><%= publicParkingDetailResult.price.timerate%>분당 <%= publicParkingDetailResult.price.rates%>원</span>
             <% }%>
         </div>
         <br>
@@ -211,18 +211,18 @@
             <% let weekEndEnd = publicParkingDetailResult.operationtime.weekend_end%>
             <% let holidayBegin = publicParkingDetailResult.operationtime.holiday_begin%>
             <% let holidayEnd = publicParkingDetailResult.operationtime.holiday_end%>
-            <div style="text-align: end; padding: 3px;">평일  <%= weekdayBegin.substring(0, 2)%>:<%= weekdayBegin.substring(2, 4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2, 4)%></div>
+            <div class="spContent" style="text-align: end; padding: 3px;">평일  <%= weekdayBegin.substring(0, 2)%>:<%= weekdayBegin.substring(2, 4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2, 4)%></div>
         </div>
         <div style="padding: 3px; display: flex; justify-content: space-between">
-            <span>운영시간</span>
-            <span>주말  <%= weekendBegin.substring(0, 2)%>:<%= weekEndEnd.substring(2, 4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2, 4)%></span>
+            <span class="otherTitle">운영시간</span>
+            <span class="spContent">주말  <%= weekendBegin.substring(0, 2)%>:<%= weekEndEnd.substring(2, 4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2, 4)%></span>
         </div>
-        <div style="text-align: end; padding: 3px">공휴일  <%= holidayBegin.substring(0, 2)%>:<%= holidayEnd.substring(2, 4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2, 4)%></div>
+        <div class="spContent" style="text-align: end; padding: 3px">공휴일  <%= holidayBegin.substring(0, 2)%>:<%= holidayEnd.substring(2, 4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2, 4)%></div>
 
         <hr>
         <div style="display: flex; justify-content: space-between">
-            <div>리뷰</div>
-            <div onclick="modalOpen()" style="cursor: pointer;">
+            <div class="otherTitle">리뷰</div>
+            <div class="otherTitle" onclick="modalOpen()" style="cursor: pointer;">
                 리뷰작성
                 <img src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/PencilSquare.svg" style="width: 20px; height: 20px;">
             </div>
@@ -230,8 +230,8 @@
         <hr>
         <% if(result.length === 0) {%>
         <div style="padding-top: 40px;">
-            <div style="text-align: center; font-size: 35px; font-weight: bolder;">작성된 리뷰가 없습니다</div>
-            <div style="text-align: center; font-size: 35px; font-weight: bolder;">리뷰를 작성해 다른 이용자에게 도움을 주세요 !</div>
+            <div class="title" style="text-align: center; font-size: 35px;">작성된 리뷰가 없습니다</div>
+            <div class="title" style="text-align: center; font-size: 35px;">리뷰를 작성해 다른 이용자에게 도움을 주세요 !</div>
         </div>
         <% } else {%>
         <div>
@@ -240,7 +240,7 @@
                     <div class="profileImage" style="width: 40px; height: 40px"></div>
                     <div>
                         <div style="display : flex; justify-content: space-between">
-                            <div style="padding-top: 5px"><%= review.nickname%> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                            <div class="dovego" style="padding-top: 5px"><%= review.nickname%> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                             <div>
                                 <div class="stars-outer">
                                     <!-- 5개의 회색 별 -->
@@ -291,7 +291,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="padding-top: 10px; padding-bottom: 10px;"><%= review.comment%></div>
+                        <div class="cafe24" style="padding-top: 10px; padding-bottom: 10px;"><%= review.comment%></div>
                     </div>
                 </div>
             <% }%>
@@ -301,10 +301,10 @@
 
 <div id="modalContainer" class="hidden">
     <div id="modalContent">
-        <p style="padding: 20px; font-size: 30px;">소중한 리뷰를 남겨주세요</p>
-        <p style="padding: 20px; font-weight: bolder;"><span style="color: #8783f5"><%= publicParkingDetailResult.name%> </span>어떠셨나요?</p>
+        <p class="title" style="padding: 20px; font-size: 30px;">소중한 리뷰를 남겨주세요</p>
+        <p style="padding: 20px; font-weight: bolder;"><span class="otherTitle" style="color: #8783f5"><%= publicParkingDetailResult.name%> </span>어떠셨나요?</p>
         <div style="display: flex; justify-content: space-between; margin : 20px;">
-            <div style="font-size: 20px;">평점</div>
+            <div class="otherTitle" style="font-size: 20px;">평점</div>
             <div class="rating">
                 <span class="rating__result"></span>
                 <i class="rating__star far fa-star"></i>
@@ -315,11 +315,11 @@
             </div>
         </div>
         <div style="display: flex; justify-content: center">
-            <textarea rows="20" cols="40" class="textContent"></textarea>
+            <textarea  rows="30" cols="20" class="textContent spContent" id="comment"></textarea>
         </div>
         <div style="display: flex; justify-content: space-evenly; padding-top: 20px;">
-            <div class="modalBtn" id="modalCloseButton">취소하기</div>
-            <div class="modalBtn" onclick="enrollReview(<%= publicParkingDetailResult.id%>)">리뷰작성</div>
+            <div class="modalBtn spBtn" id="modalCloseButton">취소하기</div>
+            <div class="modalBtn spBtn" onclick="enrollReview(<%= publicParkingDetailResult.id%>)">리뷰작성</div>
         </div>
     </div>
 </div>
@@ -379,15 +379,15 @@
                 comment : document.getElementById('comment').value,
             },
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                Authorization: `${localStorage.getItem('token')}`,
             },
         })
         console.log(result);
-        // if(result) {
-        //
-        // } else {
-        //
-        // }
+
+        if(result) {
+            alert('리뷰가 정상적으로 작성되었습니다.');
+            document.location.href = `/publicparking/detail?id=${id}`;
+        }
     }
     // 변수를 추가하여 메뉴 상태를 추적합니다.
     var isMenuVisible = false;

@@ -2,6 +2,7 @@ const express = require("express");
 const controller = require("../controller/Cmain");
 const router = express.Router();
 
+<<<<<<< HEAD
 router.post("/", controller.getInfo);
 
 const jwt = require("jsonwebtoken");
@@ -36,4 +37,13 @@ router.get("/chat", controller.chat);
 
 router.get("/ppdb", controller.ppdb);
 
+=======
+router.post('/', controller.getInfo);
+
+router.get('/', controller.main);
+router.get('/chat', controller.chat);
+
+router.get('/ppdb', controller.ppdb);
+
+>>>>>>> 1ec4eeab4d8462f08b20f9421001581f35d01fee
 module.exports = router;

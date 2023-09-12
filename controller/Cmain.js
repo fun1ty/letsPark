@@ -1,80 +1,59 @@
-
 const axios = require('axios');
 const models = require('../models/index');
-const jwt = require('jsonwebtoken');
 const { x64 } = require('crypto-js');
 const { Navigator } = require('node-navigator');
 const vt = require('../utils/JwtVerifyToken');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const env = process.env;
 
 exports.chat = async (req, res) => {
-  res.render("chat");
-
+  res.render('chat');
 };
 
-// exports.main = (req, res) => {
-//   console.log("main");
-//   const token = req.headers.authorization;
-//   if (token) {
-//     try {
-//       const decodedToken = jwt.verify(token, "SECRET");
-//       const userId = decodedToken.userid;
-//
-//       const userInfo = {
-//         userid: userId,
-//       };
-//
-//       res.json(userInfo);
-//       console.log(userInfo);
-//     } catch (error) {
-//       console.log("토큰 디코드 오류", error);
-//     }
-//   } else {
-//res.redirect('/user/login');
-//   }
-//   res.render("index");
-// };
-
 exports.main = async (req, res) => {
-  const user = req.user;
-  const userInfo = { userid: user.userid, nickname: user.nickname };
-  console.log('user: ', user);
-  if (!user) {
-    console.log('토큰 디코드 오류');
-  } else {
-    const authHeader = req.headers.authorization;
-    console.log('controller authHeader: ', authHeader);
+  // let userNickname;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('인증 헤더 없음');
-    }
-  }
-
-  // const navigator = new Navigator();
-  // let tempLocation;
-  // navigator.geolocation.getCurrentPosition((success, error) => {
-  //   if (error) console.error(error);
-  //   else console.log(success);
-  //   tempLocation = {
-  //     lat: success.latitude,
-  //     lng: success.longitude,
-  //   };
-  // });
-  // let publicParkingList;
   // try {
-  //   publicParkingList = await models.PublicParking.findAll({
-  //     attributes: ['capacity', 'currentparking', 'lat', 'lng']})
+  //   const token = req.headers.authorization.split(' ')[1];
+  //   const userId = await vt.verifyToken(token);
+
+  //   console.log('userid', userId);
+  //   console.log('try');
+
+  //   const user = await models.User.findOne({ where: { id: userId } });
+
+  //   if (user) {
+  //     userNickname = user.nickname;
+  //     console.log('user nickname', userNickname);
+  //   }
+  // } catch (error) {
+  //   console.log('토큰 검증 오류', error);
+  //   console.log('error');
+  // }
+  // // const navigator = new Navigator();
+  // // let tempLocation;
+  // // navigator.geolocation.getCurrentPosition((success, error) => {
+  // //   if (error) console.error(error);
+  // //   else console.log(success);
+  // //   tempLocation = {
+  // //     lat: success.latitude,
+  // //     lng: success.longitude,
+  // //   };
+  // // });
+  // // let publicParkingList;
+  // // try {
+  // //   publicParkingList = await models.PublicParking.findAll({
+  // //     attributes: ['capacity', 'currentparking', 'lat', 'lng']})
 
   res.render('index', { javascriptkey: env.JAVASCRIPTKEY });
-
 };
 
 exports.getInfo = async (req, res) => {
   let publicParkingList;
   try {
     publicParkingList = await models.PublicParking.findAll({
-      attributes: ["id", "capacity", "currentparking", "lat", "lng"],
+      attributes: ['id', 'capacity', 'currentparking', 'lat', 'lng'],
     });
   } catch (err) {
     console.log(err);
@@ -86,11 +65,11 @@ exports.getInfo = async (req, res) => {
       include: [
         {
           model: models.ShareParking,
-          as :  'shareparking',
+          as: 'shareparking',
           attributes: ['lat', 'lng'],
         },
       ],
-      attributes : { exclude : ['price', 'content'] },
+      attributes: { exclude: ['price', 'content'] },
     });
   } catch (err) {
     console.log(err);
@@ -99,10 +78,8 @@ exports.getInfo = async (req, res) => {
   let shareParkingList;
   try {
     shareParkingList = await models.ShareParking.findAll({
-
       attributes: ['id', 'lat', 'lng', 'price'],
       where: { status: 'Y' },
-
     });
   } catch (err) {
     console.log(err);
@@ -110,27 +87,24 @@ exports.getInfo = async (req, res) => {
   let allLen = publicParkingList.length + shareParkingList.length;
 
   console.log(cleaningList);
-  res.json({publicParkingList, shareParkingList, cleaningList, allLen});
-
+  res.json({ publicParkingList, shareParkingList, cleaningList, allLen });
 };
 
 exports.chat = (req, res) => {
-  res.render("chat");
+  res.render('chat');
   socketModule(io);
 };
 
 function socketModule(io) {
   // 클라이언트 연결 이벤트 핸들링
-  io.on("connection", (socket) => {
-    console.log("라우터접속");
+  io.on('connection', (socket) => {
+    console.log('라우터접속');
     // connection 함수 호출
     connection(io, socket);
-
   });
 
-
   res.json({ publicParkingList, shareParkingList, allLen });
-};
+}
 
 exports.ppdb = async (req, res) => {
   let map = new Map();
