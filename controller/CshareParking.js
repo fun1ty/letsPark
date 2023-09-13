@@ -13,7 +13,7 @@ exports.detail = async (req, res) => {
     const result1 = await models.ShareParking.findOne({
       where: { id },
     });
-
+    console.log("result1", result1.user_id);
     const result2 = await models.User.findOne({
       where: { id: result1.user_id },
       attributes: ["nickname", "id"],
@@ -39,7 +39,7 @@ exports.detail = async (req, res) => {
     res.render("shareParkingDetail", {
       result1,
       nickname: result2.nickname,
-      id: result2.id,
+      userid: result1.user_id,
       result,
       average,
     });

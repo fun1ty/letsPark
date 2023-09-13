@@ -13,6 +13,10 @@ const Model = (sequelize) => {
       type: DataTypes.STRING(30),
       allowNull: false,
     },
+    shareparkname: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
   });
 };
 

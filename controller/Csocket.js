@@ -1,41 +1,36 @@
 const models = require("../models/index");
-const jwt = require("jsonwebtoken");
 const vt = require("../utils/JwtVerifyToken");
 const S3 = require("../utils/S3upload");
-const { error } = require("console");
 const randomBytes = require("crypto").randomBytes(2);
-const number = parseInt(randomBytes.toString("hex"), 16);
 // const roomList = [];
 const user = [];
 let roomName;
-let roomDBInsert;
-let profile;
 let roomFind;
 
 console.log(user);
-const generateRandomString = (num) => {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  let result = "";
-  const charactersLength = characters.length;
-  for (let i = 0; i < num; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
+// const generateRandomString = (num) => {
+//   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+//   let result = "";
+//   const charactersLength = characters.length;
+//   for (let i = 0; i < num; i++) {
+//     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+//   }
+//   return result;
+// };
 
 exports.connection = (io, socket) => {
   console.log("접속");
 
-  socket.on("joinRoom", async (roomId) => {
+  socket.on("joinRoom", async (roomId, joinUserId) => {
+    console.log("roomId", roomId);
     try {
+      const history = chatHistory(roomId);
       socket.join(roomId);
-      const history = await chatHistory(roomId);
-      console.log("history", history);
-      if (!history) {
-        io.to(roomId).emit("history", null);
-      } else {
-        io.to(roomId).emit("history", history);
-      }
+      // if (!history) {
+      //   io.to(roomId).emit("history", null);
+      // } else {
+      //   io.to(roomId).emit("history", history);
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -54,7 +49,6 @@ exports.connection = (io, socket) => {
       userId = console.log("resultValue", resultValue);
       if (!user.includes(resultValue.id)) {
         user.push(resultValue.id);
-        profile = resultValue.profile;
         console.log("user", user[0], user[1]);
       }
       socket.emit("jwt", resultValue);
@@ -66,8 +60,15 @@ exports.connection = (io, socket) => {
   //채팅방 만들기 생성
   socket.on(
     "create",
-    async (userId, usernick, roomId, requestUserId, joinUserNick) => {
-      console.log(userId, usernick, requestUserId, joinUserNick);
+    async (
+      userId,
+      usernick,
+      roomId,
+      requestUserId,
+      joinUserNick,
+      parkingName
+    ) => {
+      console.log(userId, usernick, requestUserId, joinUserNick, parkingName);
       try {
         if (!roomId) {
           roomName = "room" + userId + "_" + requestUserId;
@@ -79,6 +80,7 @@ exports.connection = (io, socket) => {
           if (!roomFind) {
             roomDBInsert = await models.ChatRoom.create({
               roomname: roomName,
+              shareparkname: parkingName,
             });
           }
         }
@@ -96,13 +98,19 @@ exports.connection = (io, socket) => {
   socket.on("sendMessage", async (message) => {
     try {
       console.log("sendMessage", message);
+      //userid와 다른아이디 찾기
+      const joinUserId = user.indexOf(message.userid);
+
+      const joinUserProfile = await models.User.findOne({
+        where: { id: message.userid },
+      }); //회원이 있는지 검증
       //메세지 DB삽입
       await chatDBInsert(message);
       io.to(socket.room).emit(
         "newMessage",
         message.message,
         message.nick,
-        profile
+        joinUserProfile.profile
       );
     } catch (error) {
       console.log("newMessage에러: ", error);
@@ -117,11 +125,12 @@ exports.connection = (io, socket) => {
 
   //채팅 유저DB 삽입
   async function chatUserDBInsert(userId, requestUserId, joinUserNick) {
-    console.log("joinuser", user[1]);
+    console.log("joinuser", userId, requestUserId, joinUserNick);
     const findUserChat = await models.ChatUser.findOne({
       userid: userId,
       joinuser: requestUserId,
     });
+
     if (!findUserChat) {
       await models.ChatUser.create({
         roomid: roomFind.id,
