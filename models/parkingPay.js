@@ -8,9 +8,8 @@ const Model = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    status: {
-      type: DataTypes.CHAR(1),
-      allowNull: false,
+    pg: {
+      type: DataTypes.JSON,
     },
   });
 };
