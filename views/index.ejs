@@ -7,8 +7,6 @@
     <link rel="stylesheet" type="text/css" href="/index.css" />
     <link rel="stylesheet" href="/map.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2"></script>
-
     <script src="/socket.io/socket.io.js"></script>
 
     <script
@@ -27,6 +25,7 @@
             src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/W_text_logo.svg"
             alt="로고"
             class="logo"
+            onclick="window.location.href='/'"
           />
 
           <div class="menu-icons">
@@ -64,16 +63,10 @@
           <div style="margin: 20px">
             <button class="mypageEdit" onclick="profileEdit()">
               <div>
-                <img
-                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg"
-                  alt="profile"
-                  width="30px"
-                  height="30px"
-                />
+                <img id="profilePic" alt="profile" width="30px" height="30px" />
               </div>
               <div>
-                <div class="userNick">파킹퍼시블님</div>
-                <!-- <div class="userEmail">parkinghaka@gmail.com</div> -->
+                <div class="userNick">파킹퍼시블</div>
               </div>
             </button>
           </div>
@@ -96,7 +89,7 @@
                 />
               </li>
 
-              <li type="button" id="chat" onclick="chatBtn()">
+              <li type="button" id="chat" onclick="chatListBtn()">
                 💬 채팅방
                 <img
                   src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
@@ -112,11 +105,14 @@
           <h5>이용안내 및 문의하기</h5>
           <br />
           <!-- <a href="/user/login">로그인하기</a><br /> -->
-          <a href="/user/signup">회원가입</a>
           <h5 class="payButton">결제내역</h5>
           <div class="logoutBox">
-            <span class="service">이용안내 및 문의하기</span>
-            <span class="logoutService" onclick="logout()">로그인</span>
+            <span
+              id="loginLogoutButton"
+              class="logoutService"
+              onclick="logout()"
+              >로그인/회원가입</span
+            >
           </div>
 
           <!-- 사용자 정보 조회 -->
@@ -249,7 +245,9 @@
               content:
                 '<div class="customoverlay shareparking" style="position: relative; background-color: lightgreen; border-radius: 20px; width: 100px; height: 26px;">' +
                 `  <div  style="text-decoration: none;  color: inherit; display: flex; justify-content: center; align-items: center; height: 100%;" onclick="shareParkingDetail(${shareParking.id})">` +
-                `    <span class="localname">${shareParking.price}</span>` +
+                `    <span class="localname">${shareParking.price.toLocaleString(
+                  'ko-KR'
+                )}원</span>` +
                 '  </div>' +
                 '</div>',
               latlng: new kakao.maps.LatLng(shareParking.lat, shareParking.lng),
@@ -327,7 +325,26 @@
 
       // 회원 정보 수정 이동
       function profileEdit() {
-        location.href = `/mypage/${userid}`;
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          axios
+            .get('/data', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              const userId = response.data.responseData.data.userid;
+              console.log(userId);
+              location.href = `/mypage/${userId}`;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          location.href = '/user/login';
+        }
       }
 
       // 예약내역조회 이동
@@ -335,43 +352,118 @@
         location.href = '/user/reservation';
       }
 
-      //토큰으로 닉네임 값 받아오기
-      // const token = localStorage.getItem('token');
-      // console.log('토큰', token);
-      // axios
-      //   .get('/', {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   })
-      //   .then((response) => {
-      //     const userNickname = response.data.userNickname;
-      //     console.log('사용자 닉네임', userNickname);
-      //     document.querySelector('.userNick').innerText = userNickname;
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      // 로그인 유무에 따른 닉네임 값 표시
+      window.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+        const userNickElement = document.querySelector('.userNick'); // 사용자 닉네임 엘리먼트
+
+        if (token) {
+          // 토큰이 있는 경우
+          loginLogoutButton.innerText = '로그아웃';
+
+          axios
+            .get('/data', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              const userNickname = response.data.responseData.data.nickname;
+              userNickElement.innerText = userNickname;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          // 토큰이 없는 경우
+          userNickElement.innerText = '로그인해주세요';
+        }
+      });
 
       //로그아웃
+      //로그인 상태 시 로컬 스토리지 토큰 비우도록
+      //로그아웃 상태 시 /user/login 이동
       function logout() {
-        localStorage.removeItem('token');
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+        if (token) {
+          if (confirm('로그아웃 하시겠습니까?')) {
+            localStorage.removeItem('token');
+            loginLogoutButton.innerText = '로그인/회원가입';
+
+            alert('로그아웃 되었습니다!');
+
+            //로그아웃 후 새로고침
+            setTimeout(() => {
+              location.reload();
+            }, 1000);
+          }
+        } else {
+          location.href = '/user/login';
+        }
       }
 
+      window.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+        if (token) {
+          loginLogoutButton.innerText = '로그아웃';
+        }
+      });
+
+      //프로필 사진 띄우기
+      const token = localStorage.getItem('token');
+      if (token) {
+        axios
+          .get('/data', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            const profileUrl = response.data.responseData.data.profile;
+            const profilePic = document.getElementById('profilePic');
+            profilePic.src = profileUrl;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        profilePic.src =
+          'https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg';
+      }
       //공유주차장등록 이동
       function parkingAdd() {
         location.href = '/shareparking';
       }
 
-      //채팅방 이동
-      async function chatBtn() {
-        console.log('front 채팅방클릭');
+      //my채팅내역
+      function chatListBtn() {
+        console.log('front 채팅방리스트 클릭');
         const token = localStorage.getItem('token');
         if (!token) {
           alert('로그인 해주세요');
+          return;
         } else {
-          console.log('chat이동');
-          location.href = '/chat';
+          axios
+            .get('/data', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              console.log('chatList', response);
+              const userid = response.data.responseData.data.id;
+              console.log('회원번호', userid);
+              location.href = `/chatList/${userid}`;
+            })
+            .catch((error) => {
+              console.log('chatList에러', error);
+              document.location.reload();
+            });
         }
       }
     </script>

@@ -1,10 +1,12 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 const env = process.env;
-require('dotenv').config();
 const SECRETKEY = env.SECRETKEY;
 
 exports.verifyToken = (token) => {
-  console.log('토큰검증 실행');
+  console.log("토큰검증 실행");
+  console.log(token);
+
   let userId;
   return new Promise((resolve, reject) => {
     jwt.verify(token, SECRETKEY, (err, decoded) => {

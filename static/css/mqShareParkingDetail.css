@@ -189,34 +189,190 @@
     color: #333;
 }
 
-.logoutBox {
-    position: absolute;
-    bottom: 10px;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 10px;
-}
-
-.inputall {
+#count {
     border : 0;
-    height: 40px;
-    width: 400px;
-    font-size: 30px;
-    padding-top: 10px;
-    padding-bottom: 40px;
-    font-family: 'S-CoreDream-3Light';
+    width: 25px;
+    font-size: 20px;
+    text-align: center;
 }
 
-.inputall:focus {
+#count:focus {
     outline: none;
 }
 
-.mainArea{
+svg {
+    padding-top: 7px;
+    cursor: pointer;
+}
+
+.taCenter {
+    text-align: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.spBtn {
+    background-color: #8783f5;
+    width: 40%;
+    height: 40px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 40px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-family: 'yg-jalnan';
+    color: white;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.title {
+    font-family: 'KBO-Dia-Gothic_bold';
+}
+
+.otherTitle {
+    font-family: 'GmarketSansMedium';
+}
+
+.reserv{
+    ;padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.spContent {
+    font-family: 'S-CoreDream-3Light';
+}
+
+.child1 {
+    width: 400px;
+    padding-right: 20px;
+}
+
+.child2 {
+    width: 550px;
+    padding-left: 20px;
+    padding-top: 15%;
+}
+
+.test {
+    margin: 80px;
+    display: flex;
+    justify-content: space-evenly;
+    height: 800px;
+}
+
+.image{
+
+    padding-bottom: 40px;
+}
+
+
+.stars-outer {
+    position: relative;
+    display: inline-block;
+}
+.stars-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0; /* 별점 비율을 이 부분에서 설정하세요 */
+}
+.star {
+    height: 24px;  /* 10% 더 큰 크기 */
+    width: 24px;   /* 10% 더 큰 크기 */
+    /*margin-right: 2px;*/
+}
+
+#modalOpenButton, #modalCloseButton {
+    cursor: pointer;
+}
+
+.modalBtn{
+    width: 40%;
+    background-color: #8783f5;;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bolder;
+    font-size : 15px;
+    padding-top: 10px;
+}
+#modalContainer {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#modalContent {
+    position: absolute;
+    background-color: #ffffff;
+    width: 700px;
+    height: 600px;
+    padding: 15px;
+}
+
+#modalContainer.hidden {
+    display: none;
+}
+
+.rating {
+    position: relative;
+    width: 180px;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .3em;
+    padding: 5px;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 0 2px #b3acac;
+}
+
+.rating__result {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(-10px) translateX(-5px);
+    z-index: -9;
+    font: 3em Arial, Helvetica, sans-serif;
+    color: #ebebeb8e;
+    pointer-events: none;
+}
+
+.rating__star {
+    font-size: 1.3em;
+    cursor: pointer;
+    color: #dabd18b2;
+    transition: filter linear .3s;
+}
+
+.rating__star:hover {
+    filter: drop-shadow(1px 1px 4px gold);
+}
+
+.textContent{
+    border: none;
+    background-color: #ebf0fe;;
+}
+.textContent:focus {
+    outline: none;
+}
+
+textarea {
     width: 500px;
-    margin: auto;
+    height: 300px;
 }
 
 .dovego {
@@ -225,40 +381,4 @@
 
 .cafe24 {
     font-family: 'Cafe24Oneprettynight';
-}
-
-.esTitle {
-    font-family: 'GmarketSansMedium';
-    font-size: 20px;
-    font-weight: bolder;
-}
-
-.filebox input[type="file"] {
-    position: absolute;
-    width: 0;
-    height: 0;
-    padding: 0;
-    overflow: hidden;
-    border: 0;
-}
-
-.filebox label {
-    display: inline-block;
-    padding: 10px 20px;
-    color: #fff;
-    vertical-align: middle;
-    background-color: #999999;
-    cursor: pointer;
-    height: 25px;
-    margin-left: 10px;
-}
-
-.filebox .upload-name {
-    display: inline-block;
-    height: 40px;
-    padding: 0 10px;
-    vertical-align: middle;
-    border: 1px solid #dddddd;
-    width: 60%;
-    color: #999999;
 }

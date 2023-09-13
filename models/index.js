@@ -95,9 +95,9 @@ db.ChatRoom.hasMany(db.ChatUser, { foreignKey: "roomid" });
 db.ChatUser.belongsTo(db.ChatRoom, { foreignKey: "roomid" });
 
 //채팅-회원
-db.User.hasMany(db.Chat, { foreignKey: "id" });
+db.User.hasMany(db.Chat, { foreignKey: "userid" });
 db.Chat.belongsTo(db.User, {
-  foreignKey: "id",
+  foreignKey: "userid",
 });
 
 //채팅방-채팅대화
@@ -107,9 +107,9 @@ db.Chat.belongsTo(db.ChatRoom, {
 });
 
 //채팅방유저-회원
-db.User.hasMany(db.ChatUser, { foreignKey: "id" });
+db.User.hasMany(db.ChatUser, { foreignKey: "userid" });
 db.ChatUser.belongsTo(db.User, {
-  foreignKey: "id",
+  foreignKey: "userid",
 });
 
 //가격-주차장정보

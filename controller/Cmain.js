@@ -1,59 +1,96 @@
-const axios = require('axios');
-const models = require('../models/index');
-const { x64 } = require('crypto-js');
-const { Navigator } = require('node-navigator');
-const vt = require('../utils/JwtVerifyToken');
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const axios = require("axios");
+const models = require("../models/index");
+const { x64 } = require("crypto-js");
+const { Navigator } = require("node-navigator");
+const vt = require("../utils/JwtVerifyToken");
+const jwt = require("jsonwebtoken");
+const { Sequelize, literal } = require("sequelize");
+require("dotenv").config();
 const env = process.env;
 
 exports.chat = async (req, res) => {
-  res.render('chat');
+  res.render("chat");
+};
+
+exports.chatList = async (req, res) => {
+  let chatListDB;
+  let joinUserId;
+
+  try {
+    const { userId } = req.params;
+    console.log("chatListuserid", userId);
+
+    chatListDB = await models.ChatUser.findAll({
+      where: {
+        userid: userId,
+      },
+      include: [
+        {
+          model: models.ChatRoom,
+          attributes: ["roomname"],
+          include: [
+            {
+              model: models.Chat,
+              attributes: ["content"],
+              order: [[Sequelize.literal("createdAt"), "DESC"]],
+              limit: 1,
+            },
+          ],
+        },
+      ],
+    });
+    console.log("roomid", chatListDB[0].roomid);
+    console.log("roomname", chatListDB[0].chatroom.roomname);
+    console.log("content", chatListDB[0].chatroom.chats.content);
+    res.render("chatList", { chatListDB });
+  } catch (error) {
+    console.log("chatList에러", error);
+  }
 };
 
 exports.main = async (req, res) => {
-  // let userNickname;
+  res.render("index", { javascriptkey: env.JAVASCRIPTKEY });
+};
 
-  // try {
-  //   const token = req.headers.authorization.split(' ')[1];
-  //   const userId = await vt.verifyToken(token);
+exports.userData = async (req, res) => {
+  let userData;
 
-  //   console.log('userid', userId);
-  //   console.log('try');
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const userId = await vt.verifyToken(token);
 
-  //   const user = await models.User.findOne({ where: { id: userId } });
+    console.log("userid", userId);
 
-  //   if (user) {
-  //     userNickname = user.nickname;
-  //     console.log('user nickname', userNickname);
-  //   }
-  // } catch (error) {
-  //   console.log('토큰 검증 오류', error);
-  //   console.log('error');
-  // }
-  // // const navigator = new Navigator();
-  // // let tempLocation;
-  // // navigator.geolocation.getCurrentPosition((success, error) => {
-  // //   if (error) console.error(error);
-  // //   else console.log(success);
-  // //   tempLocation = {
-  // //     lat: success.latitude,
-  // //     lng: success.longitude,
-  // //   };
-  // // });
-  // // let publicParkingList;
-  // // try {
-  // //   publicParkingList = await models.PublicParking.findAll({
-  // //     attributes: ['capacity', 'currentparking', 'lat', 'lng']})
+    const user = await models.User.findOne({ where: { id: userId } });
+    console.log(user);
+    if (user) {
+      userData = {
+        id: user.id,
+        userid: user.userid,
+        nickname: user.nickname,
+        profile: user.profile,
+      };
 
-  res.render('index', { javascriptkey: env.JAVASCRIPTKEY });
+      console.log("user Data", userData);
+      console.log("user", user);
+
+      //클라이언트로 전송할 데이터 객체
+      const responseData = {
+        data: userData,
+      };
+      res.json({ responseData });
+    }
+  } catch (error) {
+    console.log("토큰 검증 오류", error);
+    console.log("error");
+  }
 };
 
 exports.getInfo = async (req, res) => {
   let publicParkingList;
   try {
     publicParkingList = await models.PublicParking.findAll({
-      attributes: ['id', 'capacity', 'currentparking', 'lat', 'lng'],
+      attributes: ["id", "capacity", "currentparking", "lat", "lng"],
     });
   } catch (err) {
     console.log(err);
@@ -65,11 +102,11 @@ exports.getInfo = async (req, res) => {
       include: [
         {
           model: models.ShareParking,
-          as: 'shareparking',
-          attributes: ['lat', 'lng'],
+          as: "shareparking",
+          attributes: ["lat", "lng"],
         },
       ],
-      attributes: { exclude: ['price', 'content'] },
+      attributes: { exclude: ["price", "content"] },
     });
   } catch (err) {
     console.log(err);
@@ -78,8 +115,8 @@ exports.getInfo = async (req, res) => {
   let shareParkingList;
   try {
     shareParkingList = await models.ShareParking.findAll({
-      attributes: ['id', 'lat', 'lng', 'price'],
-      where: { status: 'Y' },
+      attributes: ["id", "lat", "lng", "price"],
+      where: { status: "Y" },
     });
   } catch (err) {
     console.log(err);
@@ -90,28 +127,12 @@ exports.getInfo = async (req, res) => {
   res.json({ publicParkingList, shareParkingList, cleaningList, allLen });
 };
 
-exports.chat = (req, res) => {
-  res.render('chat');
-  socketModule(io);
-};
-
-function socketModule(io) {
-  // 클라이언트 연결 이벤트 핸들링
-  io.on('connection', (socket) => {
-    console.log('라우터접속');
-    // connection 함수 호출
-    connection(io, socket);
-  });
-
-  res.json({ publicParkingList, shareParkingList, allLen });
-}
-
 exports.ppdb = async (req, res) => {
   let map = new Map();
   for (let i = 1; i < 18000; i += 1000) {
-    console.log('----------------------------', i);
+    console.log("----------------------------", i);
     await axios({
-      method: 'GET',
+      method: "GET",
       url: `http://openapi.seoul.go.kr:8088/466354715470617039364d6b517341/json/GetParkingInfo/${i}/${
         i + 999
       }/`,
@@ -199,9 +220,9 @@ exports.ppdb = async (req, res) => {
 
 //지도 핀 데이터
 exports.parking = async (req, res) => {
-  console.log('hi');
+  console.log("hi");
   const result = await models.PublicParking.findAll();
-  console.log('reulst', result);
+  console.log("reulst", result);
   const arr = [];
   for (let i = 0; i < result.length; i++) {
     const a = {

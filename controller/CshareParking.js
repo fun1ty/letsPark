@@ -2,6 +2,7 @@ const models = require("../models/index");
 const jwt = require("jsonwebtoken");
 const  vt  = require('../utils/JwtVerifyToken');
 const rto = require('../utils/ResultToObject');
+const {Sequelize} = require("sequelize");
 require('dotenv').config();
 const env = process.env;
 
@@ -18,7 +19,24 @@ exports.detail = async (req, res) => {
             attributes : ['nickname'],
         });
 
-        res.render('shareParkingDetail', { result1, 'nickname' : result2.nickname });
+        const result = await models.ParkingReview.findAll({
+            attributes : ['nickname', 'score', 'comment'],
+            where : {
+                type : 2,
+                parkid : id,
+            }
+        });
+        let average = 0;
+        let len = result.length;
+
+        for (let obj of result) {
+            average += obj.score;
+        }
+        if(average !== 0) {
+            average = average / len;
+            average = Math.round(average * 100) / 100;
+        }
+        res.render('shareParkingDetail', { result1, 'nickname' : result2.nickname, result, average });
     } catch (error) {
         console.log(error);
     }
@@ -69,40 +87,53 @@ exports.enrollShareParking = async (req, res) => {
 exports.editShareParking = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
 
-    const userId = vt.verifyToken(token);
+    const id = vt.verifyToken(token);
+
+    const location = req.file.location;
+    const {shareParkingId, shareparkname, price} = req.body;
     //이미지 업데이트 유무 판단
     if(req.file.location === null) {
-        res.send({ result : false });
+        try {
+            const result = models.ShareParking.update({ shareparkname, price },
+                {
+                    where : { id : shareParkingId, user_id : id },
+                });
+
+            res.send({ result : true});
+        } catch (err) {
+            console.log(err);
+        }
     } else {
-        res.send({ result : true });
+        try {
+            const result = models.ShareParking.update({ shareparkname, name, location },
+                {
+                    where : { id : shareParkingId, user_id : id },
+                });
+            res.send({ result : true });
+        } catch (err) {
+            console.log(err);
+        }
     }
 };
 
 //공유주차장 정보삭제
 exports.deleteShareParking = async (req, res) => {
- const token = req.headers.authorization.split(' ')[1];
+     const token = req.headers.authorization;
 
- const userId = vt.verifyToken(token);
+     const id = vt.verifyToken(token);
 
- let id;
- try {
-    id = await models.User.findOne({
-        attributes : ['id'],
-        where : { userid : userId },
-    });
- } catch (err) {
-     console.log(err);
- }
- const shareParkingId = req.body.shareParkingId;
+     const shareParkingId = req.body.shareParkingId;
 
- try {
-     const result = await models.ShareParking.update({ status : 'N' },
-         {
-             where : { id : shareParkingId, user_id : id }
-     })
- } catch (err) {
-     console.log(err);
- }
+     try {
+         const result = await models.ShareParking.update({ status : 'N' },
+             {
+                 where : { id : shareParkingId, user_id : id },
+         });
+
+         res.send({ result : true});
+     } catch (err) {
+         console.log(err);
+     }
 };
 
 //공유주차장 예약 결제
@@ -111,3 +142,55 @@ exports.pay = async (req, res) => {
 
     const userId = vt.verifyToken(token);
 };
+
+exports.reviews = async (req, res) => {
+    const {shareParkId, score, comment} = req.body;
+    const token = req.headers.authorization;
+
+    const id = await vt.verifyToken(token);
+
+    let nickname;
+    try {
+        const result = await models.User.findOne({
+            attributes : ['nickname'],
+            where : { id },
+        });
+        nickname = result.nickname;
+    } catch(error) {
+        console.log(error);
+    }
+
+    try {
+        const result = await models.ParkingReview.create({
+            type : 2,
+            parkid : shareParkId,
+            nickname,
+            score,
+            comment,
+            user_id : id,
+        });
+        res.send({result : true});
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+exports.getMySharePark = async  (req, res) => {
+    // const token = req.headers.Authorization;
+    //
+    // const id = await vt.verifyToken(token);
+    try {
+        const result = await models.ShareParking.findAll({
+            where : { user_id : 1, status : 'Y' },
+        });
+
+        console.log(result);
+        console.log(result[0].createdAt.getMonth());
+        console.log(result[0].createdAt.toString());
+
+        res.render('myShareParks', { result });
+    } catch (err) {
+        console.log(err);
+    }
+
+}

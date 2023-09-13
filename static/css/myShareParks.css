@@ -1,0 +1,103 @@
+#mainArea {
+  margin: 20px;
+  width: 600px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 40px;
+  font-family: 'KBO-Dia-Gothic_bold';
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.shindex{
+  display: flex;
+  justify-content: space-between;
+  margin: 30px;
+  font-size: 25px;
+  font-family:'Dovemayo_gothic';
+}
+
+.shname {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.detailbtn {
+  margin: 10px;
+  padding: 10px;
+  background-color: #8783f5;
+  border-radius: 10px;
+}
+
+.detail {
+  width: 20px;
+  height: 20px;
+  padding : 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+  background-color: #8783f5;
+  color: white;
+}
+
+.titleDiv {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-family: 'GmarketSansMedium';
+}
+
+input {
+  border : 0;
+  height: 30px;
+  width: 400px;
+  font-size: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-family: 'S-CoreDream-3Light';
+}
+
+input:focus {
+  outline: none;
+}
+
+.filebox input[type="file"] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+}
+
+.filebox label {
+  display: inline-block;
+  padding: 10px 20px;
+  color: #fff;
+  vertical-align: middle;
+  background-color: #999999;
+  cursor: pointer;
+  height: 25px;
+  margin-left: 10px;
+}
+
+.filebox .upload-name {
+  display: inline-block;
+  height: 40px;
+  padding: 0 10px;
+  vertical-align: middle;
+  border: 1px solid #dddddd;
+  width: 60%;
+  color: #999999;
+}
+
+.clickBtn {
+  background-color: #8783f5;
+  width: 140px;
+  height: 40px;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 40px;
+  font-family: 'yg-jalnan';
+  color: white;
+}
