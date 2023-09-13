@@ -250,7 +250,9 @@ input[type="number"]::-webkit-inner-spin-button {
     font-family: 'Cafe24Oneprettynight';
 }
 
-
+#profilePic {
+    border-radius: 50%;
+}
 
 .stars-outer {
     position: relative;
