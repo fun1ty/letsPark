@@ -335,3 +335,6 @@ hr {
     font-family: 'Cafe24Oneprettynight';
 }
 
+#profilePic {
+    border-radius: 50%;
+}
