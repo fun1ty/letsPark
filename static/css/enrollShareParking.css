@@ -233,6 +233,10 @@
     font-weight: bolder;
 }
 
+#profilePic {
+    border-radius: 50%;
+}
+
 .filebox input[type="file"] {
     position: absolute;
     width: 0;

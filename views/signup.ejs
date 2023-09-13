@@ -4,12 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="../signup.css" />
     <title>Document</title>
   </head>
   <body>
     <!-- 회원 가입 페이지 -->
     <h2>가입 정보 입력하기</h2>
-    <input type="text" id="userid" placeholder="아이디" /><br />
+    <input
+      type="text"
+      id="userid"
+      placeholder="아이디"
+      onblur="checkDuplicate()"
+    /><br />
+    <span id="useridError"></span><br />
     <input type="password" id="password" placeholder="비밀번호" /><br />
     <input
       type="password"
@@ -21,13 +28,36 @@
     <input type="text" id="name" placeholder="이름" /><br />
     <input type="text" id="nickname" placeholder="닉네임" /><br />
     <input id="phone" placeholder="휴대폰번호" /><br />
-    프로필 사진: <input type="file" id="profile" /><br />
+    프로필 사진:
+    <input type="file" id="profile" onchange="previewImg(this)" /><br />
+    <img id="profilePreview" src="" alt="" /><br />
     <button type="button" onclick="registerFunc()">회원가입</button>
 
-    <br />
-    <div class="result"></div>
-
     <script>
+      //아이디 중복 검사
+      async function checkDuplicate() {
+        const userid = document.getElementById('userid').value.trim();
+
+        if (userid === '') {
+          return;
+        }
+
+        try {
+          const response = await axios.get(`/user/checkDuplicate/${userid}`);
+
+          if (response.data.result) {
+            document.getElementById('useridError').textContent =
+              '사용 가능한 아이디입니다.';
+          } else {
+            document.getElementById('useridError').textContent =
+              '이미 사용 중인 아이디입니다.';
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      //비밀번호 재확인
       function checkPassword() {
         const password = document.getElementById('password').value;
         const passwordCheck = document.getElementById('passwordCheck').value;
@@ -44,6 +74,21 @@
         }
       }
 
+      //프로필 사진 띄우기
+      function previewImg(input) {
+        const profilePreview = document.getElementById('profilePreview');
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            profilePreview.src = e.target.result;
+          };
+
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      //회원가입
       async function registerFunc() {
         const password = document.getElementById('password').value;
 
@@ -72,7 +117,11 @@
         formData.append('name', name);
         formData.append('nickname', nickname);
         formData.append('phone', phone);
-        formData.append('profile', profile.files[0]);
+
+        // 프로필 사진을 선택한 경우
+        if (profile.files.length > 0) {
+          formData.append('profile', profile.files[0]);
+        }
 
         axios({
           method: 'POST',
