@@ -254,6 +254,10 @@ input[type="number"]::-webkit-inner-spin-button {
     border-radius: 50%;
 }
 
+.logoutBox{
+    bottom: 10px;
+}
+
 .stars-outer {
     position: relative;
     display: inline-block;
