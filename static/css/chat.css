@@ -29,7 +29,7 @@
 .my-chat p {
   margin: 0;
   padding: 10px;
-  background: yellow;
+  background: rgba(196, 193, 255, 1);
   margin-right: 10px;
   border-radius: 10px;
 }
@@ -41,7 +41,7 @@
 #othermessage {
   margin: 0;
   padding: 10px;
-  background: white;
+  background: rgba(222, 228, 246, 1);
   margin-left: 10px;
   border-radius: 10px;
 }
@@ -88,9 +88,7 @@ button {
   width: 2em;
   height: 2em;
 }
-#chatParkName {
-  margin-left: 3em;
-}
+
 #chatHeader {
   display: flex;
   margin-top: 1em;
