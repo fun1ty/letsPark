@@ -8,26 +8,22 @@ const { Sequelize, literal } = require("sequelize");
 require("dotenv").config();
 const env = process.env;
 
-exports.chat = async (req, res) => {
-  res.render("chat");
+exports.chat = (req, res) => {
+  const { roomId } = req.params;
+  console.log("chatId", roomId);
+  res.render("chat", { chatId: roomId });
 };
 
 exports.chatList = async (req, res) => {
-  let chatListDB;
-  let joinUserId;
-
   try {
     const { userId } = req.params;
     console.log("chatListuserid", userId);
 
-    chatListDB = await models.ChatUser.findAll({
-      where: {
-        userid: userId,
-      },
+    const chatListDB = await models.ChatUser.findAll({
       include: [
         {
           model: models.ChatRoom,
-          attributes: ["roomname"],
+          attributes: ["roomname", "id"],
           include: [
             {
               model: models.Chat,
@@ -39,9 +35,9 @@ exports.chatList = async (req, res) => {
         },
       ],
     });
-    console.log("roomid", chatListDB[0].roomid);
-    console.log("roomname", chatListDB[0].chatroom.roomname);
-    console.log("content", chatListDB[0].chatroom.chats.content);
+    // console.log("roomid", chatListDB[0].roomid);
+    // console.log("roomname", chatListDB[0].chatroom.roomname);
+    // console.log("content", chatListDB[0].chatroom.chats.content);
     res.render("chatList", { chatListDB });
   } catch (error) {
     console.log("chatList에러", error);

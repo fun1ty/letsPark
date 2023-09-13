@@ -420,9 +420,9 @@
             })
             .then((response) => {
               console.log("chatList", response);
-              const userid = response.data.responseData.data.id;
-              console.log("회원번호", userid);
-              location.href = `/chatList/${userid}`;
+              const userId = response.data.responseData.data.id;
+              console.log("회원번호", userId);
+              location.href = `/chatList/${userId}`;
             })
             .catch((error) => {
               console.log("chatList에러", error);
