@@ -55,6 +55,7 @@ db.ChatUser = require("./ChatUser")(sequelize);
 db.ShareParking = require("./ShareParking")(sequelize);
 db.ParkingReview = require("./ParkingReview")(sequelize);
 db.Cleaning = require("./Cleaning")(sequelize);
+db.ParkingPay = require("./parkingPay")(sequelize);
 
 //연관관계 설정
 db.PublicParking.hasOne(db.OperationTime, {
@@ -63,7 +64,7 @@ db.PublicParking.hasOne(db.OperationTime, {
 });
 db.OperationTime.belongsTo(db.PublicParking, {
   foreignKey: "publicparking_id",
-  targetKey : "id",
+  targetKey: "id",
 });
 db.PublicParking.hasOne(db.Price, {
   foreignKey: "publicparking_id",
@@ -110,6 +111,14 @@ db.User.hasMany(db.ChatUser, { foreignKey: "id" });
 db.ChatUser.belongsTo(db.User, {
   foreignKey: "id",
 });
+
+//가격-주차장정보
+db.ShareParking.hasOne(db.ParkingPay, { foreignKey: "shareparking_id" });
+db.ParkingPay.belongsTo(db.ShareParking, { foreignKey: "shareparking_id" });
+
+//가격-유저
+db.User.hasMany(db.ParkingPay, { foreignKey: "user_id", sourceKey: "id" });
+db.ParkingPay.belongsTo(db.User, { foreignKey: "user_id", sourceKey: "id" });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

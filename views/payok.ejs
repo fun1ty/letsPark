@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>결제 성공</h1>
+      <p>결제가 성공적으로 완료되었습니다.</p>
+      <p>결제 정보:</p>
+      <ul>
+        <li>주차장 이름: <%= result.shareparking.shareparkname %></li>
+        <li>결제 금액: <%= result.payamount %>원</li>
+      </ul>
+    </div>
+  </body>
+</html>
