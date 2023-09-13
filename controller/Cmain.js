@@ -8,17 +8,25 @@ const { Sequelize, literal } = require("sequelize");
 require("dotenv").config();
 const env = process.env;
 
-exports.chat = (req, res) => {
-  const { roomId, joinUser } = req.params;
-  console.log("chatId", req.params);
-  res.render("chat", { roomId, joinUser, joinUserNick: null });
-};
-
 exports.requestChat = (req, res) => {
-  const { userId, joinUserNick } = req.params;
+  const { userId, joinUserNick, parkingName } = req.params;
+
   console.log("userId", userId);
   console.log("joinUserNick", joinUserNick);
-  res.render("chat", { userId, roomId: null, joinUserNick });
+  res.render("chat", { userId, roomId: null, joinUserNick, parkingName });
+};
+
+exports.chat = (req, res) => {
+  console.log("chatcontroller실행");
+  const { roomId, joinUser, parkingName } = req.params;
+  console.log("chatId", req.params);
+  console.log("chatroomId", roomId);
+  res.render("chat", {
+    roomId,
+    joinUser,
+    joinUserNick: null,
+    parkingName,
+  });
 };
 
 exports.chatList = async (req, res) => {
@@ -30,7 +38,6 @@ exports.chatList = async (req, res) => {
       include: [
         {
           model: models.ChatRoom,
-          attributes: ["roomname", "id"],
           include: [
             {
               model: models.Chat,
@@ -42,7 +49,7 @@ exports.chatList = async (req, res) => {
         },
       ],
     });
-    // console.log("roomid", chatListDB[0].roomid);
+    console.log("chatListroomid", chatListDB[0].roomid);
     // console.log("roomname", chatListDB[0].chatroom.roomname);
     // console.log("content", chatListDB[0].chatroom.chats.content);
     res.render("chatList", { chatListDB });

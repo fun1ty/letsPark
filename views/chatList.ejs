@@ -34,7 +34,7 @@
     </div>
     <hr />
     <% if(chatListDB.length !=0){ %> <% for (let i = 0; i <
-    chatListDB.length;i++) { %>
+    chatListDB.length;i++) { %> <%= console.log(chatListDB[i]) %>
     <button
       id="<%= chatListDB[i].roomid %>"
       onclick="chatBtn(`<%= chatListDB[i].roomid %>`)"
@@ -42,19 +42,24 @@
       <div class="join" id="<%= chatListDB[i].joinusernick %>">
         <%= chatListDB[i].joinusernick %>
       </div>
-      <div><%= chatListDB[i].chatroom.chats.content %></div>
+      <div><%= chatListDB[i].chatroom.shareparkname %></div>
+      <div
+        class="chatParkName"
+        id="<%= chatListDB[i].chatroom.shareparkname %>"
+      >
+        <%= chatListDB[i].chatroom.chats.content %>
+      </div>
     </button>
-    <% } %> <% } else { %>
-    <button>채팅 만들기</button>
-    <% }%>
+    <% } %> <% } else { %> 채팅내역이 없습니다. <% }%>
 
     <script>
       //채팅방 이동
       function chatBtn(roomId) {
+        console.log("roomId", roomId);
         const joinUser = document.querySelector(".join").id;
-        console.log("chat이동");
+        const parkingName = document.querySelector(".chatParkName").id;
         console.log("joinUser", joinUser);
-        location.href = `/chat/${roomId}/${joinUser}`;
+        location.href = `/chat/${roomId}/${joinUser}/${parkingName}`;
       }
     </script>
   </body>
