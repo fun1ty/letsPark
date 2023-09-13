@@ -33,7 +33,6 @@ exports.profile = async (req, res) => {
     res.render('profile', { data: result });
   });
 };
-
 exports.edit = async (req, res) => {
   User.findOne({
     where: { userid: req.params.userid },
@@ -41,17 +40,40 @@ exports.edit = async (req, res) => {
     res.render('profileEdit', { data: result });
   });
 };
+exports.idCheck = async (req, res) => {
+  const { userid } = req.params;
+  console.log(userid);
+
+  try {
+    const user = await User.findOne({ where: { userid } });
+
+    if (user) {
+      res.json({ result: false }); // 아이디 중복
+    } else {
+      res.json({ result: true }); // 사용 가능한 아이디
+    }
+  } catch (error) {
+    console.error('데이터베이스 조회 오류:', error);
+    res.status(500).json({ result: false, message: '서버 오류' });
+  }
+};
 
 //POST
 exports.postSignup = async (req, res) => {
   console.log(req.body);
   try {
-    const { userid, password, name, nickname, phone, profile } = req.body;
+    const { userid, password, name, nickname, phone } = req.body;
     console.log('testcheck');
     const hashPw = await bcryptPassword(password);
     console.log(hashPw);
 
-    const profilePic = req.file; //프로필 이미지 업로드
+    let profilePicLocation =
+      'https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg';
+
+    if (req.file) {
+      // 이미지를 선택한 경우
+      profilePicLocation = req.file.location;
+    }
 
     const user = await User.create({
       userid,
@@ -59,7 +81,7 @@ exports.postSignup = async (req, res) => {
       name,
       nickname,
       phone,
-      profile: profilePic.location,
+      profile: profilePicLocation,
     });
     res.json({ result: true, data: user }); // 회원가입 성공 시 사용자 정보를 반환
   } catch (error) {
@@ -102,6 +124,47 @@ exports.postLogin = async (req, res) => {
   }
 };
 
+// exports.editProfile = (req, res) => {
+//   const token =
+//     req.headers.authorization && req.headers.authorization.split(' ')[1];
+//   if (!token) {
+//     return res.json({ result: false, message: '인증되지 않은 요청입니다.' });
+//   }
+//   try {
+//     const decodedToken = jwt.verify(token, SECRETKEY);
+//     const { userid, password, newPassword, name, nickname, phone, profile } =
+//       req.body;
+//     User.findOne({ where: { userid: decodedToken.userid } }).then((user) => {
+//       if (!user) {
+//         res.json({ result: false, message: '사용자가 존재하지 않습니다.' });
+//       } else {
+//         if (newPassword) {
+//           // 새 비밀번호가 제공된 경우에만 업데이트
+//           const hashNewPassword = bcrypt.hashSync(newPassword, 10);
+//           user.password = hashNewPassword;
+//         }
+//         User.update(
+//           { password: user.password, name, nickname, phone, profile },
+//           { where: { userid: decodedToken.userid } }
+//         )
+//           .then(() => {
+//             res.json({ result: true });
+//           })
+//           .catch((error) => {
+//             console.error(error);
+//             res.status(500).json({
+//               result: false,
+//               message: '프로필 수정에 실패했습니다.',
+//             });
+//           });
+//       }
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.json({ result: false, message: '토큰 검증에 실패했습니다.' });
+//   }
+// };
+
 exports.editProfile = (req, res) => {
   const token =
     req.headers.authorization && req.headers.authorization.split(' ')[1];
@@ -110,8 +173,8 @@ exports.editProfile = (req, res) => {
   }
   try {
     const decodedToken = jwt.verify(token, SECRETKEY);
-    const { userid, password, newPassword, name, nickname, phone, profile } =
-      req.body;
+    const { userid, newPassword, name, nickname, phone, profile } = req.body;
+
     User.findOne({ where: { userid: decodedToken.userid } }).then((user) => {
       if (!user) {
         res.json({ result: false, message: '사용자가 존재하지 않습니다.' });
@@ -121,8 +184,21 @@ exports.editProfile = (req, res) => {
           const hashNewPassword = bcrypt.hashSync(newPassword, 10);
           user.password = hashNewPassword;
         }
+
+        if (req.file) {
+          // 업로드된 이미지 파일이 있는 경우
+          const imagePath = req.file.path; // 업로드된 파일의 경로
+          console.log('imagePath', imagePath);
+          user.profile = imagePath; // 이미지 경로를 프로필 이미지 URL로 업데이트
+        }
         User.update(
-          { password: user.password, name, nickname, phone, profile },
+          {
+            password: user.password,
+            name,
+            nickname,
+            phone,
+            profile: user.profile,
+          },
           { where: { userid: decodedToken.userid } }
         )
           .then(() => {

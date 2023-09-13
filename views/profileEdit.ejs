@@ -4,13 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/profileEdit.css" />
     <title>Document</title>
   </head>
 
   <body>
     <h2>회원정보수정</h2>
-    <form name="profileView">
-      <img id="profileImage" src="<%= data.profile %>" alt="프로필 이미지" />
+    <form name="profileView" enctype="multipart/form-data">
+      <div>
+        <img id="profile" src="<%= data.profile %>" alt="프로필 이미지" />
+        <input
+          type="file"
+          id="profileImage"
+          name="profileImage"
+          accept="image/*"
+          onchange="previewProfileImage()"
+        />
+      </div>
       <br />
       <label for="userid">아이디</label><br />
       <input
@@ -20,13 +30,7 @@
         placeholder="아이디"
         readonly
       /><br />
-      <!-- <label for="password">비밀번호 변경</label><br />
-      <input
-        type="password"
-        id="password"
-        value="<%= data.password %>"
-        placeholder="비밀번호"
-      /><br /> -->
+
       <label for="newPassword">비밀번호 변경</label><br />
       <input
         type="password"
@@ -64,9 +68,27 @@
         placeholder="휴대폰번호"
       /><br />
       <button type="button" onclick="edit()">수정하기</button>
+      <button type="button" onclick="resetForm()">초기화</button>
     </form>
 
     <script>
+      // 프로필 이미지 변경 시 미리보기
+      function previewProfileImage() {
+        const profileImage = document.getElementById('profile');
+        const profileInput = document.getElementById('profileImage');
+
+        if (profileInput.files && profileInput.files[0]) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            profileImage.src = e.target.result;
+          };
+
+          reader.readAsDataURL(profileInput.files[0]);
+        }
+      }
+
+      //비밀번호 재확인
       function checkPassword() {
         const password = document.getElementById('newPassword').value;
         const passwordCheck = document.getElementById('passwordCheck').value;
@@ -83,6 +105,38 @@
         }
       }
 
+      // //회원정보 수정버튼
+      // function edit() {
+      //   if (!confirm('회원정보를 수정하시겠습니까?')) {
+      //     return;
+      //   }
+      //   const form = document.forms['profileView'];
+      //   const userid = document.querySelector('#userid').value;
+      //   const newPassword = document.querySelector('#newPassword').value;
+
+      //   axios({
+      //     method: 'PATCH',
+      //     url: `/mypage/${userid}/edit`,
+      //     data: {
+      //       userid: form.userid.value,
+      //       //password: form.password.value,
+      //       newPassword: newPassword,
+      //       name: form.name.value,
+      //       nickname: form.nickname.value,
+      //       phone: form.phone.value,
+      //       //profile: form.profile.value,
+      //     },
+      //     headers: {
+      //       Authorization: `Bearer ${localStorage.getItem('token')}`,
+      //     },
+      //   }).then((res) => {
+      //     if (res.data.result) {
+      //       alert('수정이 완료되었습니다.');
+      //       window.location.href = '/';
+      //     }
+      //   });
+      // }
+
       function edit() {
         if (!confirm('회원정보를 수정하시겠습니까?')) {
           return;
@@ -90,21 +144,23 @@
         const form = document.forms['profileView'];
         const userid = document.querySelector('#userid').value;
         const newPassword = document.querySelector('#newPassword').value;
+        const profileImage = document.querySelector('#profileImage').files[0];
+
+        const formData = new FormData();
+        formData.append('userid', form.userid.value);
+        formData.append('newPassword', newPassword);
+        formData.append('name', form.name.value);
+        formData.append('nickname', form.nickname.value);
+        formData.append('phone', form.phone.value);
+        formData.append('profile', profileImage);
 
         axios({
           method: 'PATCH',
           url: `/mypage/${userid}/edit`,
-          data: {
-            userid: form.userid.value,
-            //password: form.password.value,
-            newPassword: newPassword,
-            name: form.name.value,
-            nickname: form.nickname.value,
-            phone: form.phone.value,
-            //profile: form.profile.value,
-          },
+          data: formData,
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'multipart/form-data',
           },
         }).then((res) => {
           if (res.data.result) {
@@ -112,6 +168,22 @@
             window.location.href = '/';
           }
         });
+      }
+
+      //수정 초기화 버튼
+      function resetForm() {
+        const form = document.forms['profileView'];
+
+        form.userid.value = '<%= data.userid %>';
+        form.newPassword.value = '';
+        form.passwordCheck.value = '';
+        form.name.value = '<%= data.name %>';
+        form.nickname.value = '<%= data.nickname %>';
+        form.phone.value = '<%= data.phone %>';
+
+        const errorSpan = document.getElementById('passwordError');
+        errorSpan.textContent = '';
+        document.getElementById('passwordCheck').setCustomValidity('');
       }
     </script>
   </body>
