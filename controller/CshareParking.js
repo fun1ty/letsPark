@@ -176,21 +176,26 @@ exports.reviews = async (req, res) => {
 };
 
 exports.getMySharePark = async  (req, res) => {
-    // const token = req.headers.Authorization;
-    //
-    // const id = await vt.verifyToken(token);
+    const token = req.headers.authorization;
+    console.log('token', token);
     try {
-        const result = await models.ShareParking.findAll({
-            where : { user_id : 1, status : 'Y' },
-        });
+        const id = await vt.verifyToken(token);
 
-        console.log(result);
-        console.log(result[0].createdAt.getMonth());
-        console.log(result[0].createdAt.toString());
-
-        res.render('myShareParks', { result });
+        res.send({ id, result : true });
     } catch (err) {
         console.log(err);
     }
+}
 
+exports.getMyShareParks = async  (req, res) => {
+    const id = req.query.id;
+    try {
+        const result = await models.ShareParking.findAll({
+            where : { user_id : id },
+        });
+        console.log('result', result);
+        res.render('myShareParks', {result});
+    } catch (err) {
+        console.log(err);
+    }
 }

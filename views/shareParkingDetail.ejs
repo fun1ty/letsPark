@@ -67,24 +67,6 @@
             />
           </button>
 
-          <div style="margin: 20px">
-            <button class="mypageEdit" onclick="profileEdit()">
-              <div>
-                <img
-                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg"
-                  alt="profile"
-                  width="30px"
-                  height="30px"
-                />
-              </div>
-              <div>
-                <div class="userNick">파킹퍼시블님</div>
-                <div class="userEmail">parkinghaka@gmail.com</div>
-              </div>
-            </button>
-          </div>
-
-
             <div style="margin: 20px">
                 <button class="mypageEdit" onclick="profileEdit()">
                     <div>
@@ -105,6 +87,16 @@
                 <ul class="menuContainer">
                     <li onclick="parkingAdd()">
                         🚙 공유주차장 등록
+                        <img
+                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                                alt="이동"
+                                width="14px"
+                                height="14px"
+                                class="chevronRight"
+                        />
+                    </li>
+                    <li onclick="getMySharePark()">
+                        🚙 내 공유주차장 목록
                         <img
                                 src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
                                 alt="이동"
@@ -139,43 +131,6 @@
             >로그인/회원가입</span
             >
             </div>
-
-          <div>
-            <button class="reservationButton" onclick="userReservation()">
-              예약 내역 보기
-            </button>
-          </div>
-          <div class="noticeBox">
-            <ul class="menuContainer">
-              <li onclick="parkingAdd()">
-                🚙 공유주차장 등록
-                <img
-                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
-                  alt="이동"
-                  width="14px"
-                  height="14px"
-                  class="chevronRight"
-                />
-              </li>
-
-              <li type="button" id="chat" onclick="chatBtn()">
-                💬 채팅방
-                <img
-                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
-                  alt="이동"
-                  width="14px"
-                  height="14px"
-                  class="chevronRight"
-                />
-              </li>
-              <li>💰 포인트</li>
-            </ul>
-          </div>
-          <h5 class="payButton">결제내역</h5>
-          <div class="logoutBox">
-            <span class="service">이용안내 및 문의하기</span>
-            <span class="logoutService">로그아웃</span>
-          </div>
 
 
           <!-- 사용자 정보 조회 -->
@@ -641,7 +596,7 @@
 
     //공유주차장등록 이동
     function parkingAdd() {
-      location.href = "/mypage/parking/add";
+        location.href = '/shareparking';
     }
 
     //채팅방 이동
@@ -814,6 +769,29 @@
                     console.log('chatList에러', error);
                     document.location.reload();
                 });
+        }
+    }
+
+    async function getMySharePark() {
+        let id;
+        let check;
+        try {
+            const result = await axios({
+                method : 'POST',
+                url : '/shareparking/mysharepark',
+                headers: {
+                    Authorization: `${localStorage.getItem('token')}`,
+                },
+            });
+            console.log(result);
+            id = result.data.id;
+            check = result.data.result;
+        } catch (err) {
+            console.log(err);
+        }
+        console.log('밖', id);
+        if(check) {
+            document.location.href = `/shareparking/myshareparks?id=${id}`;
         }
     }
 </script>
