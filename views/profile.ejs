@@ -60,35 +60,6 @@
         window.location.href = `/mypage/${userid}/edit`;
       }
 
-      // 회원 수정 버튼
-      // function edit() {
-      //   if (!confirm('회원정보를 수정하시겠습니까?')) {
-      //     return;
-      //   }
-      //   const form = document.forms['profileView'];
-      //   const userid = document.querySelector('#userid').value;
-
-      //   axios({
-      //     method: 'PATCH',
-      //     url: `/mypage/${userid}/edit`,
-      //     data: {
-      //       userid: form.userid.value,
-      //       //password: form.password.value,
-      //       name: form.name.value,
-      //       nickname: form.nickname.value,
-      //       phone: form.phone.value,
-      //       //profile: form.profile.value,
-      //     },
-      //     headers: {
-      //       Authorization: `Bearer ${localStorage.getItem('token')}`,
-      //     },
-      //   }).then((res) => {
-      //     if (res.data.result) {
-      //       alert('수정이 완료되었습니다.');
-      //       window.location.href = '/';
-      //     }
-      //   });
-      // }
       // 회원 탈퇴 버튼
       function drop() {
         if (!confirm('회원 탈퇴 하시겠습니까?')) {
@@ -96,7 +67,7 @@
         }
         axios({
           method: 'DELETE',
-          url: `/mypage/${userid}drop`,
+          url: `/mypage/${userid}/drop`,
           data: {
             userid: document.querySelector('#userid').value,
           },
