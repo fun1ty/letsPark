@@ -9,9 +9,9 @@ require("dotenv").config();
 const env = process.env;
 
 exports.chat = (req, res) => {
-  const { roomId } = req.params;
-  console.log("chatId", roomId);
-  res.render("chat", { chatId: roomId });
+  const { roomId, joinUser } = req.params;
+  console.log("chatId", req.params);
+  res.render("chat", { roomId, joinUser });
 };
 
 exports.chatList = async (req, res) => {

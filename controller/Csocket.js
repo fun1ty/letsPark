@@ -29,6 +29,8 @@ exports.connection = (io, socket) => {
 
   socket.on("joinRoom", (roomId) => {
     socket.join(roomId);
+    chatHistory(roomId);
+    io.to(roomId).emit("newMessage", message.message, message.nick, profile);
   });
 
   socket.on("jwt", async ({ token }) => {
@@ -161,14 +163,12 @@ exports.connection = (io, socket) => {
   }
 
   //채팅 히스토리
-  function chatHistory() {
-    if (roomFind) {
-      const history = models.Chat.findAll({
-        where: {
-          roomid: roomFind.id,
-        },
-      });
-      return history;
-    }
+  function chatHistory(roomId) {
+    const history = models.Chat.findAll({
+      where: {
+        roomid: roomId,
+      },
+    });
+    return history;
   }
 };
