@@ -1,0 +1,7 @@
+/* 원형 이미지 스타일 */
+.profile-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%; /* 반지름을 50%로 설정하여 원형으로 만듭니다. */
+  object-fit: cover; /* 이미지 비율을 유지하면서 원형에 맞게 조절합니다. */
+}

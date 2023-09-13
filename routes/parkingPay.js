@@ -3,8 +3,10 @@ const router = express.Router();
 const parkingPayController = require("../controller/CparkingPay");
 
 // 주차 요금 계산 및 저장 요청을 처리하는 라우트
-router.post("/", parkingPayController.calculateParkingFee);
+router.post("/calculate", parkingPayController.calculateParkingFee);
 
-router.get("/", parkingPayController.parkingPay);
+router.get("/payok/:id", parkingPayController.paySuccess);
+
+router.post("/save", parkingPayController.save);
 
 module.exports = router;

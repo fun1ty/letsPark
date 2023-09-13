@@ -1,12 +1,20 @@
 @font-face {
-  font-family: "Pretendard-ExtraBold";
-  src: url("/static/font/Pretendard-ExtraBold.ttf");
+  font-family: 'Pretendard-ExtraBold';
+  src: url('/static/font/Pretendard-ExtraBold.ttf');
 }
 
 * {
-  font-family: "Pretendard-ExtraBold", sans-serif;
+  font-family: 'Pretendard-ExtraBold', sans-serif;
 }
 
 #title {
   font-size: 5em;
+}
+
+#profilePic {
+  border-radius: 50%;
+}
+
+.noticeBox {
+  padding-bottom: 30px;
 }

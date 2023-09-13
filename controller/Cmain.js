@@ -64,6 +64,7 @@ exports.userData = async (req, res) => {
         id: user.id,
         userid: user.userid,
         nickname: user.nickname,
+        profile: user.profile,
       };
 
       console.log("user Data", userData);

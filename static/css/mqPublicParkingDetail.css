@@ -203,11 +203,15 @@
 .child1 {
     width: 400px;
     padding-right: 20px;
+    padding-left: 100px;
 }
-
+#profilePic {
+    border-radius: 50%;
+}
 .child2 {
     width: 550px;
     padding-left: 20px;
+    padding-right: 100px;
 }
 
 .test {
