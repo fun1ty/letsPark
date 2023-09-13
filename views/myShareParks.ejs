@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/reset.css" />
+    <link rel="stylesheet" type="text/css" href="/font.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/myShareParks.css"/>
+</head>
+<body>
+    <div style="display: flex; justify-content: center">
+        <div id="mainArea">
+            <h2>내가 등록한 공유주차장 리스트</h2>
+            <% for(let i=0 ; i<result.length ; i++) {%>
+                <div>
+                    <div class="shindex" id="index<%= i%>">
+                        <div>
+                            <div class="shname"><%= result[0].shareparkname %></div>
+                            <% let createDate = result[0].createdAt%>
+                            <div>등록일자 :  <%= createDate.getFullYear()%>년 <%= createDate.getMonth() + 1%>월 <%= createDate.getDate()%>일</div>
+                        </div>
+                        <div id="toggleBtn">
+                            <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down detail" viewBox="0 0 16 16" onclick="openDetail(<%= i%>)">
+                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <input type="hidden" value="<%= result[i].address%>" id="address<%= i%>">
+                    <input type="hidden" value="<%= result[i].price%>" id="price<%= i%>">
+                    <input type="hidden" value="<%= result[i].shareparkname%>" id="name<%= i%>">
+                    <input type="hidden" value="<%= result[i].location%>" id="location<%= i%>">
+                    <input type="hidden" value="<%= result[i].id%>" id="id<%= i%>">
+                </div>
+
+            <% }%>
+        </div>
+    </div>
+</body>
+<script>
+    function closeDetail(id) {
+        const toggleBtn = document.getElementById('toggleBtn');
+        const mainDiv = document.getElementById(`mainDiv${id}`);
+        mainDiv.remove();
+        toggleBtn.innerHTML = `<svg onclick="openDetail(${id})" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down detail" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>`;
+    }
+    function openDetail(id) {
+        const toggleBtn = document.getElementById('toggleBtn');
+        toggleBtn.innerHTML = `<svg onclick="closeDetail(${id})" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up detail" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/> </svg>`;
+
+        const tempWidth = window.innerWidth;
+        console.log(tempWidth);
+
+        const address = document.getElementById(`address${id}`).value;
+        const price = document.getElementById(`price${id}`).value;
+        const name = document.getElementById(`name${id}`).value;
+        const location = document.getElementById(`location${id}`).value;
+
+        const mainDiv = document.createElement('div');
+        mainDiv.setAttribute('id', `mainDiv${id}`);
+        mainDiv.style.paddingLeft = '30px';
+        mainDiv.style.paddingBottom = '30px';
+
+
+        const nameDiv = document.createElement('div');
+        nameDiv.setAttribute('class', 'titleDiv');
+        nameDiv.innerText = '주차장 이름';
+        const nameInput = document.createElement('input');
+        nameInput.setAttribute('id', `inputName${id}`);
+        nameInput.setAttribute('type', 'text');
+        nameInput.setAttribute('value', name);
+
+        const priceDiv = document.createElement('div');
+        priceDiv.setAttribute('class', 'titleDiv');
+        priceDiv.innerText = '가격'
+        const priceInput = document.createElement('input');
+        priceInput.setAttribute('id', `inputPrice${id}`);
+        priceInput.setAttribute('type', 'number');
+        priceInput.setAttribute('value', price);
+        priceInput.setAttribute('dir', 'rtl');
+
+        const addressDiv = document.createElement('div');
+        addressDiv.setAttribute('class', 'titleDiv');
+        addressDiv.innerText = '주소'
+        const addressInput = document.createElement('input');
+        addressInput.setAttribute('id', `inputaddress${id}`);
+        addressInput.setAttribute('type', 'text');
+        addressInput.setAttribute('placeholder', address);
+        addressInput.setAttribute('readonly', 'true');
+
+        const span = document.createElement('span');
+        span.innerText = '원';
+
+        const coverDiv = document.createElement('div');
+        coverDiv.style.display = 'flex';
+        coverDiv.style.justifyContent = 'center';
+        const locationDiv = document.createElement('div');
+        locationDiv.setAttribute('class', 'titleDiv');
+        locationDiv.innerText = '주차장 이미지';
+        const fileBox = document.createElement('div');
+        fileBox.setAttribute('class', 'filebox');
+        const uploadName = document.createElement('input');
+        uploadName.setAttribute('class', 'upload-name');
+        uploadName.setAttribute('value', '첨부파일');
+        uploadName.setAttribute('placeholder', '첨부파일');
+        const label = document.createElement('label');
+        label.setAttribute('for', `inputLocation${id}`);
+        label.innerText = '파일찾기';
+        const locationInput = document.createElement('input');
+        locationInput.setAttribute('id', `inputLocation${id}`);
+        locationInput.setAttribute('class', 'files');
+        locationInput.setAttribute('type', 'file');
+        locationInput.setAttribute('accept', 'image/%')
+        locationInput.setAttribute('onchange', `loadFile(this, ${id})`);
+        fileBox.appendChild(uploadName);
+        fileBox.appendChild(label);
+        fileBox.appendChild(locationInput);
+
+        const img = document.createElement('img');
+        img.setAttribute('src', location);
+        img.setAttribute('id', `img${id}`);
+        img.style.width = '350px';
+        img.style.height = '250px';
+        img.style.paddingTop = '20px';
+
+        mainDiv.appendChild(nameDiv);
+        mainDiv.appendChild(nameInput);
+        mainDiv.appendChild(createBr());
+        mainDiv.appendChild(priceDiv);
+        mainDiv.appendChild(priceInput);
+        priceInput.after(span);
+        mainDiv.appendChild(createBr());
+        mainDiv.appendChild(addressDiv);
+        mainDiv.appendChild(addressInput);
+        mainDiv.appendChild(createBr());
+        mainDiv.appendChild(locationDiv);
+        mainDiv.appendChild(fileBox);
+        coverDiv.appendChild(img);
+        mainDiv.appendChild(coverDiv);
+
+        const btnDiv = document.createElement('div');
+        btnDiv.style.display = 'flex';
+        btnDiv.style.justifyContent = 'space-evenly';
+        btnDiv.style.paddingTop = '30px';
+        const updateBtn = document.createElement('div');
+        updateBtn.setAttribute('class', 'clickBtn');
+        updateBtn.setAttribute('onclick', `updateShareParking(${id})`);
+        updateBtn.innerText = '수정하기';
+        const deleteBtn = document.createElement('div');
+        deleteBtn.setAttribute('onclick', `deleteShareParking(${id})`);
+        deleteBtn.setAttribute('class', 'clickBtn');
+        deleteBtn.innerText = '삭제하기';
+
+        btnDiv.appendChild(updateBtn);
+        btnDiv.appendChild(deleteBtn);
+
+        mainDiv.appendChild(btnDiv);
+
+        const idx = document.getElementById(`index${id}`);
+        idx.after(mainDiv);
+    }
+
+    function createBr() {
+        const br = document.createElement('br');
+        return br;
+    }
+
+    function loadFile(input, id) {
+        const img = document.getElementById(`img${id}`);
+        let file = input.files[0];
+
+        img.src = URL.createObjectURL(file);
+    }
+
+    async function deleteShareParking(id) {
+        try {
+            const result = await axios({
+                method: 'DELETE',
+                url : 'delete',
+                data : { shareParkingId : id },
+                headers: {
+                    Authorization: `${localStorage.getItem('token')}`,
+                },
+            });
+
+            if(result) {
+                alert('정상적으로 삭제되었습니다.');
+                document.location.reload();
+            } else {
+                alert('등록된 회원이 아닙니다. 회원가입을 진행해주세요. ');
+                document.location.href = '/signup';
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    async function updateShareParking(id) {
+        const shareParkingName = document.getElementById(`inputName${id}`).value;
+        if(shareParkingName === '') {
+            alert('주차장 이름을 입력해주세요.');
+            return;
+        }
+        const address = document.getElementById(`address${id}`).value;
+        if(address === '') {
+            alert('주소를 입력해주세요.');
+            return;
+        }
+        const price = document.getElementById(`price${id}`).value;
+        if(price === '') {
+            alert('가격을 입력해주세요.');
+            return;
+        }
+        const file = document.querySelector(`#inputLocation${id}`);
+
+        const formData = new FormData();
+
+        if(file.files[0] !== undefined) {
+            formData.append('file', file.files[0]);
+        }
+
+        formData.append('shareparkname', shareParkingName);
+        formData.append('price', price);
+        formData.append('shareParkingId', id);
+        //axios 부터
+        try {
+            const result = await axios({
+                method : 'PATCH',
+                url : '/shareparking/edit',
+                data : formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `${localStorage.getItem('token')}`,
+                },
+            });
+
+            if(result) {
+                alert('공유주차장 정보 수정이 완료되었습니다. ');
+                document.location.reload();
+            } else {
+                alert('등록된 회원이 아닙니다. 회원가입을 진행해주세요. ');
+                document.location.href = '/signup';
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+</script>
+</html>
