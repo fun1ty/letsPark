@@ -269,7 +269,7 @@
                         <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
                     </svg>
 
-                    <div class="stars-inner" style="width: <%= average * 10 * 2%>%;"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
+                    <div class="stars-inner" style="width: <%= average * 10 * 2%>"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
                         <!-- 5개의 노란색 별 -->
                         <!-- 별 1 -->
                         <svg class="star" viewBox="0 0 25 25">
@@ -366,7 +366,7 @@
                                                 <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
                                             </svg>
 
-                                            <div class="stars-inner" style="width: <%= review.score * 10 * 2%>%;"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
+                                            <div class="stars-inner" style="width: <%= review.score * 10 * 2%>"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
                                                 <!-- 5개의 노란색 별 -->
                                                 <!-- 별 1 -->
                                                 <svg class="star" viewBox="0 0 25 25">
@@ -420,7 +420,7 @@
             </div>
             <div style="display: flex; justify-content: space-evenly; padding-top: 20px;">
                 <div class="modalBtn spBtn" id="modalCloseButton">취소하기</div>
-                <div class="modalBtn spBtn" onclick="enrollReview(<%= result1.id%>)">리뷰작성</div>
+                <div class="modalBtn spBtn" onclick="enrollReview('<%= result1.id%>')">리뷰작성</div>
             </div>
         </div>
       </div>
@@ -707,7 +707,7 @@
 
             if (result) {
               alert("결제가 성공적으로 완료되었습니다.");
-              document.location.href = "/parkingpay/payok";
+              document.location.href = `/parkingpay/payok/${result.id}`;
             } else {
               alert("서버 응답이 실패했습니다.");
             }
@@ -739,7 +739,7 @@
           //throw new Error("서버 응답이 실패했습니다.");
           return false;
         } else {
-          return true;
+          return response.data.data;
         }
       } catch (error) {
         console.error("서버 요청 실패:", error);
