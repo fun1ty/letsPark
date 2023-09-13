@@ -11,6 +11,7 @@ let roomFind;
 let msg;
 let roomDBInsert;
 let profile;
+let findeJoinUser;
 
 console.log(user);
 const generateRandomString = (num) => {
@@ -25,6 +26,10 @@ const generateRandomString = (num) => {
 
 exports.connection = (io, socket) => {
   console.log("접속");
+
+  socket.on("joinRoom", (roomId) => {
+    socket.join(roomId);
+  });
 
   socket.on("jwt", async ({ token }) => {
     // console.log(`클라이언트로부터 JWT 토큰을 수신: ${token}`);
@@ -49,31 +54,37 @@ exports.connection = (io, socket) => {
   });
 
   //채팅방 만들기 생성
-  socket.on("create", async (userId, usernick) => {
+  socket.on("create", async (userId, usernick, roomId) => {
     //join(방이름) 해당 방이름으로 없다면 생성. 존재하면 입장
     console.log(userId, usernick);
     try {
-      if (!roomName) {
-        roomName = "room" + number + generateRandomString(10) + userId;
-        socket.join(roomName);
-        console.log("roomName", roomName);
+      if (!roomId) {
+        console.log("roomName", roomId);
         roomDBInsert = await models.ChatRoom.create({
-          roomname: roomName,
+          roomname: roomId,
         });
+      } else {
+        //방찾기
+        roomFind = await models.ChatRoom.findOne({
+          where: { id: roomId },
+        });
+        //user가 두명이상이면
+        if (user.length > 1) {
+          findeUser = await models.ChatUser.findOne({
+            where: {
+              userid: user[0],
+              joinuser: user[1],
+            },
+          });
+          if (!findeUser) {
+            await chatUserDBInsert();
+          }
+        }
+        socket.room = roomId;
+        socket.user = usernick;
+
+        io.to(socket.room).emit("notice", `${socket.user}님이 입장하셨습니다`);
       }
-
-      roomFind = await models.ChatRoom.findOne({
-        where: { roomname: roomName },
-      });
-      console.log("roomFind", roomFind);
-
-      if (user.length > 1) {
-        await chatUserDBInsert();
-      }
-      socket.room = roomName;
-      socket.user = usernick;
-
-      io.to(socket.room).emit("notice", `${socket.user}님이 입장하셨습니다`);
     } catch (error) {
       console.log(error);
     }
@@ -134,9 +145,9 @@ exports.connection = (io, socket) => {
   }
 
   //채팅대화 DB 삽입
-  function chatDBInsert(FILE, msg) {
+  async function chatDBInsert(FILE, msg) {
     if (roomDBInsert) {
-      models.Chat.create({
+      await models.Chat.create({
         userid: user[0],
         roomid: roomFind.id,
         CONTENT: msg,
@@ -153,31 +164,11 @@ exports.connection = (io, socket) => {
   function chatHistory() {
     if (roomFind) {
       const history = models.Chat.findAll({
-        attributes: ["userid", "roomid", "CONTENT", "FILE"],
         where: {
           roomid: roomFind.id,
         },
       });
       return history;
     }
-    io.to(socket.room).emit("history", history);
-  }
-
-  function getUsersInRoom(room) {
-    const users = [];
-    //채팅룸에 접속한 socket.id값을 찾아야함
-    const clients = io.sockets.adapter.rooms.get(room);
-    //console.log(clients);
-    if (clients) {
-      clients.forEach((socketId) => {
-        //io.sockets.sockets: socket.id가 할당한 변수들의 객체값
-        const userSocket = io.sockets.sockets.get(socketId);
-        //개별 사용자에게 메세지를 보내기 위해서 객체형태로 변경
-        //key: 소켓아이디, name:이름
-        const info = { name: userSocket.user, key: socketId };
-        users.push(info);
-      });
-    }
-    return users;
   }
 };

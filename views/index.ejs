@@ -455,10 +455,12 @@
               },
             })
             .then((response) => {
+
               console.log('chatList', response);
               const userid = response.data.responseData.data.id;
               console.log('회원번호', userid);
               location.href = `/chatList/${userid}`;
+
             })
             .catch((error) => {
               console.log('chatList에러', error);
