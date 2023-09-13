@@ -2,16 +2,15 @@ const models = require("../models/index");
 const jwt = require("jsonwebtoken");
 const vt = require("../utils/JwtVerifyToken");
 const S3 = require("../utils/S3upload");
+const { error } = require("console");
 const randomBytes = require("crypto").randomBytes(2);
 const number = parseInt(randomBytes.toString("hex"), 16);
 // const roomList = [];
 const user = [];
 let roomName;
-let roomFind;
-let msg;
 let roomDBInsert;
 let profile;
-let findeJoinUser;
+let roomFind;
 
 console.log(user);
 const generateRandomString = (num) => {
@@ -27,8 +26,19 @@ const generateRandomString = (num) => {
 exports.connection = (io, socket) => {
   console.log("접속");
 
-  socket.on("joinRoom", (roomId) => {
-    socket.join(roomId);
+  socket.on("joinRoom", async (roomId) => {
+    try {
+      socket.join(roomId);
+      const history = await chatHistory(roomId);
+      console.log("history", history);
+      if (!history) {
+        io.to(roomId).emit("history", null);
+      } else {
+        io.to(roomId).emit("history", history);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   socket.on("jwt", async ({ token }) => {
@@ -54,57 +64,46 @@ exports.connection = (io, socket) => {
   });
 
   //채팅방 만들기 생성
-  socket.on("create", async (userId, usernick, roomId) => {
-    //join(방이름) 해당 방이름으로 없다면 생성. 존재하면 입장
-    console.log(userId, usernick);
-    try {
-      if (!roomId) {
-        console.log("roomName", roomId);
-        roomDBInsert = await models.ChatRoom.create({
-          roomname: roomId,
-        });
-      } else {
-        //방찾기
-        roomFind = await models.ChatRoom.findOne({
-          where: { id: roomId },
-        });
-        //user가 두명이상이면
-        if (user.length > 1) {
-          findeUser = await models.ChatUser.findOne({
-            where: {
-              userid: user[0],
-              joinuser: user[1],
-            },
+  socket.on(
+    "create",
+    async (userId, usernick, roomId, requestUserId, joinUserNick) => {
+      console.log(userId, usernick, requestUserId, joinUserNick);
+      try {
+        if (!roomId) {
+          roomName = "room" + userId + "_" + requestUserId;
+          console.log("roomName", roomId);
+          roomFind = await models.ChatRoom.findOne({
+            roomname: roomName,
           });
-          if (!findeUser) {
-            await chatUserDBInsert();
+
+          if (!roomFind) {
+            roomDBInsert = await models.ChatRoom.create({
+              roomname: roomName,
+            });
           }
         }
+        await chatUserDBInsert(userId, requestUserId, joinUserNick);
         socket.room = roomId;
         socket.user = usernick;
 
         io.to(socket.room).emit("notice", `${socket.user}님이 입장하셨습니다`);
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
-  });
+  );
 
   socket.on("sendMessage", async (message) => {
     try {
-      const FILE = message.file;
-      msg = message.message;
       console.log("sendMessage", message);
-      await chatDBInsert(FILE, msg);
-
+      //메세지 DB삽입
+      await chatDBInsert(message);
       io.to(socket.room).emit(
         "newMessage",
         message.message,
         message.nick,
         profile
       );
-      // //자기자신한테 메세지 띄우기
-      // socket.emit("newMessage", message.message, message.nick, true);
     } catch (error) {
       console.log("newMessage에러: ", error);
     }
@@ -117,58 +116,43 @@ exports.connection = (io, socket) => {
   });
 
   //채팅 유저DB 삽입
-  async function chatUserDBInsert() {
-    let joinUserId;
+  async function chatUserDBInsert(userId, requestUserId, joinUserNick) {
     console.log("joinuser", user[1]);
-
-    joinUserId = await models.User.findOne({
-      where: {
-        id: user[1],
-      },
-    }).then((result) => {
-      console.log("joinusernick", result);
-      return result;
+    const findUserChat = await models.ChatUser.findOne({
+      userid: userId,
+      joinuser: requestUserId,
     });
-
-    if (!roomFind.roomid) {
+    if (!findUserChat) {
       await models.ChatUser.create({
         roomid: roomFind.id,
-        userid: user[0],
-        joinuser: user[user.length - 1],
-        joinusernick: joinUserId.nickname,
-      }).then((result) => {
-        console.log("chatUserDBInsert", result);
+        userid: userId,
+        joinuser: requestUserId,
+        joinusernick: joinUserNick,
       });
-    } else {
-      console.log("chatUserDBInsert null");
     }
   }
 
   //채팅대화 DB 삽입
-  async function chatDBInsert(FILE, msg) {
-    if (roomDBInsert) {
-      await models.Chat.create({
-        userid: user[0],
+  async function chatDBInsert(data) {
+    try {
+      const chatDB = await models.Chat.create({
+        userid: data.userid,
         roomid: roomFind.id,
-        CONTENT: msg,
-        FILE: FILE,
-      }).then((result) => {
-        console.log("chatDBInsert", result);
+        content: data.message,
+        FILE: data.file,
       });
-    } else {
-      console.log("chatDBInsert null");
+    } catch (error) {
+      console.log(error, "chatDBInsert null");
     }
   }
 
   //채팅 히스토리
-  function chatHistory() {
-    if (roomFind) {
-      const history = models.Chat.findAll({
-        where: {
-          roomid: roomFind.id,
-        },
-      });
-      return history;
-    }
+  function chatHistory(roomId) {
+    const history = models.Chat.findAll({
+      where: {
+        roomid: roomId,
+      },
+    });
+    return history;
   }
 };

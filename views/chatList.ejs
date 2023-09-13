@@ -33,7 +33,8 @@
       <h1>채팅</h1>
     </div>
     <hr />
-    <% for (let i = 0; i < chatListDB.length; i++) { %>
+    <% if(chatListDB.length !=0){ %> <% for (let i = 0; i <
+    chatListDB.length;i++) { %>
     <button
       id="<%= chatListDB[i].roomid %>"
       onclick="chatBtn(`<%= chatListDB[i].roomid %>`)"
@@ -43,14 +44,17 @@
       </div>
       <div><%= chatListDB[i].chatroom.chats.content %></div>
     </button>
-    <% } %>
+    <% } %> <% } else { %>
+    <button>채팅 만들기</button>
+    <% }%>
 
     <script>
       //채팅방 이동
       function chatBtn(roomId) {
         const joinUser = document.querySelector(".join").id;
         console.log("chat이동");
-        location.href = `/chat/${roomId}`;
+        console.log("joinUser", joinUser);
+        location.href = `/chat/${roomId}/${joinUser}`;
       }
     </script>
   </body>

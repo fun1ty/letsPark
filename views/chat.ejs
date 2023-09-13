@@ -66,18 +66,17 @@
     </style>
   </head>
   <body>
-    <h2 id="sendUser"></h2>
+    <button id="chatExit" onclick="exitChat()">나가기</button>
+    <h2 id="<%= joinUserNick %>"></h2>
     <div id="main">
       <ul id="lists"></ul>
     </div>
-    <div class="body" id="<%= chatId  %>">
-      <% console.log('chatId:', chatId); %>
+    <div class="body">
       <div id="msg">
         <div id="notice"></div>
       </div>
       <form id="chat">
         <input type="text" id="message" placeholder="메세지 입력" />
-
         <button>입력</button>
       </form>
       <form onsubmit="fileupload(event)">
@@ -86,12 +85,17 @@
     </div>
 
     <script>
-      const roomId = document.querySelector(".body").id;
+      const roomId = "<%= roomId %>";
+      const requestUserId = "<%= userId %>";
+      const joinUserNick = "<%= joinUserNick %>";
+      // const roomId = document.querySelector(".body").id;
       console.log("roomId", roomId);
+      console.log("requestUserId", requestUserId);
+      console.log("joinUserNick", joinUserNick);
+
       const socket = io();
       let userid;
       let usernick;
-
       console.log(socket);
       const token = localStorage.getItem("token");
       const chatForm = document.querySelector("#chat");
@@ -132,7 +136,6 @@
           p.innerHTML = `<p id="othermessage">${message}</p>`;
           img.src = `${profile}`;
           img.style.width = "50px";
-          sendUserh2.innerHTML = `${nick}`;
           span.appendChild(img);
           span.appendChild(p);
           div.appendChild(span);
@@ -163,23 +166,38 @@
         usernick = resultValue.nickname;
 
         //채팅방 생성
-        socket.emit("create", userid, usernick, roomId, () => {
-          console.log("userid,usernick", userid, usernick, roomId);
-        });
+        socket.emit(
+          "create",
+          userid,
+          usernick,
+          roomId,
+          requestUserId,
+          joinUserNick,
+          () => {
+            console.log(
+              "userid,usernick",
+              userid,
+              usernick,
+              roomId,
+              requestUserId
+            );
+          }
+        );
       });
 
-      // socket.on("history", (historyChat) => {
-      //   //사용자 아이디 구분해야함
-      //   const div = document.createElement("div");
-      //   const p = document.createElement("p");
-      //   if (historyChat.FILE != null) {
-      //     p.innerHTML = historyChat.FILE;
-      //   } else {
-      //     p.textContent = historyChat.CONTENT;
-      //   }
-      //   div.appendChild(p);
-      //   msg.appendChild(div);
-      // });
+      socket.on("history", (historyChat) => {
+        const div = document.createElement("div");
+        const p = document.createElement("p");
+        if (historyChat) {
+          if (historyChat.FILE != null) {
+            p.innerHTML = historyChat.FILE;
+          } else {
+            p.textContent = historyChat.CONTENT;
+          }
+          div.appendChild(p);
+          msg.appendChild(div);
+        }
+      });
 
       //메세지 보내기
       chatForm.addEventListener("submit", (e) => {
@@ -196,6 +214,11 @@
         socket.emit("sendMessage", msg);
         message.value = "";
       });
+
+      //채팅방 나가기
+      function exitChat() {
+        socket.emit("disconnect");
+      }
 
       //파일전송
       async function fileupload(e) {
