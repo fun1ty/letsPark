@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Document</title>
+  </head>
+
+  <body>
+    <h2>회원정보수정</h2>
+    <form name="profileView">
+      <img id="profileImage" src="<%= data.profile %>" alt="프로필 이미지" />
+      <br />
+      <label for="userid">아이디</label><br />
+      <input
+        type="text"
+        id="userid"
+        value="<%= data.userid %>"
+        placeholder="아이디"
+        readonly
+      /><br />
+      <!-- <label for="password">비밀번호 변경</label><br />
+      <input
+        type="password"
+        id="password"
+        value="<%= data.password %>"
+        placeholder="비밀번호"
+      /><br /> -->
+      <label for="newPassword">비밀번호 변경</label><br />
+      <input
+        type="password"
+        id="newPassword"
+        value=""
+        placeholder="새 비밀번호"
+      /><br />
+      <label for="passwordCheck">비밀번호 확인</label><br />
+      <input
+        type="password"
+        id="passwordCheck"
+        placeholder="비밀번호 확인"
+        oninput="checkPassword()"
+      /><br />
+      <span id="passwordError"></span><br />
+      <label for="name">이름</label><br />
+      <input
+        type="text"
+        id="name"
+        value="<%= data.name %>"
+        placeholder="이름"
+      /><br />
+      <label for="nickname">닉네임</label><br />
+      <input
+        type="text"
+        id="nickname"
+        value="<%= data.nickname %>"
+        placeholder="닉네임"
+      /><br />
+      <label for="phone">휴대폰 번호</label><br />
+      <input
+        type="text"
+        id="phone"
+        value="<%= data.phone %>"
+        placeholder="휴대폰번호"
+      /><br />
+      <button type="button" onclick="edit()">수정하기</button>
+    </form>
+
+    <script>
+      function checkPassword() {
+        const password = document.getElementById('newPassword').value;
+        const passwordCheck = document.getElementById('passwordCheck').value;
+        const errorSpan = document.getElementById('passwordError');
+
+        if (password !== passwordCheck) {
+          errorSpan.textContent = '비밀번호가 일치하지 않습니다.';
+          document
+            .getElementById('passwordCheck')
+            .setCustomValidity('비밀번호가 일치하지 않습니다.');
+        } else {
+          errorSpan.textContent = '';
+          document.getElementById('passwordCheck').setCustomValidity('');
+        }
+      }
+
+      function edit() {
+        if (!confirm('회원정보를 수정하시겠습니까?')) {
+          return;
+        }
+        const form = document.forms['profileView'];
+        const userid = document.querySelector('#userid').value;
+        const newPassword = document.querySelector('#newPassword').value;
+
+        axios({
+          method: 'PATCH',
+          url: `/mypage/${userid}/edit`,
+          data: {
+            userid: form.userid.value,
+            //password: form.password.value,
+            newPassword: newPassword,
+            name: form.name.value,
+            nickname: form.nickname.value,
+            phone: form.phone.value,
+            //profile: form.profile.value,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }).then((res) => {
+          if (res.data.result) {
+            alert('수정이 완료되었습니다.');
+            window.location.href = '/';
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

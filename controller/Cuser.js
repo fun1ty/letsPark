@@ -2,6 +2,7 @@ const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const vt = require('../utils/JwtVerifyToken');
+const { RDS } = require('aws-sdk');
 require('dotenv').config();
 const env = process.env;
 const SECRETKEY = env.SECRETKEY;
@@ -31,36 +32,14 @@ exports.profile = async (req, res) => {
   }).then((result) => {
     res.render('profile', { data: result });
   });
-  // //const token = req.headers.authorization.split(' ')[1];
-  // const token =
-  //   req.headers.authorization && req.headers.authorization.split(' ')[1];
+};
 
-  // if (!token) {
-  //   return res.status(401).json({ message: '인증되지 않은 요청입니다.' });
-  // }
-
-  // const userId = vt.verifyToken(token);
-  // console.log(userId);
-
-  // try {
-  //   // 토큰을 해독하여 사용자 ID를 추출
-  //   const userId = vt.verifyToken(token);
-  //   console.log(userId);
-
-  //   // 사용자 정보를 DB에서 조회
-  //   const user = await User.findOne({
-  //     where: { userid: userId },
-  //   });
-
-  //   if (!user) {
-  //     return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
-  //   }
-
-  //   res.render('profile', { user });
-  // } catch (error) {
-  //   console.log(error);
-  //   res.status(500).json({ message: '서버 오류입니다.' });
-  // }
+exports.edit = async (req, res) => {
+  User.findOne({
+    where: { userid: req.params.userid },
+  }).then((result) => {
+    res.render('profileEdit', { data: result });
+  });
 };
 
 //POST
@@ -131,14 +110,19 @@ exports.editProfile = (req, res) => {
   }
   try {
     const decodedToken = jwt.verify(token, SECRETKEY);
-    const { userid, password, name, nickname, phone } = req.body;
+    const { userid, password, newPassword, name, nickname, phone, profile } =
+      req.body;
     User.findOne({ where: { userid: decodedToken.userid } }).then((user) => {
       if (!user) {
         res.json({ result: false, message: '사용자가 존재하지 않습니다.' });
       } else {
-        //const maskedPassword = '*'.repeat(password.length);
+        if (newPassword) {
+          // 새 비밀번호가 제공된 경우에만 업데이트
+          const hashNewPassword = bcrypt.hashSync(newPassword, 10);
+          user.password = hashNewPassword;
+        }
         User.update(
-          { password, name, nickname, phone },
+          { password: user.password, name, nickname, phone, profile },
           { where: { userid: decodedToken.userid } }
         )
           .then(() => {
