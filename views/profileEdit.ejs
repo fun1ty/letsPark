@@ -153,14 +153,25 @@
     </h2>
     <div class="mainEdit" style="padding: 30px">
       <form name="profileView" enctype="multipart/form-data">
-        <img id="profile" src="<%= data.profile %>" alt="프로필 이미지" />
-        <input
-          type="file"
-          id="profileImage"
-          name="profileImage"
-          accept="image/*"
-          onchange="previewProfileImage()"
-        />
+        <img
+          id="profile"
+          src="<%= data.profile %>"
+          alt="프로필 이미지"
+        /><br /><br />
+        <div class="fileEdit">
+          <input class="upload-name" value="첨부파일" placeholder="첨부파일" />
+          <label for="profileImage">업로드</label>
+          <input
+            type="file"
+            id="profileImage"
+            name="profileImage"
+            accept="image/*"
+            onchange="previewProfileImage()"
+          />
+        </div>
+        <br />
+        <br />
+        <br />
         <br />
         <div class="eTitle">아이디</div>
         <br />
@@ -180,7 +191,7 @@
           class="inputEdit"
           id="newPassword"
           value=""
-          placeholder="새 비밀번호"
+          placeholder="새 비밀번호 (8자 이상, 특수기호 포함)"
         /><br />
         <div class="eTitle">비밀번호 확인</div>
         <br />
@@ -191,7 +202,8 @@
           placeholder="비밀번호 확인"
           oninput="checkPassword()"
         /><br />
-        <span id="passwordError"></span><br />
+        <span id="passwordError"></span>
+        <br />
         <div class="eTitle">이름</div>
         <br />
         <input
@@ -219,42 +231,17 @@
           value="<%= data.phone %>"
           placeholder="휴대폰번호"
         /><br />
-        <button
-          type="button"
-          style="
-            background-color: #8783f5;
-            text-align: center;
-            height: 60px;
-            line-height: 60px;
-            border-radius: 10px;
-            margin-top: 40px;
-            font-family: 'Dovemayo_gothic';
-            font-size: 30px;
-            color: white;
-          "
-          onclick="edit()"
-        >
-          수정하기
-        </button>
-        <button
-          type="button"
-          style="
-            background-color: #8783f5;
-            text-align: center;
-            height: 60px;
-            line-height: 60px;
-            border-radius: 10px;
-            margin-top: 40px;
-            font-family: 'Dovemayo_gothic';
-            font-size: 30px;
-            color: white;
-          "
-          onclick="resetForm()"
-        >
-          초기화
-        </button>
       </form>
     </div>
+    <div class="editButtonContainer">
+      <button type="button" class="editButton edit" onclick="edit()">
+        수정하기
+      </button>
+      <button type="button" class="editButton reset" onclick="resetForm()">
+        초기화
+      </button>
+    </div>
+
     <script>
       //비밀번호 재확인
       function checkPassword() {
@@ -264,6 +251,7 @@
 
         if (password !== passwordCheck) {
           errorSpan.textContent = '비밀번호가 일치하지 않습니다.';
+          errorSpan.style.color = 'red';
           document
             .getElementById('passwordCheck')
             .setCustomValidity('비밀번호가 일치하지 않습니다.');
@@ -345,6 +333,210 @@
         const errorSpan = document.getElementById('passwordError');
         errorSpan.textContent = '';
         document.getElementById('passwordCheck').setCustomValidity('');
+      }
+
+      // 메뉴 script
+      // 변수를 추가하여 메뉴 상태를 추적합니다.
+      var isMenuVisible = false;
+
+      function toggleMenu() {
+        var menu = document.getElementById('menu-container');
+        if (!isMenuVisible) {
+          menu.style.right = '0';
+        } else {
+          menu.style.right = '-300px';
+        }
+
+        // 메뉴 상태를 업데이트합니다.
+        isMenuVisible = !isMenuVisible;
+      }
+      // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
+      function closeMenu() {
+        var menu = document.getElementById('menu-container');
+        menu.style.right = '-300px';
+        isMenuVisible = false;
+      }
+
+      // 예약 알람 이동
+      function reservationAlarm() {
+        location.href = '/user/reservation';
+      }
+
+      // 회원 정보 수정 이동
+      function profileEdit() {
+        location.href = '/mypage/:userid/edit';
+      }
+
+      // 회원 정보 수정 이동
+      function profileEdit() {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          axios
+            .get('/data', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              const userId = response.data.responseData.data.userid;
+              console.log(userId);
+              location.href = `/mypage/${userId}`;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          location.href = '/user/login';
+        }
+      }
+
+      // 예약내역조회 이동
+      function userReservation() {
+        location.href = '/user/reservation';
+      }
+
+      // 로그인 유무에 따른 닉네임 값 표시
+      window.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+        const userNickElement = document.querySelector('.userNick'); // 사용자 닉네임 엘리먼트
+
+        if (token) {
+          // 토큰이 있는 경우
+          loginLogoutButton.innerText = '로그아웃';
+
+          axios
+            .get('/data', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              const userNickname = response.data.responseData.data.nickname;
+              userNickElement.innerText = userNickname;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          // 토큰이 없는 경우
+          userNickElement.innerText = '로그인해주세요';
+        }
+      });
+
+      //로그아웃
+      //로그인 상태 시 로컬 스토리지 토큰 비우도록
+      //로그아웃 상태 시 /user/login 이동
+      function logout() {
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+        if (token) {
+          if (confirm('로그아웃 하시겠습니까?')) {
+            localStorage.removeItem('token');
+            loginLogoutButton.innerText = '로그인/회원가입';
+
+            alert('로그아웃 되었습니다!');
+
+            //로그아웃 후 새로고침
+            location.href = '/';
+          }
+        } else {
+          location.href = '/user/login';
+        }
+      }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+        if (token) {
+          loginLogoutButton.innerText = '로그아웃';
+        }
+      });
+
+      //프로필 사진 띄우기
+      const token = localStorage.getItem('token');
+      if (token) {
+        axios
+          .get('/data', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            const profileUrl = response.data.responseData.data.profile;
+            const profilePic = document.getElementById('profilePic');
+            profilePic.src = profileUrl;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        profilePic.src =
+          'https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg';
+      }
+
+      //공유주차장등록 이동
+      function parkingAdd() {
+        location.href = '/shareparking';
+      }
+
+      //채팅방 이동
+      function chatBtn() {
+        console.log('front 채팅방클릭');
+        location.href = '/chat';
+      }
+
+      //my채팅내역
+      function chatListBtn() {
+        console.log('front 채팅방리스트 클릭');
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert('로그인 해주세요');
+          return;
+        } else {
+          axios
+            .get('/data', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              console.log('chatList', response);
+              const userid = response.data.responseData.data.id;
+              console.log('회원번호', userid);
+              location.href = `/chatList/${userid}`;
+            })
+            .catch((error) => {
+              console.log('chatList에러', error);
+              document.location.reload();
+            });
+        }
+      }
+
+      async function getMySharePark() {
+        let id;
+        let check;
+        try {
+          const result = await axios({
+            method: 'POST',
+            url: '/shareparking/mysharepark',
+            headers: {
+              Authorization: `${localStorage.getItem('token')}`,
+            },
+          });
+          console.log(result);
+          id = result.data.id;
+          check = result.data.result;
+        } catch (err) {
+          console.log(err);
+        }
+        console.log('밖', id);
+        if (check) {
+          document.location.href = `/shareparking/myshareparks?id=${id}`;
+        }
       }
     </script>
   </body>

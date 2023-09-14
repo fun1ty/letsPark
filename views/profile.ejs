@@ -21,6 +21,14 @@
       <nav class="headbox">
         <div class="headermenu">
           <img
+            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/bell.svg"
+            alt="알람"
+            width="25px"
+            height="25px"
+            id="backIcon"
+            onclick="goBack()"
+          />
+          <img
             src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/W_text_logo.svg"
             alt="로고"
             class="logo"
@@ -156,6 +164,9 @@
       <form name="profileView">
         <img id="profileImage" src="<%= data.profile %>" alt="프로필 이미지" />
         <br />
+        <br />
+        <br />
+        <br />
         <div class="pTitle">아이디</div>
         <br />
         <input
@@ -199,7 +210,7 @@
         <button
           type="button"
           style="
-            background-color: #8783f5;
+            background-color: #706bfa;
             text-align: center;
             height: 60px;
             line-height: 60px;
@@ -208,15 +219,16 @@
             font-family: 'Dovemayo_gothic';
             font-size: 30px;
             color: white;
+            border: none;
+            width: 200px;
           "
           onclick="editPage()"
         >
           수정페이지
         </button>
         <button
-          type="button"
           style="
-            background-color: #8783f5;
+            background-color: #aaa8f1;
             text-align: center;
             height: 60px;
             line-height: 60px;
@@ -225,6 +237,8 @@
             font-family: 'Dovemayo_gothic';
             font-size: 30px;
             color: white;
+            border: none;
+            width: 200px;
           "
           onclick="drop()"
         >
@@ -256,6 +270,210 @@
             window.location.href = '/';
           }
         });
+      }
+
+      //메뉴 script
+      // 변수를 추가하여 메뉴 상태를 추적합니다.
+      var isMenuVisible = false;
+
+      function toggleMenu() {
+        var menu = document.getElementById('menu-container');
+        if (!isMenuVisible) {
+          menu.style.right = '0';
+        } else {
+          menu.style.right = '-300px';
+        }
+
+        // 메뉴 상태를 업데이트합니다.
+        isMenuVisible = !isMenuVisible;
+      }
+      // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
+      function closeMenu() {
+        var menu = document.getElementById('menu-container');
+        menu.style.right = '-300px';
+        isMenuVisible = false;
+      }
+
+      // 예약 알람 이동
+      function reservationAlarm() {
+        location.href = '/user/reservation';
+      }
+
+      // 회원 정보 수정 이동
+      function profileEdit() {
+        location.href = '/mypage/:userid/edit';
+      }
+
+      // 회원 정보 수정 이동
+      function profileEdit() {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          axios
+            .get('/data', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              const userId = response.data.responseData.data.userid;
+              console.log(userId);
+              location.href = `/mypage/${userId}`;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          location.href = '/user/login';
+        }
+      }
+
+      // 예약내역조회 이동
+      function userReservation() {
+        location.href = '/user/reservation';
+      }
+
+      // 로그인 유무에 따른 닉네임 값 표시
+      window.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+        const userNickElement = document.querySelector('.userNick'); // 사용자 닉네임 엘리먼트
+
+        if (token) {
+          // 토큰이 있는 경우
+          loginLogoutButton.innerText = '로그아웃';
+
+          axios
+            .get('/data', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              const userNickname = response.data.responseData.data.nickname;
+              userNickElement.innerText = userNickname;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          // 토큰이 없는 경우
+          userNickElement.innerText = '로그인해주세요';
+        }
+      });
+
+      //로그아웃
+      //로그인 상태 시 로컬 스토리지 토큰 비우도록
+      //로그아웃 상태 시 /user/login 이동
+      function logout() {
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+        if (token) {
+          if (confirm('로그아웃 하시겠습니까?')) {
+            localStorage.removeItem('token');
+            loginLogoutButton.innerText = '로그인/회원가입';
+
+            alert('로그아웃 되었습니다!');
+
+            //로그아웃 후 새로고침
+            location.href = '/';
+          }
+        } else {
+          location.href = '/user/login';
+        }
+      }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const loginLogoutButton = document.getElementById('loginLogoutButton');
+
+        if (token) {
+          loginLogoutButton.innerText = '로그아웃';
+        }
+      });
+
+      //프로필 사진 띄우기
+      const token = localStorage.getItem('token');
+      if (token) {
+        axios
+          .get('/data', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            const profileUrl = response.data.responseData.data.profile;
+            const profilePic = document.getElementById('profilePic');
+            profilePic.src = profileUrl;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        profilePic.src =
+          'https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg';
+      }
+
+      //공유주차장등록 이동
+      function parkingAdd() {
+        location.href = '/shareparking';
+      }
+
+      //채팅방 이동
+      function chatBtn() {
+        console.log('front 채팅방클릭');
+        location.href = '/chat';
+      }
+
+      //my채팅내역
+      function chatListBtn() {
+        console.log('front 채팅방리스트 클릭');
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert('로그인 해주세요');
+          return;
+        } else {
+          axios
+            .get('/data', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              console.log('chatList', response);
+              const userid = response.data.responseData.data.id;
+              console.log('회원번호', userid);
+              location.href = `/chatList/${userid}`;
+            })
+            .catch((error) => {
+              console.log('chatList에러', error);
+              document.location.reload();
+            });
+        }
+      }
+
+      async function getMySharePark() {
+        let id;
+        let check;
+        try {
+          const result = await axios({
+            method: 'POST',
+            url: '/shareparking/mysharepark',
+            headers: {
+              Authorization: `${localStorage.getItem('token')}`,
+            },
+          });
+          console.log(result);
+          id = result.data.id;
+          check = result.data.result;
+        } catch (err) {
+          console.log(err);
+        }
+        console.log('밖', id);
+        if (check) {
+          document.location.href = `/shareparking/myshareparks?id=${id}`;
+        }
       }
     </script>
   </body>

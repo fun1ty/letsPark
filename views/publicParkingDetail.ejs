@@ -615,14 +615,14 @@
     <input type="hidden" id="score" />
   </body>
   <script>
-    const ratingStars = [...document.getElementsByClassName("rating__star")];
-    const ratingResult = document.querySelector(".rating__result");
+    const ratingStars = [...document.getElementsByClassName('rating__star')];
+    const ratingResult = document.querySelector('.rating__result');
 
     printRatingResult(ratingResult);
 
     function executeRating(stars, result) {
-      const starClassActive = "rating__star fas fa-star";
-      const starClassUnactive = "rating__star far fa-star";
+      const starClassActive = 'rating__star fas fa-star';
+      const starClassUnactive = 'rating__star far fa-star';
       const starsLength = stars.length;
       let i;
       stars.map((star) => {
@@ -643,39 +643,39 @@
 
     function printRatingResult(result, num = 0) {
       result.textContent = `${num}/5`;
-      const score = document.getElementById("score");
+      const score = document.getElementById('score');
       score.value = `${num}`;
     }
 
     executeRating(ratingStars, ratingResult);
 
     function modalOpen() {
-      const modalCloseButton = document.getElementById("modalCloseButton");
-      const modal = document.getElementById("modalContainer");
-      modal.classList.remove("hidden");
+      const modalCloseButton = document.getElementById('modalCloseButton');
+      const modal = document.getElementById('modalContainer');
+      modal.classList.remove('hidden');
 
-      modalCloseButton.addEventListener("click", () => {
-        modal.classList.add("hidden");
+      modalCloseButton.addEventListener('click', () => {
+        modal.classList.add('hidden');
       });
     }
 
     async function enrollReview(id) {
       const result = await axios({
-        method: "POST",
-        url: "/publicparking/detail/reviews",
+        method: 'POST',
+        url: '/publicparking/detail/reviews',
         data: {
           publicParkingId: id,
-          score: document.getElementById("score").value,
-          comment: document.getElementById("comment").value,
+          score: document.getElementById('score').value,
+          comment: document.getElementById('comment').value,
         },
         headers: {
-          Authorization: `${localStorage.getItem("token")}`,
+          Authorization: `${localStorage.getItem('token')}`,
         },
       });
       console.log(result);
 
       if (result) {
-        alert("리뷰가 정상적으로 작성되었습니다.");
+        alert('리뷰가 정상적으로 작성되었습니다.');
         document.location.href = `/publicparking/detail?id=${id}`;
       }
     }
@@ -683,11 +683,11 @@
     var isMenuVisible = false;
 
     function toggleMenu() {
-      var menu = document.getElementById("menu-container");
+      var menu = document.getElementById('menu-container');
       if (!isMenuVisible) {
-        menu.style.right = "0";
+        menu.style.right = '0';
       } else {
-        menu.style.right = "-300px";
+        menu.style.right = '-300px';
       }
 
       // 메뉴 상태를 업데이트합니다.
@@ -695,28 +695,28 @@
     }
     // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
     function closeMenu() {
-      var menu = document.getElementById("menu-container");
-      menu.style.right = "-300px";
+      var menu = document.getElementById('menu-container');
+      menu.style.right = '-300px';
       isMenuVisible = false;
     }
 
     // 예약 알람 이동
     function reservationAlarm() {
-      location.href = "/user/reservation";
+      location.href = '/user/reservation';
     }
 
     // 회원 정보 수정 이동
     function profileEdit() {
-      location.href = "/mypage/:userid/edit";
+      location.href = '/mypage/:userid/edit';
     }
 
     // 회원 정보 수정 이동
     function profileEdit() {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
 
       if (token) {
         axios
-          .get("/data", {
+          .get('/data', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -730,27 +730,27 @@
             console.log(error);
           });
       } else {
-        location.href = "/user/login";
+        location.href = '/user/login';
       }
     }
 
     // 예약내역조회 이동
     function userReservation() {
-      location.href = "/user/reservation";
+      location.href = '/user/reservation';
     }
 
     // 로그인 유무에 따른 닉네임 값 표시
-    window.addEventListener("DOMContentLoaded", () => {
-      const token = localStorage.getItem("token");
-      const loginLogoutButton = document.getElementById("loginLogoutButton");
-      const userNickElement = document.querySelector(".userNick"); // 사용자 닉네임 엘리먼트
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const loginLogoutButton = document.getElementById('loginLogoutButton');
+      const userNickElement = document.querySelector('.userNick'); // 사용자 닉네임 엘리먼트
 
       if (token) {
         // 토큰이 있는 경우
-        loginLogoutButton.innerText = "로그아웃";
+        loginLogoutButton.innerText = '로그아웃';
 
         axios
-          .get("/data", {
+          .get('/data', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -764,7 +764,7 @@
           });
       } else {
         // 토큰이 없는 경우
-        userNickElement.innerText = "로그인해주세요";
+        userNickElement.innerText = '로그인해주세요';
       }
     });
 
@@ -772,47 +772,45 @@
     //로그인 상태 시 로컬 스토리지 토큰 비우도록
     //로그아웃 상태 시 /user/login 이동
     function logout() {
-      const token = localStorage.getItem("token");
-      const loginLogoutButton = document.getElementById("loginLogoutButton");
+      const token = localStorage.getItem('token');
+      const loginLogoutButton = document.getElementById('loginLogoutButton');
 
       if (token) {
-        if (confirm("로그아웃 하시겠습니까?")) {
-          localStorage.removeItem("token");
-          loginLogoutButton.innerText = "로그인/회원가입";
+        if (confirm('로그아웃 하시겠습니까?')) {
+          localStorage.removeItem('token');
+          loginLogoutButton.innerText = '로그인/회원가입';
 
-          alert("로그아웃 되었습니다!");
+          alert('로그아웃 되었습니다!');
 
           //로그아웃 후 새로고침
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
+          location.href = '/';
         }
       } else {
-        location.href = "/user/login";
+        location.href = '/user/login';
       }
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const token = localStorage.getItem("token");
-      const loginLogoutButton = document.getElementById("loginLogoutButton");
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const loginLogoutButton = document.getElementById('loginLogoutButton');
 
       if (token) {
-        loginLogoutButton.innerText = "로그아웃";
+        loginLogoutButton.innerText = '로그아웃';
       }
     });
 
     //프로필 사진 띄우기
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
       axios
-        .get("/data", {
+        .get('/data', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
           const profileUrl = response.data.responseData.data.profile;
-          const profilePic = document.getElementById("profilePic");
+          const profilePic = document.getElementById('profilePic');
           profilePic.src = profileUrl;
         })
         .catch((error) => {
@@ -820,42 +818,42 @@
         });
     } else {
       profilePic.src =
-        "https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg";
+        'https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg';
     }
 
     //공유주차장등록 이동
     function parkingAdd() {
-      location.href = "/shareparking";
+      location.href = '/shareparking';
     }
 
     //채팅방 이동
     function chatBtn() {
-      console.log("front 채팅방클릭");
-      location.href = "/chat";
+      console.log('front 채팅방클릭');
+      location.href = '/chat';
     }
 
     //my채팅내역
     function chatListBtn() {
-      console.log("front 채팅방리스트 클릭");
-      const token = localStorage.getItem("token");
+      console.log('front 채팅방리스트 클릭');
+      const token = localStorage.getItem('token');
       if (!token) {
-        alert("로그인 해주세요");
+        alert('로그인 해주세요');
         return;
       } else {
         axios
-          .get("/data", {
+          .get('/data', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           })
           .then((response) => {
-            console.log("chatList", response);
+            console.log('chatList', response);
             const userid = response.data.responseData.data.id;
-            console.log("회원번호", userid);
+            console.log('회원번호', userid);
             location.href = `/chatList/${userid}`;
           })
           .catch((error) => {
-            console.log("chatList에러", error);
+            console.log('chatList에러', error);
             document.location.reload();
           });
       }
@@ -866,10 +864,10 @@
       let check;
       try {
         const result = await axios({
-          method: "POST",
-          url: "/shareparking/mysharepark",
+          method: 'POST',
+          url: '/shareparking/mysharepark',
           headers: {
-            Authorization: `${localStorage.getItem("token")}`,
+            Authorization: `${localStorage.getItem('token')}`,
           },
         });
         console.log(result);
@@ -878,7 +876,7 @@
       } catch (err) {
         console.log(err);
       }
-      console.log("밖", id);
+      console.log('밖', id);
       if (check) {
         document.location.href = `/shareparking/myshareparks?id=${id}`;
       }
