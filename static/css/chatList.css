@@ -1,0 +1,36 @@
+h1 {
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-size: 30px;
+  font-family: "KBO-Dia-Gothic_bold";
+}
+
+.chatroomBtn {
+  display: block;
+  border: 0;
+  width: 100%;
+  height: 100px;
+  margin: auto;
+  background-color: #a9b8f4;
+}
+
+.join {
+  padding-bottom: 10px;
+  font-size: 20px;
+  font-family: "GmarketSansMedium";
+}
+
+.parkNameCss {
+  font-family: "S-CoreDream-3Light";
+  font-size: 20px;
+}
+
+.chats {
+  background-color: #8783f5;
+  width: 500px;
+  height: 100%;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+}

@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="/reset.css" />
     <link rel="stylesheet" type="text/css" href="/chat.css" />
+    <link rel="stylesheet" type="text/css" href="/font.css" />
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <title>채팅</title>
   </head>
+
   <body>
     <div id="chatHeader">
       <button id="chatExit" onclick="exitChat()">
@@ -25,11 +27,13 @@
       <ul id="lists"></ul>
     </div>
     <div class="body">
+      <div id="date"></div>
+      <!-- <div id="notice"></div> -->
+      <div id="chatHistory"></div>
       <div id="msg">
-        <div class="upload_box"></div>
-
-        <div id="notice"></div>
+        <!-- <div class="upload_box"></div> -->
       </div>
+
       <form id="chat">
         <input type="text" id="message" placeholder="메세지 입력" />
         <button id="chatSendBtn">
@@ -39,17 +43,17 @@
           />
         </button>
       </form>
-      <!-- <form onsubmit="fileupload(event)">
+    </div>
+    <!-- <form onsubmit="fileupload(event)">
         <input type="file" id="files" multiple /><br />
       </form> -->
-    </div>
 
     <script>
       let roomId = "<%= roomId %>";
       const requestUserId = "<%= userId %>";
       const joinUserNick = "<%= joinUserNick %>";
       const parkingName = "<%= parkingName %>";
-      // const roomId = document.querySelector(".body").id;
+      const dateNotice = document.querySelector("#date");
       console.log("roomId", roomId);
       console.log("requestUserId", requestUserId);
       console.log("joinUserNick", joinUserNick);
@@ -64,90 +68,31 @@
       const msg = document.querySelector("#msg");
       const notice = document.querySelector("#notice");
       const sendUserh2 = document.querySelector("#sendUser");
+      const historyChatDiv = document.querySelector("#chatHistory");
 
-      //메세지 띄우기
-      socket.on("newMessage", (message, nick, profile) => {
-        console.log("newMessage", message, nick, profile);
-        const div = document.createElement("div"); //밖div
-        const span = document.createElement("span");
-        const p = document.createElement("p");
-        const img = document.createElement("img");
+      let lastMessageId = null;
+      let chatHistoryRequested = false;
 
-        console.log("닉", usernick);
-        if (usernick === nick) {
-          div.classList.add("my-chat");
-          p.textContent = `${message}`;
-          div.appendChild(p);
-        } else {
-          div.classList.add("other-chat");
-          span.innerHTML = `<span id="nick">${nick}</p>`;
-          p.innerHTML = `<p id="othermessage">${message}</p>`;
-          img.src = `${profile}`;
-          img.style.width = "50px";
-          span.appendChild(img);
-          span.appendChild(p);
-          div.appendChild(span);
-        }
-        //채팅텍스트
-        msg.appendChild(div);
-      });
-
-      //입장 메세지 이벤트
-      socket.on("notice", (roomNumber, message) => {
-        const div = document.createElement("div");
-        const p = document.createElement("p");
-        p.textContent = message;
-
-        div.appendChild(p);
-        notice.appendChild(div);
-
-        if (!roomId) {
-          roomId = roomNumber;
-        }
-        //채팅내역 불러오기
-        socket.emit("findHistory", roomId, userid);
-        console.log("roomId", roomId);
-      });
-
-      // 특정 방에 조인
-      socket.emit("joinRoom", roomId, requestUserId);
-
-      socket.on("history", (historyChat, UserResult) => {
-        const div = document.createElement("div");
-        const p = document.createElement("p");
-        let data;
-        if (historyChat) {
-          for (let i = 0; i < historyChat.length; i++) {
-            if (historyChat[i].chat.userid != requestUserId) {
-              div.classList.add("my-chat");
-              p.textContent = `${historyChat[i].chat.content}`;
-              div.appendChild(p);
-            } else {
-              div.classList.add("other-chat");
-              span.innerHTML = `<span id="nick">${UserResult[i].nickname}</p>`;
-              p.innerHTML = `<p id="othermessage">${message}</p>`;
-              img.src = `${profile}`;
-              img.style.width = "50px";
-              span.appendChild(img);
-              span.appendChild(p);
-              div.appendChild(span);
-            }
-          }
-          if (historyChat.FILE != null) {
-            p.innerHTML = historyChat.chat.FILE;
-          } else {
-            p.textContent = historyChat.chat.CONTENT;
-          }
-          div.appendChild(p);
-          msg.appendChild(div);
-        }
-      });
+      //날짜 구하기
+      const week = ["일", "월", "화", "수", "목", "금", "토"];
+      let now = new Date();
+      let year = now.getFullYear();
+      let month = now.getMonth() + 1;
+      let date = now.getDate();
+      let day = now.getDay();
+      let today = year + "년" + month + "월" + date + "일" + week[day] + "요일";
+      dateNotice.textContent = today;
+      console.log(dateNotice);
 
       //jwt토큰검증
       socket.emit("jwt", { token }, () => {});
       socket.on("jwt", (resultValue) => {
         userid = resultValue.id;
         usernick = resultValue.nickname;
+        const getItem = localStorage.getItem("userid");
+        if (getItem === null || getItem.length == 0) {
+          localStorage.setItem("userid", userid);
+        }
 
         //채팅방 생성
         socket.emit(
@@ -162,12 +107,125 @@
         );
       });
 
+      //방 번호
+      socket.on("roomNumber", (roomNumber) => {
+        const getItem = localStorage.getItem("userid");
+        console.log("getItem", getItem);
+        console.log(roomId);
+        if (!roomId) {
+          roomId = roomNumber;
+        }
+
+        //채팅내역 불러오기
+        socket.emit("findHistory", roomNumber, getItem, lastMessageId);
+      });
+
+      //채팅내역
+      socket.on("history", (historyChat, UserResult) => {
+        console.log("historyChat", historyChat[0], chatHistoryRequested);
+
+        if (historyChat && historyChat.length > 0) {
+          for (let i = 0; i < historyChat.length; i++) {
+            const div = document.createElement("div");
+            const p = document.createElement("p");
+            const time = document.createElement("p");
+            const span = document.createElement("span");
+            const img = document.createElement("img");
+            const getItem = localStorage.getItem("userid");
+            const chat = historyChat[i];
+            // if (chat.id < lastMessageId) {
+            //   continue;
+            // } else {
+            if (chat) {
+              if (chatHistoryRequested == false) {
+                if (chat.FILE != null) {
+                  // 파일이 있는 경우
+                  p.innerHTML = chat.FILE;
+                } else {
+                  p.textContent = chat.content;
+                }
+                if (chat.userid == getItem) {
+                  div.classList.add("my-chat");
+                  time.textContent = chat.createdAt;
+                  time.id = "chatTime";
+                  div.appendChild(time);
+                  p.id = "chatText";
+                  span.appendChild(p);
+                  div.appendChild(span);
+                } else {
+                  div.classList.add("other-chat");
+                  span.innerHTML = `<span id="nick">${UserResult.nickname}</span>`; // 닉네임 추가
+                  p.innerHTML = `<p id="othermessage">${chat.content}</p>`;
+                  time.textContent = chat.createdAt;
+                  time.id = "otherChatTime";
+                  img.src = UserResult.profile;
+                  img.style.width = "50px";
+                  img.id = "profile";
+                  span.appendChild(img);
+                  span.appendChild(p);
+                  span.appendChild(time);
+                  div.appendChild(span);
+                }
+                historyChatDiv.insertBefore(div, historyChatDiv.firstChild);
+                lastMessageId = chat.id;
+              }
+            }
+          }
+        }
+        chatHistoryRequested = true;
+        // }
+      });
+
+      //메세지 띄우기
+      socket.on("newMessage", (message, nick, profile) => {
+        console.log("newMessage", message, nick, profile);
+        const div = document.createElement("div"); //밖div
+        const span = document.createElement("span");
+        const p = document.createElement("p");
+        const img = document.createElement("img");
+        console.log("닉", usernick);
+
+        if (usernick === nick) {
+          div.classList.add("my-chat");
+        } else {
+          div.classList.add("other-chat");
+          span.innerHTML = `<span id="nick">${nick}</p>`;
+          img.src = `${profile}`;
+          img.style.width = "50px";
+          span.appendChild(img);
+          div.appendChild(span);
+        }
+
+        p.id = "chatText";
+        p.textContent = `${message}`;
+        div.appendChild(p);
+
+        //채팅텍스트
+        msg.appendChild(div);
+        location.reload();
+      });
+
+      // 특정 방에 조인
+      socket.emit("joinRoom", roomId, requestUserId, usernick);
+
+      //입장 메세지 이벤트
+      socket.on("notice", (roomNumber, message) => {
+        console.log("message", message);
+        const div = document.createElement("div");
+        const p = document.createElement("p");
+        p.textContent = message;
+        div.appendChild(p);
+        // notice.appendChild(div);
+
+        console.log("roomId", roomId);
+      });
+
       //메세지 보내기
       chatForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const user = userid;
         const message = document.querySelector("#message");
-        const msg = {
+        const msgData = {
           nick: usernick,
           userid: userid,
           message: message.value,
@@ -175,13 +233,22 @@
           roomId: roomId,
           joinUserId: requestUserId,
         };
-        socket.emit("sendMessage", msg);
+        socket.emit("sendMessage", msgData);
+        const div = document.createElement("div");
+        div.classList.add("my-chat");
+        const p = document.createElement("p");
+        p.textContent = message.val;
+        p.id = "chatText";
+        div.appendChild(p);
+        msg.appendChild(div);
         message.value = "";
       });
 
       //채팅방 나가기
       function exitChat() {
-        socket.emit("disconnect");
+        chatHistoryRequested = false;
+        lastMessageId = null;
+        location.href = "/";
       }
 
       //파일전송
