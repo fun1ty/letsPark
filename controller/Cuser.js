@@ -124,47 +124,7 @@ exports.postLogin = async (req, res) => {
   }
 };
 
-// exports.editProfile = (req, res) => {
-//   const token =
-//     req.headers.authorization && req.headers.authorization.split(' ')[1];
-//   if (!token) {
-//     return res.json({ result: false, message: '인증되지 않은 요청입니다.' });
-//   }
-//   try {
-//     const decodedToken = jwt.verify(token, SECRETKEY);
-//     const { userid, password, newPassword, name, nickname, phone, profile } =
-//       req.body;
-//     User.findOne({ where: { userid: decodedToken.userid } }).then((user) => {
-//       if (!user) {
-//         res.json({ result: false, message: '사용자가 존재하지 않습니다.' });
-//       } else {
-//         if (newPassword) {
-//           // 새 비밀번호가 제공된 경우에만 업데이트
-//           const hashNewPassword = bcrypt.hashSync(newPassword, 10);
-//           user.password = hashNewPassword;
-//         }
-//         User.update(
-//           { password: user.password, name, nickname, phone, profile },
-//           { where: { userid: decodedToken.userid } }
-//         )
-//           .then(() => {
-//             res.json({ result: true });
-//           })
-//           .catch((error) => {
-//             console.error(error);
-//             res.status(500).json({
-//               result: false,
-//               message: '프로필 수정에 실패했습니다.',
-//             });
-//           });
-//       }
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.json({ result: false, message: '토큰 검증에 실패했습니다.' });
-//   }
-// };
-
+//PATCH
 exports.editProfile = (req, res) => {
   const token =
     req.headers.authorization && req.headers.authorization.split(' ')[1];
@@ -173,7 +133,8 @@ exports.editProfile = (req, res) => {
   }
   try {
     const decodedToken = jwt.verify(token, SECRETKEY);
-    const { userid, newPassword, name, nickname, phone, profile } = req.body;
+    const { userid, newPassword, name, nickname, phone, profileImage } =
+      req.body;
 
     User.findOne({ where: { userid: decodedToken.userid } }).then((user) => {
       if (!user) {
@@ -187,7 +148,7 @@ exports.editProfile = (req, res) => {
 
         if (req.file) {
           // 업로드된 이미지 파일이 있는 경우
-          const imagePath = req.file.path; // 업로드된 파일의 경로
+          const imagePath = req.file.location; // 업로드된 파일의 경로
           console.log('imagePath', imagePath);
           user.profile = imagePath; // 이미지 경로를 프로필 이미지 URL로 업데이트
         }

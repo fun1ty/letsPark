@@ -2,58 +2,236 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/jsonwebtoken@8.5.1"></script> -->
-
-    <title>profile</title>
+    <link rel="stylesheet" type="text/css" href="/reset.css" />
+    <link rel="stylesheet" type="text/css" href="/font.css" />
+    <link rel="stylesheet" type="text/css" href="/profile.css" />
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <title>Document</title>
   </head>
-  <body>
-    <!-- 회원 정보 수정하기, (탈퇴하기 버튼) -->
-    <h2><%= data.nickname %>님 안녕하세요!</h2>
-    <br />
-    <form name="profileView">
-      <img id="profileImage" src="<%= data.profile %>" alt="프로필 이미지" />
-      <br />
-      <label for="userid">아이디</label><br />
-      <input
-        type="text"
-        id="userid"
-        value="<%= data.userid %>"
-        placeholder="아이디"
-        readonly
-      /><br />
-      <!-- <input
-        type="password"
-        id="password"
-        value="<%= data.password %>"
-        placeholder="비밀번호"
-      /><br /> -->
-      <label for="name">이름</label><br />
-      <input
-        type="text"
-        id="name"
-        value="<%= data.name %>"
-        placeholder="이름"
-      /><br />
-      <label for="nickname">닉네임</label><br />
-      <input
-        type="text"
-        id="nickname"
-        value="<%= data.nickname %>"
-        placeholder="닉네임"
-      /><br />
-      <label for="phone">휴대폰 번호</label><br />
-      <input
-        type="text"
-        id="phone"
-        value="<%= data.phone %>"
-        placeholder="휴대폰번호"
-      /><br />
-      <button type="button" onclick="editPage()">수정하기</button>
-      <button type="button" onclick="drop()">탈퇴하기</button>
-    </form>
 
+  <body>
+    <!-- header -->
+    <div class="header-container">
+      <nav class="headbox">
+        <div class="headermenu">
+          <img
+            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/W_text_logo.svg"
+            alt="로고"
+            class="logo"
+            onclick="window.location.href='/'"
+          />
+
+          <div class="menu-icons">
+            <div class="menu-icon" onclick="reservationAlarm()">
+              <img
+                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/bell.svg"
+                alt="알람"
+                width="25px"
+                height="25px"
+              />
+            </div>
+            <div class="menu-icon">
+              <button id="menu-button" onclick="toggleMenu()">
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/menu.svg"
+                  alt="메뉴"
+                  width="25px"
+                  height="25px"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="menu-container" class="menu">
+          <button id="close-button" onclick="closeMenu()">
+            <img
+              src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/X.svg"
+              alt="닫기"
+              width="25px"
+              height="25px"
+            />
+          </button>
+
+          <div style="margin: 20px">
+            <button class="mypageEdit" onclick="profileEdit()">
+              <div>
+                <img id="profilePic" alt="profile" width="30px" height="30px" />
+              </div>
+              <div>
+                <div class="userNick">파킹퍼시블</div>
+              </div>
+            </button>
+          </div>
+
+          <div>
+            <button class="reservationButton" onclick="userReservation()">
+              예약 내역 보기
+            </button>
+          </div>
+          <div class="noticeBox">
+            <ul class="menuContainer">
+              <li onclick="parkingAdd()">
+                🚙 공유주차장 등록
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+
+              <li type="button" id="chat" onclick="chatListBtn()">
+                💬 채팅방
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+              <li>💰 포인트</li>
+            </ul>
+          </div>
+          <h5>이용안내 및 문의하기</h5>
+          <br />
+          <!-- <a href="/user/login">로그인하기</a><br /> -->
+          <h5 class="payButton">결제내역</h5>
+          <div class="logoutBox">
+            <span
+              id="loginLogoutButton"
+              class="logoutService"
+              onclick="logout()"
+              >로그인/회원가입</span
+            >
+          </div>
+        </div>
+        <!-- <input type="hidden" id="kakaoLat" />
+        <input type="hidden" id="kakaoLng" />
+        <div id="search-bar">
+          <form onsubmit="searchPlaces(); return false;">
+            <div class="search-container">
+              <input
+                type="text"
+                id="search-input"
+                name="q"
+                placeholder="목적지 또는 주소 검색"
+              />
+              <div class="filter-icon">
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/filter.svg"
+                  alt="필터"
+                  width="25px"
+                  height="25px"
+                />
+              </div>
+              <button type="submit" id="search-button"></button>
+            </div>
+          </form>
+        </div> -->
+      </nav>
+    </div>
+    <!-- 회원 정보 수정하기, (탈퇴하기 버튼) -->
+    <div class="mainProfile" style="padding: 30px">
+      <h2
+        style="
+          font-size: 30px;
+          padding: 20px;
+          padding-bottom: 40px;
+          text-align: center;
+          font-family: 'KBO-Dia-Gothic_bold';
+        "
+      >
+        <%= data.nickname %>님 안녕하세요!
+      </h2>
+      <br />
+      <form name="profileView">
+        <img id="profileImage" src="<%= data.profile %>" alt="프로필 이미지" />
+        <br />
+        <div class="pTitle">아이디</div>
+        <br />
+        <input
+          type="text"
+          class="inputProfile"
+          id="userid"
+          value="<%= data.userid %>"
+          placeholder="아이디"
+          readonly
+        /><br />
+        <div class="pTitle">이름</div>
+        <br />
+        <input
+          type="text"
+          class="inputProfile"
+          id="name"
+          value="<%= data.name %>"
+          placeholder="이름"
+          readonly
+        /><br />
+        <div class="pTitle">닉네임</div>
+        <br />
+        <input
+          type="text"
+          class="inputProfile"
+          id="nickname"
+          value="<%= data.nickname %>"
+          placeholder="닉네임"
+          readonly
+        /><br />
+        <div class="pTitle">휴대폰 번호</div>
+        <br />
+        <input
+          type="text"
+          class="inputProfile"
+          id="phone"
+          value="<%= data.phone %>"
+          placeholder="휴대폰번호"
+          readonly
+        /><br />
+        <button
+          type="button"
+          style="
+            background-color: #8783f5;
+            text-align: center;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 10px;
+            margin-top: 40px;
+            font-family: 'Dovemayo_gothic';
+            font-size: 30px;
+            color: white;
+          "
+          onclick="editPage()"
+        >
+          수정페이지
+        </button>
+        <button
+          type="button"
+          style="
+            background-color: #8783f5;
+            text-align: center;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 10px;
+            margin-top: 40px;
+            font-family: 'Dovemayo_gothic';
+            font-size: 30px;
+            color: white;
+          "
+          onclick="drop()"
+        >
+          탈퇴하기
+        </button>
+      </form>
+    </div>
     <script>
       function editPage() {
         const userid = document.getElementById('userid').value;
@@ -73,6 +251,7 @@
           },
         }).then((res) => {
           if (res.data.result) {
+            localStorage.removeItem('token');
             alert('회원 탈퇴 완료되었습니다.');
             window.location.href = '/';
           }

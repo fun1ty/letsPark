@@ -2,16 +2,157 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="/profileEdit.css" />
+    <link rel="stylesheet" type="text/css" href="/reset.css" />
+    <link rel="stylesheet" type="text/css" href="/font.css" />
+    <link rel="stylesheet" type="text/css" href="/profileEdit.css" />
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <title>Document</title>
   </head>
 
   <body>
-    <h2>회원정보수정</h2>
-    <form name="profileView" enctype="multipart/form-data">
-      <div>
+    <!-- header -->
+    <div class="header-container">
+      <nav class="headbox">
+        <div class="headermenu">
+          <img
+            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/W_text_logo.svg"
+            alt="로고"
+            class="logo"
+            onclick="window.location.href='/'"
+          />
+
+          <div class="menu-icons">
+            <div class="menu-icon" onclick="reservationAlarm()">
+              <img
+                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/bell.svg"
+                alt="알람"
+                width="25px"
+                height="25px"
+              />
+            </div>
+            <div class="menu-icon">
+              <button id="menu-button" onclick="toggleMenu()">
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/menu.svg"
+                  alt="메뉴"
+                  width="25px"
+                  height="25px"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="menu-container" class="menu">
+          <button id="close-button" onclick="closeMenu()">
+            <img
+              src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/X.svg"
+              alt="닫기"
+              width="25px"
+              height="25px"
+            />
+          </button>
+
+          <div style="margin: 20px">
+            <button class="mypageEdit" onclick="profileEdit()">
+              <div>
+                <img id="profilePic" alt="profile" width="30px" height="30px" />
+              </div>
+              <div>
+                <div class="userNick">파킹퍼시블</div>
+              </div>
+            </button>
+          </div>
+
+          <div>
+            <button class="reservationButton" onclick="userReservation()">
+              예약 내역 보기
+            </button>
+          </div>
+          <div class="noticeBox">
+            <ul class="menuContainer">
+              <li onclick="parkingAdd()">
+                🚙 공유주차장 등록
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+
+              <li type="button" id="chat" onclick="chatListBtn()">
+                💬 채팅방
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+              <li>💰 포인트</li>
+            </ul>
+          </div>
+          <h5>이용안내 및 문의하기</h5>
+          <br />
+          <!-- <a href="/user/login">로그인하기</a><br /> -->
+          <h5 class="payButton">결제내역</h5>
+          <div class="logoutBox">
+            <span
+              id="loginLogoutButton"
+              class="logoutService"
+              onclick="logout()"
+              >로그인/회원가입</span
+            >
+          </div>
+        </div>
+        <!-- <input type="hidden" id="kakaoLat" />
+            <input type="hidden" id="kakaoLng" />
+            <div id="search-bar">
+              <form onsubmit="searchPlaces(); return false;">
+                <div class="search-container">
+                  <input
+                    type="text"
+                    id="search-input"
+                    name="q"
+                    placeholder="목적지 또는 주소 검색"
+                  />
+                  <div class="filter-icon">
+                    <img
+                      src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/filter.svg"
+                      alt="필터"
+                      width="25px"
+                      height="25px"
+                    />
+                  </div>
+                  <button type="submit" id="search-button"></button>
+                </div>
+              </form>
+            </div> -->
+      </nav>
+    </div>
+    <!-- 회원정보 수정 페이지 -->
+    <h2
+      style="
+        font-size: 30px;
+        padding: 20px;
+        padding-bottom: 40px;
+        text-align: center;
+        font-family: 'KBO-Dia-Gothic_bold';
+      "
+    >
+      회원정보수정
+    </h2>
+    <div class="mainEdit" style="padding: 30px">
+      <form name="profileView" enctype="multipart/form-data">
         <img id="profile" src="<%= data.profile %>" alt="프로필 이미지" />
         <input
           type="file"
@@ -20,74 +161,101 @@
           accept="image/*"
           onchange="previewProfileImage()"
         />
-      </div>
-      <br />
-      <label for="userid">아이디</label><br />
-      <input
-        type="text"
-        id="userid"
-        value="<%= data.userid %>"
-        placeholder="아이디"
-        readonly
-      /><br />
+        <br />
+        <div class="eTitle">아이디</div>
+        <br />
+        <input
+          type="text"
+          class="inputEdit"
+          id="userid"
+          value="<%= data.userid %>"
+          placeholder="아이디"
+          readonly
+        /><br />
 
-      <label for="newPassword">비밀번호 변경</label><br />
-      <input
-        type="password"
-        id="newPassword"
-        value=""
-        placeholder="새 비밀번호"
-      /><br />
-      <label for="passwordCheck">비밀번호 확인</label><br />
-      <input
-        type="password"
-        id="passwordCheck"
-        placeholder="비밀번호 확인"
-        oninput="checkPassword()"
-      /><br />
-      <span id="passwordError"></span><br />
-      <label for="name">이름</label><br />
-      <input
-        type="text"
-        id="name"
-        value="<%= data.name %>"
-        placeholder="이름"
-      /><br />
-      <label for="nickname">닉네임</label><br />
-      <input
-        type="text"
-        id="nickname"
-        value="<%= data.nickname %>"
-        placeholder="닉네임"
-      /><br />
-      <label for="phone">휴대폰 번호</label><br />
-      <input
-        type="text"
-        id="phone"
-        value="<%= data.phone %>"
-        placeholder="휴대폰번호"
-      /><br />
-      <button type="button" onclick="edit()">수정하기</button>
-      <button type="button" onclick="resetForm()">초기화</button>
-    </form>
-
+        <div class="eTitle">비밀번호 변경</div>
+        <br />
+        <input
+          type="password"
+          class="inputEdit"
+          id="newPassword"
+          value=""
+          placeholder="새 비밀번호"
+        /><br />
+        <div class="eTitle">비밀번호 확인</div>
+        <br />
+        <input
+          type="password"
+          class="inputEdit"
+          id="passwordCheck"
+          placeholder="비밀번호 확인"
+          oninput="checkPassword()"
+        /><br />
+        <span id="passwordError"></span><br />
+        <div class="eTitle">이름</div>
+        <br />
+        <input
+          type="text"
+          class="inputEdit"
+          id="name"
+          value="<%= data.name %>"
+          placeholder="이름"
+        /><br />
+        <div class="eTitle">닉네임</div>
+        <br />
+        <input
+          type="text"
+          class="inputEdit"
+          id="nickname"
+          value="<%= data.nickname %>"
+          placeholder="닉네임"
+        /><br />
+        <div class="eTitle">휴대폰 번호</div>
+        <br />
+        <input
+          type="text"
+          class="inputEdit"
+          id="phone"
+          value="<%= data.phone %>"
+          placeholder="휴대폰번호"
+        /><br />
+        <button
+          type="button"
+          style="
+            background-color: #8783f5;
+            text-align: center;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 10px;
+            margin-top: 40px;
+            font-family: 'Dovemayo_gothic';
+            font-size: 30px;
+            color: white;
+          "
+          onclick="edit()"
+        >
+          수정하기
+        </button>
+        <button
+          type="button"
+          style="
+            background-color: #8783f5;
+            text-align: center;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 10px;
+            margin-top: 40px;
+            font-family: 'Dovemayo_gothic';
+            font-size: 30px;
+            color: white;
+          "
+          onclick="resetForm()"
+        >
+          초기화
+        </button>
+      </form>
+    </div>
     <script>
-      // 프로필 이미지 변경 시 미리보기
-      function previewProfileImage() {
-        const profileImage = document.getElementById('profile');
-        const profileInput = document.getElementById('profileImage');
-
-        if (profileInput.files && profileInput.files[0]) {
-          const reader = new FileReader();
-
-          reader.onload = function (e) {
-            profileImage.src = e.target.result;
-          };
-
-          reader.readAsDataURL(profileInput.files[0]);
-        }
-      }
-
       //비밀번호 재확인
       function checkPassword() {
         const password = document.getElementById('newPassword').value;
@@ -104,39 +272,26 @@
           document.getElementById('passwordCheck').setCustomValidity('');
         }
       }
+      //초기 프로필 이미지 경로 저장 전역 변수
+      let initialProfileImg = '<%= data.profile %>';
 
-      // //회원정보 수정버튼
-      // function edit() {
-      //   if (!confirm('회원정보를 수정하시겠습니까?')) {
-      //     return;
-      //   }
-      //   const form = document.forms['profileView'];
-      //   const userid = document.querySelector('#userid').value;
-      //   const newPassword = document.querySelector('#newPassword').value;
+      // 프로필 이미지 변경 시 미리보기
+      function previewProfileImage() {
+        const profileImage = document.getElementById('profile');
+        const profileInput = document.getElementById('profileImage');
 
-      //   axios({
-      //     method: 'PATCH',
-      //     url: `/mypage/${userid}/edit`,
-      //     data: {
-      //       userid: form.userid.value,
-      //       //password: form.password.value,
-      //       newPassword: newPassword,
-      //       name: form.name.value,
-      //       nickname: form.nickname.value,
-      //       phone: form.phone.value,
-      //       //profile: form.profile.value,
-      //     },
-      //     headers: {
-      //       Authorization: `Bearer ${localStorage.getItem('token')}`,
-      //     },
-      //   }).then((res) => {
-      //     if (res.data.result) {
-      //       alert('수정이 완료되었습니다.');
-      //       window.location.href = '/';
-      //     }
-      //   });
-      // }
+        if (profileInput.files && profileInput.files[0]) {
+          const reader = new FileReader();
 
+          reader.onload = function (e) {
+            profileImage.src = e.target.result;
+          };
+
+          reader.readAsDataURL(profileInput.files[0]);
+        }
+      }
+
+      //회원정보 수정버튼
       function edit() {
         if (!confirm('회원정보를 수정하시겠습니까?')) {
           return;
@@ -144,7 +299,8 @@
         const form = document.forms['profileView'];
         const userid = document.querySelector('#userid').value;
         const newPassword = document.querySelector('#newPassword').value;
-        const profileImage = document.querySelector('#profileImage').files[0];
+        const profileImageInput = document.querySelector('#profileImage');
+        const profileImage = profileImageInput.files[0];
 
         const formData = new FormData();
         formData.append('userid', form.userid.value);
@@ -152,7 +308,10 @@
         formData.append('name', form.name.value);
         formData.append('nickname', form.nickname.value);
         formData.append('phone', form.phone.value);
-        formData.append('profile', profileImage);
+
+        if (profileImage) {
+          formData.append('profileImage', profileImage);
+        }
 
         axios({
           method: 'PATCH',
@@ -180,6 +339,8 @@
         form.name.value = '<%= data.name %>';
         form.nickname.value = '<%= data.nickname %>';
         form.phone.value = '<%= data.phone %>';
+
+        document.getElementById('profile').src = initialProfileImg;
 
         const errorSpan = document.getElementById('passwordError');
         errorSpan.textContent = '';

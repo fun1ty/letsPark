@@ -144,27 +144,6 @@
         </div>
         <input type="hidden" id="kakaoLat" />
         <input type="hidden" id="kakaoLng" />
-        <div id="search-bar">
-            <form onsubmit="searchPlaces(); return false;">
-                <div class="search-container">
-                    <input
-                            type="text"
-                            id="search-input"
-                            name="q"
-                            placeholder="목적지 또는 주소 검색"
-                    />
-                    <div class="filter-icon">
-                        <img
-                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/filter.svg"
-                                alt="필터"
-                                width="25px"
-                                height="25px"
-                        />
-                    </div>
-                    <button type="submit" id="search-button"></button>
-                </div>
-            </form>
-        </div>
     </nav>
 </div>
 <input type="hidden" id="check" value="0" />
@@ -178,7 +157,7 @@
         <input type="number" class="inputall" id="price" dir="rtl"> <span style="font-size: 25px;">원</span><br/>
         <span class="esTitle">주차장 사진</span>
         <div class="filebox">
-            <input class="upload-name" value="첨부파일" placeholder="첨부파일">
+            <input class="upload-name" value="첨부파일" placeholder="첨부파일" readonly>
             <label for="files">파일찾기</label>
             <input type="file" id="files" accept="image/*" onchange="loadFile(this)"><br/>
         </div>
@@ -192,12 +171,14 @@
 <script>
     function loadFile(input) {
         const div = document.getElementById('imgArea');
+        const uploadName = document.querySelector('.upload-name');
         div.innerHTML = '';
         let file = input.files[0];
         let img = document.createElement('img');
         img.setAttribute('class', 'img');
 
         img.src = URL.createObjectURL(file);
+        uploadName.value = input.files[0].name;
         img.style.width = '350px';
         img.style.height = '250px';
         div.appendChild(img);
@@ -211,6 +192,8 @@
             if(status === kakao.maps.services.Status.OK) {
                 lat = result[0].y;
                 lng = result[0].x;
+                console.log('lat', lat);
+                console.log('lng', lng);
             };
         };
         new daum.Postcode({
@@ -250,6 +233,8 @@
         formData.append('price', price);
         formData.append('lat', lat);
         formData.append('lng', lng);
+        console.log('lat', lat);
+        console.log('lng', lng);
 
         try {
             const result = await axios({

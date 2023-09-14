@@ -4,7 +4,7 @@ const axios = require('axios');
 require('dotenv').config();
 const env = process.env;
 
-const updateInfoJob = schedule.scheduleJob('* 3 * * * *', async ()=> {
+const updateInfoJob = schedule.scheduleJob('0 0/3 * * * *', async ()=> {
     console.log('---------스케줄 실행 시작---------- ');
     let map = new Map();
 
