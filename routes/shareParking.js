@@ -35,4 +35,6 @@ router.post("/detail/reviews", shareParkingController.reviews);
 
 router.post("/mysharepark", shareParkingController.getMySharePark);
 
+router.get('/myshareparks', shareParkingController.getMyShareParks);
+
 module.exports = router;
