@@ -8,25 +8,55 @@
 
 .body {
   width: 100%;
-  height: 70vh;
+  height: 100vh;
   position: relative;
 }
 #chat {
-  position: absolute;
-  bottom: 0px;
-  width: 100%;
+  position: fixed;
+  bottom: 1em;
+  width: 95vw;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  padding-left: 1em;
 }
 #chat input {
-  width: 80%;
+  position: relative;
+  height: 3vh;
+}
+#date {
+  display: flex;
+  justify-content: center;
+  background: rgba(196, 193, 255, 1);
+  margin-right: 10px;
+  border-radius: 10px;
+  height: 3vh;
+  text-align: center;
+}
+#chatTime {
+  font-size: 10px;
+  margin-top: 20px;
 }
 .my-chat {
   display: flex;
   justify-content: end;
   padding: 2px 0px;
 }
-.my-chat p {
+#otherChatTime {
+  font-size: 10px;
+  margin-top: 20px;
+  margin-left: 1.5em;
+  margin-top: 0.5em;
+}
+#chatText,
+#newChatText,
+#sendText {
+  margin: 0;
+  padding: 10px;
+  background: rgba(196, 193, 255, 1);
+  margin-right: 10px;
+  border-radius: 10px;
+}
+#newChatText {
   margin: 0;
   padding: 10px;
   background: rgba(196, 193, 255, 1);
@@ -47,8 +77,14 @@
 }
 #notice {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  margin-right: 10px;
+  background-color: rgba(53, 210, 191, 1);
+  border-radius: 10px;
+  width: 80%;
+  height: 3vh;
   text-align: center;
+  margin-top: 10px;
 }
 #notice p {
   margin: 0;
@@ -75,7 +111,9 @@ button {
   transform: scaleX(-1);
 }
 #chatSendBtn {
-  width: 5em;
+  width: 3em;
+  position: absolute;
+  right: 0.1em;
 }
 #chatSendBtnImg {
   width: 2em;
@@ -85,17 +123,11 @@ button {
   width: 100%;
 }
 #backBtnImg {
-  width: 2em;
-  height: 2em;
+  width: 1.5em;
+  height: 1.5em;
 }
 
 #chatHeader {
   display: flex;
   margin-top: 1em;
-}
-#notice {
-  background-color: rgba(53, 210, 191, 1);
-  border-radius: 10px;
-  width: 80%;
-  margin: 2em;
 }

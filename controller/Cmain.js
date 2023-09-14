@@ -73,7 +73,6 @@ exports.chatList = async (req, res) => {
     } else {
       console.log("chatListDB Null");
     }
-    console.log("chatListDB", chatListDB);
     if (roomMakeUserFound || joinUserFound) {
       res.render("chatList", { chatListDB });
     } else {

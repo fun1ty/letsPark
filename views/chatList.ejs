@@ -8,6 +8,12 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
     />
     <title>채팅내역</title>
+    <link rel="stylesheet" type="text/css" href="/reset.css" />
+    <link rel="stylesheet" type="text/css" href="/index.css" />
+    <link rel="stylesheet" type="text/css" href="/map.css" />
+    <link rel="stylesheet" type="text/css" href="/font.css" />
+    <link rel="stylesheet" type="text/css" href="/chatList.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
       #chatTitle {
         display: flex;
@@ -16,43 +22,141 @@
     </style>
   </head>
   <body>
-    <div id="chatTitle">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        fill="currentColor"
-        class="bi bi-chevron-left"
-        viewBox="0 0 16 16"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"
-        />
-      </svg>
-      <h1>채팅</h1>
+    <!-- header -->
+    <div class="header-container">
+      <nav class="headbox">
+        <div class="headermenu">
+          <img
+            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/W_text_logo.svg"
+            alt="로고"
+            class="logo"
+            onclick="window.location.href='/'"
+          />
+
+          <div class="menu-icons">
+            <div class="menu-icon" onclick="reservationAlarm()">
+              <img
+                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/bell.svg"
+                alt="알람"
+                width="25px"
+                height="25px"
+              />
+            </div>
+            <div class="menu-icon">
+              <button id="menu-button" onclick="toggleMenu()">
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/menu.svg"
+                  alt="메뉴"
+                  width="25px"
+                  height="25px"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="menu-container" class="menu">
+          <button id="close-button" onclick="closeMenu()">
+            <img
+              src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/X.svg"
+              alt="닫기"
+              width="25px"
+              height="25px"
+            />
+          </button>
+
+          <div style="margin: 20px">
+            <button class="mypageEdit" onclick="profileEdit()">
+              <div>
+                <img id="profilePic" alt="profile" width="30px" height="30px" />
+              </div>
+              <div>
+                <div class="userNick">파킹퍼시블</div>
+              </div>
+            </button>
+          </div>
+
+          <div>
+            <button class="reservationButton" onclick="userReservation()">
+              예약 내역 보기
+            </button>
+          </div>
+          <div class="noticeBox">
+            <ul class="menuContainer">
+              <li onclick="parkingAdd()">
+                🚙 공유주차장 등록
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+              <li onclick="getMySharePark()">
+                📋 내 공유주차장 목록
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+              <li type="button" id="chat" onclick="chatListBtn()">
+                💬 채팅방
+                <img
+                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                  alt="이동"
+                  width="14px"
+                  height="14px"
+                  class="chevronRight"
+                />
+              </li>
+              <li>💰 포인트 <span style="float: right">300P</span></li>
+            </ul>
+          </div>
+          <h5 class="QnA">이용안내 및 문의하기</h5>
+          <br />
+
+          <div class="logoutBox">
+            <span
+              id="loginLogoutButton"
+              class="logoutService"
+              onclick="logout()"
+              >로그인/회원가입</span
+            >
+          </div>
+        </div>
+        <input type="hidden" id="kakaoLat" />
+        <input type="hidden" id="kakaoLng" />
+      </nav>
     </div>
-    <hr />
-    <% if(chatListDB.length > 0){ %> <% for (let i = 0; i <
-    chatListDB.length;i++) { %> <%= console.log(chatListDB[i]) %>
-    <button
-      id="<%= chatListDB[i].roomid %>"
-      onclick="chatBtn(`<%= chatListDB[i].roomid %>`)"
-    >
-      <div class="join" id="<%= chatListDB[i].joinusernick %>">
-        <%= chatListDB[i].joinusernick %>
-      </div>
-      <div><%= chatListDB[i].chatroom.shareparkname %></div>
-      <div
-        class="chatParkName"
-        id="<%= chatListDB[i].chatroom.shareparkname %>"
+    <input type="hidden" id="check" value="0" />
+    <div id="chatTitle">
+      <h1>채팅방 리스트</h1>
+    </div>
+    <div class="chats">
+      <% if(chatListDB.length !=0){ %> <% for (let i = 0; i <
+      chatListDB.length;i++) { %> <%= console.log(chatListDB[i]) %>
+      <button
+        id="<%= chatListDB[i].roomid %>"
+        onclick="chatBtn(`<%= chatListDB[i].roomid %>`)"
+        class="chatroomBtn"
       >
-        <%= chatListDB[i].chatroom.chats.content %>
-      </div>
-    </button>
-    <% } %> <% } else { %>
-    <div>채팅내역이 없습니다.</div>
-    <% }%>
+        <div class="join" id="<%= chatListDB[i].joinusernick %>"></div>
+        <div class="parkNameCss">
+          <%= chatListDB[i].chatroom.shareparkname %>
+        </div>
+        <div
+          class="chatParkName"
+          id="<%= chatListDB[i].chatroom.shareparkname %>"
+        >
+          <%= chatListDB[i].chatroom.chats.content %>
+        </div>
+      </button>
+      <% } %> <% } else { %> 채팅내역이 없습니다. <% }%>
+    </div>
 
     <script>
       //채팅방 이동
@@ -60,9 +164,414 @@
         console.log("roomId", roomId);
         const joinUser = document.querySelector(".join").id;
         const parkingName = document.querySelector(".chatParkName").id;
+
         console.log("joinUser", joinUser);
         location.href = `/chat/${roomId}/${joinUser}/${parkingName}`;
       }
     </script>
+    <script>
+      // 변수를 추가하여 메뉴 상태를 추적합니다.
+      var isMenuVisible = false;
+
+      function toggleMenu() {
+        var menu = document.getElementById("menu-container");
+        if (!isMenuVisible) {
+          menu.style.right = "0";
+        } else {
+          menu.style.right = "-300px";
+        }
+        // 메뉴 상태를 업데이트합니다.
+        isMenuVisible = !isMenuVisible;
+      }
+
+      function publicParkingDetail(id) {
+        console.log("parkingDetail", id);
+
+        location.href = `/publicparking/detail?id=${id}`;
+      }
+      function shareParkingDetail(id) {
+        console.log("parkingDetail", id);
+        location.href = `/shareparking/detail?id=${id}`;
+      }
+      // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
+      function closeMenu() {
+        var menu = document.getElementById("menu-container");
+        menu.style.right = "-300px";
+        isMenuVisible = false;
+      }
+      // 예약 알람 이동
+      function reservationAlarm() {
+        location.href = "/user/reservation";
+      }
+
+      // 회원 정보 수정 이동
+      function profileEdit() {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+          axios
+            .get("/data", {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              const userId = response.data.responseData.data.userid;
+              console.log(userId);
+              location.href = `/mypage/${userId}`;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          location.href = "/user/login";
+        }
+      }
+
+      // 예약내역조회 이동
+      function userReservation() {
+        location.href = "/user/reservation";
+      }
+
+      // 로그인 유무에 따른 닉네임 값 표시
+      window.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem("token");
+        const loginLogoutButton = document.getElementById("loginLogoutButton");
+        const userNickElement = document.querySelector(".userNick"); // 사용자 닉네임 엘리먼트
+
+        if (token) {
+          // 토큰이 있는 경우
+          loginLogoutButton.innerText = "로그아웃";
+
+          axios
+            .get("/data", {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              const userNickname = response.data.responseData.data.nickname;
+              userNickElement.innerText = userNickname;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          // 토큰이 없는 경우
+          userNickElement.innerText = "로그인해주세요";
+        }
+      });
+
+      //로그아웃
+      //로그인 상태 시 로컬 스토리지 토큰 비우도록
+      //로그아웃 상태 시 /user/login 이동
+      function logout() {
+        const token = localStorage.getItem("token");
+        const loginLogoutButton = document.getElementById("loginLogoutButton");
+
+        if (token) {
+          if (confirm("로그아웃 하시겠습니까?")) {
+            localStorage.removeItem("token");
+            loginLogoutButton.innerText = "로그인/회원가입";
+
+            alert("로그아웃 되었습니다!");
+
+            //로그아웃 후 새로고침
+            setTimeout(() => {
+              location.reload();
+            }, 1000);
+          }
+        } else {
+          location.href = "/user/login";
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem("token");
+        const loginLogoutButton = document.getElementById("loginLogoutButton");
+
+        if (token) {
+          loginLogoutButton.innerText = "로그아웃";
+        }
+      });
+
+      //프로필 사진 띄우기
+      const token = localStorage.getItem("token");
+      if (token) {
+        axios
+          .get("/data", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            const profileUrl = response.data.responseData.data.profile;
+            const profilePic = document.getElementById("profilePic");
+            profilePic.src = profileUrl;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        profilePic.src =
+          "https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg";
+      }
+      //공유주차장등록 이동
+      function parkingAdd() {
+        location.href = "/shareparking";
+      }
+
+      //my채팅내역
+      function chatListBtn() {
+        console.log("front 채팅방리스트 클릭");
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("로그인 해주세요");
+          return;
+        } else {
+          axios
+            .get("/data", {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              console.log("chatList", response);
+              const userid = response.data.responseData.data.id;
+              console.log("회원번호", userid);
+              location.href = `/chatList/${userid}`;
+            })
+            .catch((error) => {
+              console.log("chatList에러", error);
+              document.location.reload();
+            });
+        }
+      }
+
+      async function getMySharePark() {
+        let id;
+        let check;
+        try {
+          const result = await axios({
+            method: "POST",
+            url: "/shareparking/mysharepark",
+            headers: {
+              Authorization: `${localStorage.getItem("token")}`,
+            },
+          });
+          console.log(result);
+          id = result.data.id;
+          check = result.data.result;
+        } catch (err) {
+          console.log(err);
+        }
+        console.log("밖", id);
+        if (check) {
+          document.location.href = `/shareparking/myshareparks?id=${id}`;
+        }
+      }
+    </script>
   </body>
+  <script>
+    // 변수를 추가하여 메뉴 상태를 추적합니다.
+    var isMenuVisible = false;
+
+    function toggleMenu() {
+      var menu = document.getElementById("menu-container");
+      if (!isMenuVisible) {
+        menu.style.right = "0";
+      } else {
+        menu.style.right = "-300px";
+      }
+      // 메뉴 상태를 업데이트합니다.
+      isMenuVisible = !isMenuVisible;
+    }
+
+    function publicParkingDetail(id) {
+      console.log("parkingDetail", id);
+
+      location.href = `/publicparking/detail?id=${id}`;
+    }
+    function shareParkingDetail(id) {
+      console.log("parkingDetail", id);
+      location.href = `/shareparking/detail?id=${id}`;
+    }
+    // 닫기 버튼을 클릭할 때 메뉴를 숨깁니다.
+    function closeMenu() {
+      var menu = document.getElementById("menu-container");
+      menu.style.right = "-300px";
+      isMenuVisible = false;
+    }
+    // 예약 알람 이동
+    function reservationAlarm() {
+      location.href = "/user/reservation";
+    }
+
+    // 회원 정보 수정 이동
+    function profileEdit() {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        axios
+          .get("/data", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            const userId = response.data.responseData.data.userid;
+            console.log(userId);
+            location.href = `/mypage/${userId}`;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        location.href = "/user/login";
+      }
+    }
+
+    // 예약내역조회 이동
+    function userReservation() {
+      location.href = "/user/reservation";
+    }
+
+    // 로그인 유무에 따른 닉네임 값 표시
+    window.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      const loginLogoutButton = document.getElementById("loginLogoutButton");
+      const userNickElement = document.querySelector(".userNick"); // 사용자 닉네임 엘리먼트
+
+      if (token) {
+        // 토큰이 있는 경우
+        loginLogoutButton.innerText = "로그아웃";
+
+        axios
+          .get("/data", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            const userNickname = response.data.responseData.data.nickname;
+            userNickElement.innerText = userNickname;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        // 토큰이 없는 경우
+        userNickElement.innerText = "로그인해주세요";
+      }
+    });
+
+    //로그아웃
+    //로그인 상태 시 로컬 스토리지 토큰 비우도록
+    //로그아웃 상태 시 /user/login 이동
+    function logout() {
+      const token = localStorage.getItem("token");
+      const loginLogoutButton = document.getElementById("loginLogoutButton");
+
+      if (token) {
+        if (confirm("로그아웃 하시겠습니까?")) {
+          localStorage.removeItem("token");
+          loginLogoutButton.innerText = "로그인/회원가입";
+
+          alert("로그아웃 되었습니다!");
+
+          //로그아웃 후 새로고침
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        }
+      } else {
+        location.href = "/user/login";
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      const loginLogoutButton = document.getElementById("loginLogoutButton");
+
+      if (token) {
+        loginLogoutButton.innerText = "로그아웃";
+      }
+    });
+
+    //프로필 사진 띄우기
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios
+        .get("/data", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const profileUrl = response.data.responseData.data.profile;
+          const profilePic = document.getElementById("profilePic");
+          profilePic.src = profileUrl;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      profilePic.src =
+        "https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg";
+    }
+    //공유주차장등록 이동
+    function parkingAdd() {
+      location.href = "/shareparking";
+    }
+
+    //my채팅내역
+    function chatListBtn() {
+      console.log("front 채팅방리스트 클릭");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("로그인 해주세요");
+        return;
+      } else {
+        axios
+          .get("/data", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            console.log("chatList", response);
+            const userid = response.data.responseData.data.id;
+            console.log("회원번호", userid);
+            location.href = `/chatList/${userid}`;
+          })
+          .catch((error) => {
+            console.log("chatList에러", error);
+            document.location.reload();
+          });
+      }
+    }
+
+    async function getMySharePark() {
+      let id;
+      let check;
+      try {
+        const result = await axios({
+          method: "POST",
+          url: "/shareparking/mysharepark",
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+        });
+        console.log(result);
+        id = result.data.id;
+        check = result.data.result;
+      } catch (err) {
+        console.log(err);
+      }
+      console.log("밖", id);
+      if (check) {
+        document.location.href = `/shareparking/myshareparks?id=${id}`;
+      }
+    }
+  </script>
 </html>

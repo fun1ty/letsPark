@@ -1,11 +1,15 @@
 const models = require("../models/index");
 const vt = require("../utils/JwtVerifyToken");
 const S3 = require("../utils/S3upload");
-const randomBytes = require("crypto").randomBytes(2);
+const { Op } = require("sequelize");
+// const randomBytes = require("crypto").randomBytes(2);
 // const roomList = [];
 const user = [];
 let roomName;
 let roomFind;
+// const joinedUsers = {};
+const rooms = {};
+const clientUserIds = {};
 
 console.log(user);
 // const generateRandomString = (num) => {
@@ -21,28 +25,7 @@ console.log(user);
 exports.connection = (io, socket) => {
   console.log("접속");
 
-  socket.on("joinRoom", async (roomId, joinUserId) => {
-    console.log("roomId", roomId);
-    try {
-      socket.join(roomId);
-    } catch (error) {
-      console.log(error);
-    }
-  });
-
-  socket.on("findHistory", async (roomId, userid) => {
-    const history = await chatHistory(roomId);
-    const UserResult = await UserInfo(userid);
-    if (!history) {
-      io.to(roomId).emit("history", null, null);
-    } else {
-      io.to(roomId).emit("history", history, UserResult);
-    }
-    console.log("history", history);
-  });
-
   socket.on("jwt", async ({ token }) => {
-    // console.log(`클라이언트로부터 JWT 토큰을 수신: ${token}`);
     //jwt토큰 확인
     try {
       let userId = await vt.verifyToken(token);
@@ -52,8 +35,6 @@ exports.connection = (io, socket) => {
 
       userId = console.log("resultValue", resultValue);
       if (!user.includes(resultValue.id)) {
-        user.push(resultValue.id);
-        console.log("user", user[0], user[1]);
       }
       socket.emit("jwt", resultValue);
     } catch (error) {
@@ -72,52 +53,104 @@ exports.connection = (io, socket) => {
       joinUserNick,
       parkingName
     ) => {
-      console.log(userId, usernick, requestUserId, joinUserNick, parkingName);
       try {
+        roomName = "room" + "_" + userId + "_" + requestUserId;
         if (!roomId) {
-          roomName = "room" + "_" + userId + "_" + requestUserId;
-          console.log("roomName", roomId);
           roomFind = await models.ChatRoom.findOne({
             roomname: roomName,
           });
 
           if (!roomFind) {
-            roomDBInsert = await models.ChatRoom.create({
+            roomFind = await models.ChatRoom.create({
               roomname: roomName,
               shareparkname: parkingName,
             });
           }
         }
         await chatUserDBInsert(userId, requestUserId, joinUserNick);
-        socket.room = roomId;
         socket.user = usernick;
-        console.log("socket.room", roomFind.id);
+        socket.join(roomFind.id);
+        socket.room = roomFind.id;
 
-        io.to(socket.room).emit(
-          "notice",
-          roomFind.id,
-          `${socket.user}님이 입장하셨습니다`
-        );
+        // //이미 입장한 사용자인지 확인
+        // if (!joinedUsers[socket.room]) {
+        //   // 입장한 사용자를 추적
+        //   joinedUsers[socket.room] = true;
+
+        // 방 정보 저장
+        if (!rooms[socket.room]) {
+          rooms[socket.room] = [];
+        }
+        rooms[socket.room].push(socket);
+
+        // 클라이언트의 UserId 저장
+        if (!clientUserIds[socket.id]) {
+          clientUserIds[socket.id] = userId;
+        }
+        socket
+          .to(socket.room)
+          .emit("notice", socket.room, `${usernick}님이 입장하셨습니다`);
+        socket.emit("roomNumber", roomFind.id);
+
+        const history = await chatHistory(socket.room);
+        if (history) {
+          // 이 부분에서 방에 입장한 모든 사용자에게 채팅 내역을 전송합니다.
+          const userIdFind = await chatUserFind(socket.room);
+          let UserResult;
+          if (userId != userIdFind.userid) {
+            UserResult = await UserInfo(userIdFind.userid);
+          } else {
+            UserResult = await UserInfo(userIdFind.joinuser);
+          }
+          UserResult = await UserInfo(userIdFind.userid);
+          // io.to(socket.room).emit("history", history, UserResult);
+          // 해당 방의 모든 클라이언트에게 채팅 내역 전송
+          rooms[socket.room].forEach((clientSocket) => {
+            // 클라이언트 소켓의 UserId와 현재 클라이언트의 UserId가 같으면 채팅 내역 전송
+            if (clientUserIds[clientSocket.id] === userId) {
+              clientSocket.emit("history", history, UserResult);
+            }
+          });
+        }
       } catch (error) {
         console.log(error);
       }
     }
   );
 
+  socket.on("findHistory", async (roomId, userId, lastMessageId) => {
+    const userIdFind = await chatUserFind(roomFind.id);
+    let UserResult;
+    if (userId != userIdFind.userid) {
+      UserResult = await UserInfo(userIdFind.userid);
+    } else {
+      UserResult = await UserInfo(userIdFind.joinuser);
+    }
+    // if (!requestedHistories[userId]) {
+    const history = await chatHistory(roomId, lastMessageId);
+    if (!history) {
+      console.log("historyNull");
+    } else {
+      console.log("aaaa", roomId);
+      io.to(roomId).emit("history", history, UserResult);
+    }
+  });
+
   socket.on("sendMessage", async (message) => {
     try {
-      console.log("sendMessage", message);
-      //userid와 다른아이디 찾기
-
       const joinUser = await UserInfo(message.userid);
       //메세지 DB삽입
       await chatDBInsert(message);
+
       io.to(socket.room).emit(
         "newMessage",
         message.message,
         message.nick,
         joinUser.profile
       );
+      // // 채팅 히스토리를 업데이트
+      // const history = await chatHistory(socket.room);
+      // io.to(socket.room).emit("history", history, joinUser);
     } catch (error) {
       console.log("newMessage에러: ", error);
     }
@@ -128,6 +161,15 @@ exports.connection = (io, socket) => {
       socket.leave(socket.room);
     }
   });
+
+  ///채팅유저 찾기
+  async function chatUserFind(roomId) {
+    console.log("chatUserFindroomId", roomId);
+    const findUserChat = await models.ChatUser.findOne({
+      roomid: roomId,
+    });
+    return findUserChat;
+  }
 
   //채팅 유저DB 삽입
   async function chatUserDBInsert(userId, requestUserId, joinUserNick) {
@@ -170,13 +212,19 @@ exports.connection = (io, socket) => {
   }
 
   //채팅 히스토리
-  async function chatHistory(roomId) {
-    console.log("chatHistoryroomId", roomId);
+  async function chatHistory(roomId, lastMessageId) {
+    const Condition = {
+      roomid: roomId,
+    };
+
+    if (lastMessageId !== null) {
+      Condition.id = { [Op.gt]: lastMessageId };
+    }
     const history = await models.Chat.findAll({
-      where: {
-        roomid: roomId,
-      },
+      where: Condition,
+      order: [["createdAt", "DESC"]],
     });
+
     return history;
   }
 };
