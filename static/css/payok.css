@@ -1,0 +1,94 @@
+body {
+  background-color: #f2f2f2;
+}
+.box1 {
+  width: 100%;
+  height: 200px;
+  background-color: #8783f5;
+}
+.successContainer {
+  width: 300px;
+  height: 400px;
+  background-color: white;
+  z-index: 1;
+
+  position: relative;
+  top: -100px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.paydone {
+  font-size: 24px;
+}
+
+.dot-line {
+  width: 80%;
+  border-top: 1px dashed #8783f5;
+  margin: 10px auto;
+}
+
+ul {
+  list-style: none; /* 리스트 스타일 제거 */
+  padding: 0;
+}
+ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: justify;
+  margin-bottom: 10px;
+}
+
+ul li span {
+  margin-left: 100px;
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+}
+.success {
+  display: block;
+  margin: 20px auto;
+  width: 300px;
+  height: 40px;
+  border: 1px solid #8783f5;
+  background-color: #8783f5;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+/* 모바일 */
+@media screen and (max-width: 500px) {
+  .success {
+    width: 200px;
+    font-size: 14px;
+  }
+}
+
+/* 테블릿 */
+@media screen and (min-width: 800px) {
+  .success {
+    width: 500px;
+    font-size: 16px;
+  }
+  .successContainer {
+    width: 800px;
+    height: 500px;
+  }
+  .successmsg,
+  ul {
+    font-size: 24px;
+  }
+  .paydone {
+    font-size: 30px;
+  }
+}
