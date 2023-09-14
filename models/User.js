@@ -1,7 +1,7 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
 const Model = (sequelize) => {
-  return sequelize.define('user', {
+  return sequelize.define("user", {
     //컬럼 정의
     id: {
       type: DataTypes.INTEGER,

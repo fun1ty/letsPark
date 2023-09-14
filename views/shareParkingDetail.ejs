@@ -177,7 +177,7 @@
             </div>
             <div style="display: flex; justify-content: space-between">
                 <div class="otherTitle">공유주차장 등록자</div>
-                <div class="spContent"><%= nickname%></div>
+                <div class="spContent" id="<%= userid%>"><%= nickname%></div>
             </div>
             <div style="display: flex; justify-content: center">
                 <div class="taCenter spContent" style="padding-top: 5px;">평점(<%= result.length%>) : <%= average%>&nbsp;&nbsp;</div>
@@ -251,7 +251,7 @@
         </div>
         <div style="display: flex; justify-content: space-evenly; padding-top: 10px;">
             <div class="spBtn" onclick="requestPay('<%= result1.id%>')">바로 예약하기</div>
-            <div class="spBtn">주인과 채팅하기</div>
+            <div class="spBtn" onclick="requestChat('<%= userid%>')">주인과 채팅하기</div>
         </div>
         </div>
             <hr class="hr" style="margin: 0px;">
@@ -581,11 +581,6 @@
         location.href = '/shareparking';
     }
 
-    //채팅방 이동
-    function chatBtn() {
-      console.log("front 채팅방클릭");
-      location.href = "/chat";
-    }
     
     //결제////////////////////////////////////////
 
@@ -728,32 +723,14 @@
     }
 
     //my채팅내역
-    function chatListBtn() {
+    function requestChat(userId) {
+        const joinUserNick = "<%= nickname%>"
+        const parkingName = "<%= result1.shareparkname%>"
         console.log('front 채팅방리스트 클릭');
-        const token = localStorage.getItem('token');
-        if (!token) {
-            alert('로그인 해주세요');
-            return;
-        } else {
-            axios
-                .get('/data', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((response) => {
-                    console.log('chatList', response);
-                    const userid = response.data.responseData.data.id;
-                    console.log('회원번호', userid);
-                    location.href = `/chatList/${userid}`;
-                })
-                .catch((error) => {
-                    console.log('chatList에러', error);
-                    document.location.reload();
-                });
-        }
+        location.href = `/chat/${userId}/${joinUserNick}/${parkingName}`;
+        console.log('chatList에러', error);
     }
-
+        
     async function getMySharePark() {
         let id;
         let check;

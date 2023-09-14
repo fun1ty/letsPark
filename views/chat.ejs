@@ -3,82 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="/reset.css" />
+    <link rel="stylesheet" type="text/css" href="/chat.css" />
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <title>채팅</title>
-    <style>
-      .body {
-        width: 100%;
-        height: 70vh;
-        position: relative;
-        background: #75e3c4;
-      }
-      #chat {
-        position: absolute;
-        bottom: 0px;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-      }
-      #chat input {
-        width: 80%;
-      }
-      .my-chat {
-        display: flex;
-        justify-content: end;
-        padding: 2px 0px;
-      }
-      .my-chat p {
-        margin: 0;
-        padding: 10px;
-        background: yellow;
-        margin-right: 10px;
-        border-radius: 10px;
-      }
-      .other-chat {
-        display: flex;
-        justify-content: start;
-        padding: 2px 0px;
-      }
-      #othermessage {
-        margin: 0;
-        padding: 10px;
-        background: white;
-        margin-left: 10px;
-        border-radius: 10px;
-      }
-      #notice {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-      }
-      #notice p {
-        margin: 0;
-      }
-      .secret-chat p {
-        background: pink;
-      }
-      #nick {
-        margin: 0;
-        padding: 10px;
-        margin-left: 10px;
-      }
-    </style>
   </head>
   <body>
-    <h2 id="sendUser"></h2>
+    <div id="chatHeader">
+      <button id="chatExit" onclick="exitChat()">
+        <img
+          id="backBtnImg"
+          src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+        />
+      </button>
+      <h2 id="chatParkName"><%= parkingName %></h2>
+    </div>
+    <hr />
     <div id="main">
       <ul id="lists"></ul>
     </div>
-    <div class="body" id="<%= chatId  %>">
-      <% console.log('chatId:', chatId); %>
+    <div class="body">
       <div id="msg">
         <div id="notice"></div>
       </div>
       <form id="chat">
         <input type="text" id="message" placeholder="메세지 입력" />
-
-        <button>입력</button>
+        <button id="chatSendBtn">
+          <img
+            id="chatSendBtnImg"
+            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Cursor.svg"
+          />
+        </button>
       </form>
       <form onsubmit="fileupload(event)">
         <input type="file" id="files" multiple /><br />
@@ -86,32 +43,25 @@
     </div>
 
     <script>
-      const roomId = document.querySelector(".body").id;
+      const roomId = "<%= roomId %>";
+      const requestUserId = "<%= userId %>";
+      const joinUserNick = "<%= joinUserNick %>";
+      const parkingName = "<%= parkingName %>";
+      // const roomId = document.querySelector(".body").id;
       console.log("roomId", roomId);
+      console.log("requestUserId", requestUserId);
+      console.log("joinUserNick", joinUserNick);
+      console.log("parkingName", parkingName);
+
       const socket = io();
       let userid;
       let usernick;
-
       console.log(socket);
       const token = localStorage.getItem("token");
       const chatForm = document.querySelector("#chat");
       const msg = document.querySelector("#msg");
       const notice = document.querySelector("#notice");
       const sendUserh2 = document.querySelector("#sendUser");
-
-      //room이름 생성
-      // const generateRandomString = (num) => {
-      //   const characters =
-      //     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-      //   let result = "";
-      //   const charactersLength = characters.length;
-      //   for (let i = 0; i < num; i++) {
-      //     result += characters.charAt(
-      //       Math.floor(Math.random() * charactersLength)
-      //     );
-      //   }
-      //   return result;
-      // };
 
       //메세지 띄우기
       socket.on("newMessage", (message, nick, profile) => {
@@ -132,7 +82,6 @@
           p.innerHTML = `<p id="othermessage">${message}</p>`;
           img.src = `${profile}`;
           img.style.width = "50px";
-          sendUserh2.innerHTML = `${nick}`;
           span.appendChild(img);
           span.appendChild(p);
           div.appendChild(span);
@@ -142,7 +91,7 @@
       });
 
       // 특정 방에 조인
-      socket.emit("joinRoom", roomId);
+      socket.emit("joinRoom", roomId, requestUserId);
 
       //입장 메세지 이벤트
       socket.on("notice", (message) => {
@@ -163,23 +112,31 @@
         usernick = resultValue.nickname;
 
         //채팅방 생성
-        socket.emit("create", userid, usernick, roomId, () => {
-          console.log("userid,usernick", userid, usernick, roomId);
-        });
+        socket.emit(
+          "create",
+          userid,
+          usernick,
+          roomId,
+          requestUserId,
+          joinUserNick,
+          parkingName,
+          () => {}
+        );
       });
 
-      // socket.on("history", (historyChat) => {
-      //   //사용자 아이디 구분해야함
-      //   const div = document.createElement("div");
-      //   const p = document.createElement("p");
-      //   if (historyChat.FILE != null) {
-      //     p.innerHTML = historyChat.FILE;
-      //   } else {
-      //     p.textContent = historyChat.CONTENT;
-      //   }
-      //   div.appendChild(p);
-      //   msg.appendChild(div);
-      // });
+      socket.on("history", (historyChat) => {
+        const div = document.createElement("div");
+        const p = document.createElement("p");
+        if (historyChat) {
+          if (historyChat.FILE != null) {
+            p.innerHTML = historyChat.FILE;
+          } else {
+            p.textContent = historyChat.CONTENT;
+          }
+          div.appendChild(p);
+          msg.appendChild(div);
+        }
+      });
 
       //메세지 보내기
       chatForm.addEventListener("submit", (e) => {
@@ -192,10 +149,16 @@
           message: message.value,
           file: null,
           roomId: roomId,
+          joinUserId: requestUserId,
         };
         socket.emit("sendMessage", msg);
         message.value = "";
       });
+
+      //채팅방 나가기
+      function exitChat() {
+        socket.emit("disconnect");
+      }
 
       //파일전송
       async function fileupload(e) {

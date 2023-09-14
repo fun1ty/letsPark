@@ -3,30 +3,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/login.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Document</title>
   </head>
-  <body>
-    <!-- 로그인 페이지 -->
-    <form onsubmit="login(event)">
-      <input type="text" id="userid" placeholder="아이디" /><br />
-      <input type="password" id="password" placeholder="비밀번호" /><br />
-      <button type="submit">로그인하기</button>
-    </form>
-    <br />
-    아이디가 없으신가요?
-    <a href="/user/signup">회원가입하기</a>
+  <body class="loginBody">
+    <div class="loginBox">
+      <!-- 로그인 페이지 -->
+      <img
+        class="logoImg"
+        src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Group+61.svg"
+        alt="logo"
+      />
+      <form class="loginForm" onsubmit="login(event)">
+        <input type="text" id="userid" placeholder="아이디" /><br />
+        <input type="password" id="password" placeholder="비밀번호" /><br />
+        <button id="loginBtn" type="submit">로그인하기</button>
+      </form>
+      <br />
+      <div class="signup-area">
+        <span>아이디가 없으신가요?</span>
+        <a class="signup-button" href="/user/signup">회원가입하기</a>
+      </div>
+    </div>
 
     <script>
       function login(e) {
         e.preventDefault();
 
+        const userid = document.querySelector('#userid').value;
+        const password = document.querySelector('#password').value;
+        const loginMessage = document.querySelector('#loginMessage');
+
+        if (!userid || !password) {
+          if (!userid && !password) {
+            alert('아이디와 비밀번호를 다시 입력해주세요');
+          } else if (!userid) {
+            alert('아이디를 입력해주세요');
+          } else {
+            alert('비밀번호를 입력해주세요');
+          }
+          return;
+        }
+
         axios({
           method: 'POST',
           url: '/user/login',
           data: {
-            userid: document.querySelector('#userid').value,
-            password: document.querySelector('#password').value,
+            userid: userid,
+            password: password,
           },
         }).then((res) => {
           if (res.data.result) {
@@ -35,6 +60,7 @@
             window.location.href = '/';
           } else {
             window.location.reload();
+            alert('로그인 실패! 아이디와 비밀번호를 다시 확인해주세요');
           }
         });
       }
