@@ -24,16 +24,21 @@ exports.connection = (io, socket) => {
   socket.on("joinRoom", async (roomId, joinUserId) => {
     console.log("roomId", roomId);
     try {
-      const history = chatHistory(roomId);
       socket.join(roomId);
-      // if (!history) {
-      //   io.to(roomId).emit("history", null);
-      // } else {
-      //   io.to(roomId).emit("history", history);
-      // }
     } catch (error) {
       console.log(error);
     }
+  });
+
+  socket.on("findHistory", async (roomId, userid) => {
+    const history = await chatHistory(roomId);
+    const UserResult = await UserInfo(userid);
+    if (!history) {
+      io.to(roomId).emit("history", null, null);
+    } else {
+      io.to(roomId).emit("history", history, UserResult);
+    }
+    console.log("history", history);
   });
 
   socket.on("jwt", async ({ token }) => {
@@ -42,9 +47,8 @@ exports.connection = (io, socket) => {
     try {
       let userId = await vt.verifyToken(token);
       console.log("userId: ", userId);
-      const resultValue = await models.User.findOne({
-        where: { id: userId },
-      }); //회원이 있는지 검증
+      //회원이 있는지 검증
+      const resultValue = await UserInfo(userId);
 
       userId = console.log("resultValue", resultValue);
       if (!user.includes(resultValue.id)) {
@@ -71,7 +75,7 @@ exports.connection = (io, socket) => {
       console.log(userId, usernick, requestUserId, joinUserNick, parkingName);
       try {
         if (!roomId) {
-          roomName = "room" + userId + "_" + requestUserId;
+          roomName = "room" + "_" + userId + "_" + requestUserId;
           console.log("roomName", roomId);
           roomFind = await models.ChatRoom.findOne({
             roomname: roomName,
@@ -87,8 +91,13 @@ exports.connection = (io, socket) => {
         await chatUserDBInsert(userId, requestUserId, joinUserNick);
         socket.room = roomId;
         socket.user = usernick;
+        console.log("socket.room", roomFind.id);
 
-        io.to(socket.room).emit("notice", `${socket.user}님이 입장하셨습니다`);
+        io.to(socket.room).emit(
+          "notice",
+          roomFind.id,
+          `${socket.user}님이 입장하셨습니다`
+        );
       } catch (error) {
         console.log(error);
       }
@@ -99,18 +108,15 @@ exports.connection = (io, socket) => {
     try {
       console.log("sendMessage", message);
       //userid와 다른아이디 찾기
-      const joinUserId = user.indexOf(message.userid);
 
-      const joinUserProfile = await models.User.findOne({
-        where: { id: message.userid },
-      }); //회원이 있는지 검증
+      const joinUser = await UserInfo(message.userid);
       //메세지 DB삽입
       await chatDBInsert(message);
       io.to(socket.room).emit(
         "newMessage",
         message.message,
         message.nick,
-        joinUserProfile.profile
+        joinUser.profile
       );
     } catch (error) {
       console.log("newMessage에러: ", error);
@@ -141,10 +147,18 @@ exports.connection = (io, socket) => {
     }
   }
 
+  //사람정보 찾기
+  async function UserInfo(usereid) {
+    const UserInfoResult = await models.User.findOne({
+      where: { id: usereid },
+    });
+    return UserInfoResult;
+  }
+
   //채팅대화 DB 삽입
   async function chatDBInsert(data) {
     try {
-      const chatDB = await models.Chat.create({
+      await models.Chat.create({
         userid: data.userid,
         roomid: roomFind.id,
         content: data.message,
@@ -156,8 +170,9 @@ exports.connection = (io, socket) => {
   }
 
   //채팅 히스토리
-  function chatHistory(roomId) {
-    const history = models.Chat.findAll({
+  async function chatHistory(roomId) {
+    console.log("chatHistoryroomId", roomId);
+    const history = await models.Chat.findAll({
       where: {
         roomid: roomId,
       },

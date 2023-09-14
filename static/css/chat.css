@@ -93,3 +93,9 @@ button {
   display: flex;
   margin-top: 1em;
 }
+#notice {
+  background-color: rgba(53, 210, 191, 1);
+  border-radius: 10px;
+  width: 80%;
+  margin: 2em;
+}

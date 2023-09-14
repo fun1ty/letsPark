@@ -19,24 +19,28 @@ exports.detail = async (req, res) => {
       attributes: ["nickname", "id"],
     });
 
-    const result = await models.ParkingReview.findAll({
-      attributes: ["nickname", "score", "comment"],
-      where: {
-        type: 2,
-        parkid: id,
-      },
-    });
-    let average = 0;
-    let len = result.length;
+        const result = await models.ParkingReview.findAll({
+            include : [{
+                model : models.User,
+                attributes : ['profile'],
+            }],
+            attributes : ['nickname', 'score', 'comment'],
+            where : {
+                type : 2,
+                parkid : id,
+            }
+        });
+        let average = 0;
+        let len = result.length;
 
-    for (let obj of result) {
-      average += obj.score;
-    }
-    if (average !== 0) {
-      average = average / len;
-      average = Math.round(average * 100) / 100;
-    }
-    res.render("shareParkingDetail", {
+        for (let obj of result) {
+            average += obj.score;
+        }
+        if(average !== 0) {
+            average = average / len;
+            average = Math.round(average * 100) / 100;
+        }
+        res.render("shareParkingDetail", {
       result1,
       nickname: result2.nickname,
       userid: result1.user_id,
@@ -60,105 +64,90 @@ exports.test = async (req, res) => {
 exports.enrollShareParking = async (req, res) => {
   const token = req.headers.authorization;
 
-  const id = await vt.verifyToken(token);
-  try {
-    const result = await models.User.findOne({
-      where: { id },
-    });
-    if (result === null) {
-      res.send({ result: false });
+    const id = await vt.verifyToken(token);
+    try {
+        const result = await models.User.findOne({
+            where : { id },
+        });
+        if(result === null) {
+            res.send({ result : false });
+        }
+    } catch (err) {
+        console.log(err);
+    };
+
+    const location = req.file.location;
+    const {shareparkname, address, price, lat, lng} = req.body;
+    console.log('lat', lat);
+    console.log('lng', lng);
+
+    try {
+        const result = await models.ShareParking.create({
+            shareparkname, address, price, lat, lng, location,
+            user_id : id , status : 'Y',
+        });
+
+        console.log(result);
+        res.send({ result : true });
+    } catch (err) {
+        console.log(err);
     }
-  } catch (err) {
-    console.log(err);
-  }
-
-  const location = req.file.location;
-  const { shareparkname, address, price, lat, lng } = req.body;
-
-  try {
-    const result = await models.ShareParking.create({
-      shareparkname,
-      address,
-      price,
-      lat,
-      lng,
-      location,
-      user_id: id,
-      status: "Y",
-    });
-
-    console.log(result);
-    res.send({ result: true });
-  } catch (err) {
-    console.log(err);
-  }
 };
 
 //공유주차장 정보수정
 exports.editShareParking = async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization;
 
-  const id = vt.verifyToken(token);
+    const id = await vt.verifyToken(token);
 
-  const location = req.file.location;
-  const { shareParkingId, shareparkname, price } = req.body;
-  //이미지 업데이트 유무 판단
-  if (req.file.location === null) {
-    try {
-      const result = models.ShareParking.update(
-        { shareparkname, price },
-        {
-          where: { id: shareParkingId, user_id: id },
+    const {shareParkingId, shareparkname, price, checkFile} = req.body;
+    console.log('tf', checkFile);
+    //이미지 업데이트 유무 판단
+    if (checkFile === 'false') {
+        try {
+            const result = models.ShareParking.update({shareparkname, price},
+                {
+                    where: {id: shareParkingId, user_id: id},
+                });
+
+            res.send({result: true});
+        } catch (err) {
+            console.log(err);
         }
-      );
-
-      res.send({ result: true });
-    } catch (err) {
-      console.log(err);
-    }
-  } else {
-    try {
-      const result = models.ShareParking.update(
-        { shareparkname, name, location },
-        {
-          where: { id: shareParkingId, user_id: id },
+    } else {
+        const location = req.file.location;
+        try {
+            const result = models.ShareParking.update({shareparkname, price, location},
+                {
+                    where: {id: shareParkingId, user_id: id},
+                });
+            res.send({result: true});
+        } catch (err) {
+            console.log(err);
         }
-      );
-      res.send({ result: true });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-};
+    };
+}
 
 //공유주차장 정보삭제
 exports.deleteShareParking = async (req, res) => {
   const token = req.headers.authorization;
 
-  const id = vt.verifyToken(token);
+     const id = await vt.verifyToken(token);
 
-  const shareParkingId = req.body.shareParkingId;
+     const shareParkingId = req.body.shareParkingId;
+    console.log('delete', id);
+    console.log('delete', shareParkingId);
+     try {
+         const result = await models.ShareParking.update({status: 'N'},
+             {
+                 where: {id: shareParkingId, user_id: id},
+             });
+         res.send({ result : true});
+     } catch (err) {
+     console.log(err);
+     }
+    }
 
-  try {
-    const result = await models.ShareParking.update(
-      { status: "N" },
-      {
-        where: { id: shareParkingId, user_id: id },
-      }
-    );
-
-    res.send({ result: true });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-//공유주차장 예약 결제
-exports.pay = async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
-
-  const userId = vt.verifyToken(token);
-};
 
 exports.reviews = async (req, res) => {
   const { shareParkId, score, comment } = req.body;
@@ -204,15 +193,17 @@ exports.getMySharePark = async (req, res) => {
   }
 };
 
-exports.getMyShareParks = async (req, res) => {
-  const id = req.query.id;
-  try {
-    const result = await models.ShareParking.findAll({
-      where: { user_id: id },
-    });
-    console.log("result", result);
-    res.render("myShareParks", { result });
-  } catch (err) {
-    console.log(err);
-  }
-};
+exports.getMyShareParks = async  (req, res) => {
+    const id = req.query.id;
+    try {
+        const result = await models.ShareParking.findAll({
+            where : { user_id : id, status : 'Y' },
+        });
+        console.log('result', result);
+        res.render('myShareParks', {result});
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+

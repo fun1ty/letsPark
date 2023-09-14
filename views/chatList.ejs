@@ -33,7 +33,7 @@
       <h1>채팅</h1>
     </div>
     <hr />
-    <% if(chatListDB.length !=0){ %> <% for (let i = 0; i <
+    <% if(chatListDB.length > 0){ %> <% for (let i = 0; i <
     chatListDB.length;i++) { %> <%= console.log(chatListDB[i]) %>
     <button
       id="<%= chatListDB[i].roomid %>"
@@ -50,7 +50,9 @@
         <%= chatListDB[i].chatroom.chats.content %>
       </div>
     </button>
-    <% } %> <% } else { %> 채팅내역이 없습니다. <% }%>
+    <% } %> <% } else { %>
+    <div>채팅내역이 없습니다.</div>
+    <% }%>
 
     <script>
       //채팅방 이동

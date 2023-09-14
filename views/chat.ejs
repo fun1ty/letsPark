@@ -26,6 +26,8 @@
     </div>
     <div class="body">
       <div id="msg">
+        <div class="upload_box"></div>
+
         <div id="notice"></div>
       </div>
       <form id="chat">
@@ -37,13 +39,13 @@
           />
         </button>
       </form>
-      <form onsubmit="fileupload(event)">
+      <!-- <form onsubmit="fileupload(event)">
         <input type="file" id="files" multiple /><br />
-      </form>
+      </form> -->
     </div>
 
     <script>
-      const roomId = "<%= roomId %>";
+      let roomId = "<%= roomId %>";
       const requestUserId = "<%= userId %>";
       const joinUserNick = "<%= joinUserNick %>";
       const parkingName = "<%= parkingName %>";
@@ -90,23 +92,59 @@
         msg.appendChild(div);
       });
 
-      // 특정 방에 조인
-      socket.emit("joinRoom", roomId, requestUserId);
-
       //입장 메세지 이벤트
-      socket.on("notice", (message) => {
+      socket.on("notice", (roomNumber, message) => {
         const div = document.createElement("div");
         const p = document.createElement("p");
         p.textContent = message;
 
         div.appendChild(p);
         notice.appendChild(div);
+
+        if (!roomId) {
+          roomId = roomNumber;
+        }
+        //채팅내역 불러오기
+        socket.emit("findHistory", roomId, userid);
+        console.log("roomId", roomId);
+      });
+
+      // 특정 방에 조인
+      socket.emit("joinRoom", roomId, requestUserId);
+
+      socket.on("history", (historyChat, UserResult) => {
+        const div = document.createElement("div");
+        const p = document.createElement("p");
+        let data;
+        if (historyChat) {
+          for (let i = 0; i < historyChat.length; i++) {
+            if (historyChat[i].chat.userid != requestUserId) {
+              div.classList.add("my-chat");
+              p.textContent = `${historyChat[i].chat.content}`;
+              div.appendChild(p);
+            } else {
+              div.classList.add("other-chat");
+              span.innerHTML = `<span id="nick">${UserResult[i].nickname}</p>`;
+              p.innerHTML = `<p id="othermessage">${message}</p>`;
+              img.src = `${profile}`;
+              img.style.width = "50px";
+              span.appendChild(img);
+              span.appendChild(p);
+              div.appendChild(span);
+            }
+          }
+          if (historyChat.FILE != null) {
+            p.innerHTML = historyChat.chat.FILE;
+          } else {
+            p.textContent = historyChat.chat.CONTENT;
+          }
+          div.appendChild(p);
+          msg.appendChild(div);
+        }
       });
 
       //jwt토큰검증
-      socket.emit("jwt", { token }, () => {
-        console.log("JWT 토큰 서버로 전송");
-      });
+      socket.emit("jwt", { token }, () => {});
       socket.on("jwt", (resultValue) => {
         userid = resultValue.id;
         usernick = resultValue.nickname;
@@ -122,20 +160,6 @@
           parkingName,
           () => {}
         );
-      });
-
-      socket.on("history", (historyChat) => {
-        const div = document.createElement("div");
-        const p = document.createElement("p");
-        if (historyChat) {
-          if (historyChat.FILE != null) {
-            p.innerHTML = historyChat.FILE;
-          } else {
-            p.textContent = historyChat.CONTENT;
-          }
-          div.appendChild(p);
-          msg.appendChild(div);
-        }
       });
 
       //메세지 보내기
@@ -165,6 +189,12 @@
         e.preventDefault();
         //파일에 접근
         const file = document.querySelector("#files");
+        const imageInput = document.getElementById("imageInput");
+
+        // 이미지 파일을 선택하지 않은 경우
+        if (!imageInput.files || !imageInput.files[0]) {
+          return;
+        }
         console.log(file.files);
         //폼 데이터 생성
         const formData = new FormData();
@@ -174,21 +204,12 @@
         }
 
         try {
-          const res = await axios({
-            method: "POST",
-            url: "/upload",
-            data: formData,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
           console.log("res");
-          res.data.forEach((elem) => {
-            const img = document.createElement("img");
-            img.src = elem.location; //aws는 location!!
-            img.style.width = "500px";
-            resultBox.appendChild(img);
-          });
+
+          const img = document.createElement("img");
+          img.src = elem.location; //aws는 location!!
+          img.style.width = "500px";
+          resultBox.appendChild(img);
         } catch (error) {
           console.log(error);
         }
