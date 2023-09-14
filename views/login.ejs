@@ -21,12 +21,27 @@
       function login(e) {
         e.preventDefault();
 
+        const userid = document.querySelector('#userid').value;
+        const password = document.querySelector('#password').value;
+        const loginMessage = document.querySelector('#loginMessage');
+
+        if (!userid || !password) {
+          if (!userid && !password) {
+            alert('아이디와 비밀번호를 다시 입력해주세요');
+          } else if (!userid) {
+            alert('아이디를 입력해주세요');
+          } else {
+            alert('비밀번호를 입력해주세요');
+          }
+          return;
+        }
+
         axios({
           method: 'POST',
           url: '/user/login',
           data: {
-            userid: document.querySelector('#userid').value,
-            password: document.querySelector('#password').value,
+            userid: userid,
+            password: password,
           },
         }).then((res) => {
           if (res.data.result) {
@@ -35,6 +50,7 @@
             window.location.href = '/';
           } else {
             window.location.reload();
+            alert('로그인 실패! 아이디와 비밀번호를 다시 확인해주세요');
           }
         });
       }
