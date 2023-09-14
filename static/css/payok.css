@@ -11,7 +11,6 @@ body {
   height: 400px;
   background-color: white;
   z-index: 1;
-
   position: relative;
   top: -100px;
   margin: 0 auto;
@@ -24,6 +23,7 @@ body {
 
 .paydone {
   font-size: 24px;
+  font-family: "KBO-Dia-Gothic_bold";
 }
 
 .dot-line {
@@ -64,6 +64,10 @@ ul li span {
   font-weight: bold;
   color: white;
   cursor: pointer;
+}
+.resultBox,
+.successmsg {
+  font-family: "GmarketSansMedium";
 }
 
 /* 모바일 */

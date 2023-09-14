@@ -52,6 +52,11 @@
 
 .susTitle {
   margin-top: -50px;
+  font-family: "KBO-Dia-Gothic_bold";
+}
+
+.susSub {
+  font-family: "GmarketSansMedium";
 }
 
 .loginBTn {
@@ -76,9 +81,10 @@
 }
 
 .serviceBox {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 400;
   margin-top: 50px;
+  font-family: "GmarketSansMedium";
 }
 
 @media screen and (min-width: 800px) {
