@@ -183,6 +183,249 @@
         </div>
       </nav>
     </div>
+    <input type="hidden" id="kakaoLat" />
+    <input type="hidden" id="kakaoLng" />
+  </nav>
+</div>
+<input type="hidden" id="check" value="0" />
+<div class="test">
+  <div class="child1">
+    <div class="taCenter title" style="font-size: 25px">
+      <%= publicParkingDetailResult.name%>
+    </div>
+    <div class="taCenter otherTitle">
+      <%= publicParkingDetailResult.address%>
+    </div>
+    <div class="taCenter otherTitle">
+      <%= publicParkingDetailResult.tel%>
+    </div>
+    <div style="display: flex; justify-content: center">
+      <div class="taCenter spContent" style="padding-top: 5px">
+        평점(<%= result.length%>) : <%= average%>&nbsp;&nbsp;
+      </div>
+      <div class="stars-outer">
+        <!-- 5개의 회색 별 -->
+        <!-- 별 1 -->
+        <svg class="star" viewBox="0 0 25 25">
+          <path
+                  d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                  stroke="#ccc"
+                  fill="#ccc"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="1"
+          ></path>
+        </svg>
+        <!-- 별 2 -->
+        <svg class="star" viewBox="0 0 25 25">
+          <path
+                  d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                  stroke="#ccc"
+                  fill="#ccc"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="1"
+          ></path>
+        </svg>
+        <!-- 별 3 -->
+        <svg class="star" viewBox="0 0 25 25">
+          <path
+                  d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                  stroke="#ccc"
+                  fill="#ccc"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="1"
+          ></path>
+        </svg>
+        <!-- 별 4 -->
+        <svg class="star" viewBox="0 0 25 25">
+          <path
+                  d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                  stroke="#ccc"
+                  fill="#ccc"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="1"
+          ></path>
+        </svg>
+        <!-- 별 5 -->
+        <svg class="star" viewBox="0 0 25 25">
+          <path
+                  d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                  stroke="#ccc"
+                  fill="#ccc"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                  stroke-width="1"
+          ></path>
+        </svg>
+
+        <div class="stars-inner" style="width: <%= average * 10 * 2%>%">
+          <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
+          <!-- 5개의 노란색 별 -->
+          <!-- 별 1 -->
+          <svg class="star" viewBox="0 0 25 25">
+            <path
+                    d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                    stroke="#F7D358"
+                    fill="#F7D358"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    stroke-width="1"
+            ></path>
+          </svg>
+          <!-- 별 2 -->
+          <svg class="star" viewBox="0 0 25 25">
+            <path
+                    d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                    stroke="#F7D358"
+                    fill="#F7D358"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    stroke-width="1"
+            ></path>
+          </svg>
+          <!-- 별 3 -->
+          <svg class="star" viewBox="0 0 25 25">
+            <path
+                    d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                    stroke="#F7D358"
+                    fill="#F7D358"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    stroke-width="1"
+            ></path>
+          </svg>
+          <!-- 별 4 -->
+          <svg class="star" viewBox="0 0 25 25">
+            <path
+                    d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                    stroke="#F7D358"
+                    fill="#F7D358"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    stroke-width="1"
+            ></path>
+          </svg>
+          <!-- 별 5 -->
+          <svg class="star" viewBox="0 0 25 25">
+            <path
+                    d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z"
+                    stroke="#F7D358"
+                    fill="#F7D358"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    stroke-width="1"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="otherTitle" style="text-align: end; padding-bottom: 4px">
+      총 주차면 갯수 - <%= publicParkingDetailResult.capacity%>
+    </div>
+    <div style="display: flex; justify-content: space-between">
+      <div>
+        <p
+                style="
+                background-color: lightgray;
+                border: 1px solid lightgray;
+                border-radius: 4px;
+              "
+        >
+          공영
+        </p>
+        <% if(publicParkingDetailResult.payyn === 'N') {%>
+          <p
+                  style="
+                background-color: lightgray;
+                border: 1px solid lightgray;
+                border-radius: 4px;
+              "
+          >
+            무료
+          </p>
+        <% }%>
+      </div>
+      <p class="spaceb otherTitle">
+        현재 주차가능 면 갯수 - <%=
+        publicParkingDetailResult.currentparking%>
+      </p>
+    </div>
+    <hr />
+    <div style="text-align: end">
+      <% if(publicParkingDetailResult.payyn === 'N') {%>
+        <span class="spContent">무료</span>
+      <% } else {%>
+        <span class="spContent"
+        ><%= publicParkingDetailResult.price.timerate%>분당 <%=
+            publicParkingDetailResult.price.rates%>원</span
+        >
+      <% }%>
+    </div>
+    <br />
+    <div>
+      <% let weekdayBegin =
+              publicParkingDetailResult.operationtime.weekday_begin%> <% let
+              weekdayEnd = publicParkingDetailResult.operationtime.weekday_end%> <%
+      let weekendBegin =
+              publicParkingDetailResult.operationtime.weekend_begin%> <% let
+              weekEndEnd = publicParkingDetailResult.operationtime.weekend_end%> <%
+      let holidayBegin =
+              publicParkingDetailResult.operationtime.holiday_begin%> <% let
+              holidayEnd = publicParkingDetailResult.operationtime.holiday_end%>
+      <div class="spContent" style="text-align: end; padding: 3px">
+        평일 <%= weekdayBegin.substring(0, 2)%>:<%=
+        weekdayBegin.substring(2, 4)%> ~ <%= weekdayEnd.substring(0,
+                2)%>:<%= weekdayEnd.substring(2, 4)%>
+      </div>
+    </div>
+    <div
+            style="padding: 3px; display: flex; justify-content: space-between"
+    >
+      <span class="otherTitle">운영시간</span>
+      <span class="spContent"
+      >주말 <%= weekendBegin.substring(0, 2)%>:<%= weekEndEnd.substring(2,
+                4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2,
+                4)%></span
+      >
+    </div>
+    <div class="spContent" style="text-align: end; padding: 3px">
+      공휴일 <%= holidayBegin.substring(0, 2)%>:<%= holidayEnd.substring(2,
+              4)%> ~ <%= weekdayEnd.substring(0, 2)%>:<%= weekdayEnd.substring(2,
+              4)%>
+    </div>
+  </div>
+  <hr class="hr" style="margin: 0px;"/>
+  <div class="child2">
+    <div style="display: flex; justify-content: space-between; padding-top: 10px;">
+      <div class="otherTitle">리뷰</div>
+      <div class="otherTitle" onclick="modalOpen()" style="cursor: pointer">
+        리뷰작성
+        <img
+                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/PencilSquare.svg"
+                style="width: 20px; height: 20px"
+        />
+      </div>
+    </div>
+    <hr />
+    <% if(result.length === 0) {%>
+      <div style="padding-top: 40px">
+        <div class="title" style="text-align: center; font-size: 35px">
+          작성된 리뷰가 없습니다
+        </div>
+        <div class="title" style="text-align: center; font-size: 35px">
+          리뷰를 작성해 다른 이용자에게 도움을 주세요 !
+        </div>
+      </div>
+    <% } else {%>
+      <div>
+        <% for(let review of result) {%>
+          <div style="display: flex; padding-bottom: 20px;">
+            <div class="profileImage" style="width: 40px; height: 40px">
+              <img src="<%= review.user.profile%>" width="30px;" height="30px;">
+            </div>
     <input type="hidden" id="check" value="0" />
     <div class="test">
       <div class="child1">
@@ -557,8 +800,8 @@
                 <%= review.comment%>
               </div>
             </div>
-            <% }%>
           </div>
+            <% }%>
         </div>
         <%}%>
       </div>

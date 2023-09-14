@@ -28,6 +28,10 @@ exports.detail = async (req, res) => {
 
   try {
     const result = await models.ParkingReview.findAll({
+      include : [{
+        model : models.User,
+        attributes : ['profile'],
+      }],
       attributes: ['nickname', 'score', 'comment'],
       where: {
         type: 1,
@@ -45,6 +49,7 @@ exports.detail = async (req, res) => {
       average = Math.round(average * 100) / 100;
     }
     console.log(publicParkingDetailResult.operationtime.weekend_begin);
+    console.log(result);
     res.render('publicParkingDetail', { publicParkingDetailResult, result, average })
   } catch (err) {
     console.log(err);
