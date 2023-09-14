@@ -7,6 +7,28 @@
     <title>회원가입 완료</title>
   </head>
   <body class="successBody">
+    <!-- header -->
+    <div class="header-container">
+      <nav class="headbox">
+        <div class="headermenu">
+          <img
+            class="leftMenu"
+            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/ChevronLeft.svg"
+            alt="되돌아가기"
+            onclick="goBack()"
+            style="width: 25px"
+            height="25px"
+          />
+          <img
+            src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/W_text_logo.svg"
+            alt="로고"
+            class="logo"
+            onclick="window.location.href='/'"
+          />
+        </div>
+      </nav>
+    </div>
+
     <!-- 회원가입 성공 페이지 -->
     <h1 class="susTitle">회원가입 완료</h1>
     <br />
@@ -20,9 +42,9 @@
       src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/P_car_logo.svg"
       alt="logo"
     />
-    <h3>
-      이제 <span id="nickname"><%= nickname %></span>로 다양한 서비스를 이용하실
-      수 있습니다.
+    <h3 class="serviceBox">
+      이제 <span style="color: #8783f5" id="nickname"><%= nickname %></span>로
+      다양한 서비스를 이용하실 수 있습니다.
     </h3>
     <br />
     <div class="loginBTn">
@@ -38,6 +60,10 @@
       if (userid && nickname) {
         nicknameElement.textContent = nickname;
         useridElement.textContent = userid;
+      }
+
+      function goBack() {
+        window.history.back();
       }
     </script>
   </body>

@@ -133,7 +133,13 @@
 }
 
 .menu ul li {
-  margin: 10px 0;
+  margin: 25px 0;
+}
+
+.QnA {
+  float: left;
+  padding-left: 20px;
+  padding-top: 20px;
 }
 
 .reservationButton {
@@ -143,16 +149,18 @@
   border-radius: 4px;
   border: 1px solid #8783f5;
   background-color: white;
+  margin: 6px;
+  margin-bottom: 30px;
 }
 
 .noticeBox {
   width: auto;
-  height: 120px;
+  height: 200px;
   background-color: #f8f8f8;
 }
 
 .menuContainer {
-  margin: 20px;
+  margin: 0px;
   padding: 20px;
   text-align: left;
   color: #333;
@@ -219,7 +227,7 @@
   width: 0;
   height: 0;
   border: 8px solid transparent;
-  border-top-color: lightgreen;
+  border-top-color: #35d2bf;
   border-bottom: 0;
   margin-left: -8px;
   margin-bottom: -8px;
@@ -251,4 +259,3 @@
     margin-left: 10px;
   }
 }
-
