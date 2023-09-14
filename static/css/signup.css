@@ -1,0 +1,217 @@
+/* 헤더 */
+/* 헤더 스타일링 */
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+}
+
+.headbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  background-color: #8783f5;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-shadow: 1px 1px 1px 1px rgb(199, 199, 199);
+}
+
+.logo {
+  height: 20px;
+}
+
+/* 메뉴 아이콘 스타일링 */
+.menu-icons {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  position: absolute;
+  right: 40px;
+}
+
+.menu-icon {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.headermenu {
+  display: flex;
+  align-items: center;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  text-align: center;
+}
+
+#menu-button {
+  border: none;
+  background-color: #8783f5;
+}
+#close-button {
+  border: none;
+  background-color: white;
+  float: right;
+  margin-top: 6px;
+}
+
+.mypageEdit {
+  width: 225px;
+  height: 60px;
+  margin: 20px;
+  background-color: #ebf0fe;
+  border: none;
+  border-radius: 10px;
+}
+
+.userNick,
+.userEmail {
+  text-align: left;
+  color: #333;
+}
+
+.menu ul li {
+  margin: 10px 0;
+}
+
+.reservationButton {
+  width: 225px;
+  height: 30px;
+  color: #8783f5;
+  border-radius: 4px;
+  border: 1px solid #8783f5;
+  background-color: white;
+}
+
+.noticeBox {
+  width: auto;
+  height: 120px;
+  background-color: #f8f8f8;
+}
+
+.menuContainer {
+  margin: 20px;
+  padding: 20px;
+  text-align: left;
+  color: #333;
+}
+
+.chevronRight {
+  float: right;
+}
+
+.mypageEdit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+
+.mypageEdit div:first-child {
+  margin-right: 10px;
+}
+
+.payButton {
+  margin-top: 14px;
+  text-align: left;
+  margin-left: 40px;
+  color: #333;
+}
+
+.service {
+  margin-right: 60px;
+  color: #333;
+}
+
+.logoutService {
+  color: #333;
+}
+
+.logoutBox {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 10px;
+}
+
+/* signup */
+.inputSignup {
+  border: 0;
+  height: 30px;
+  width: 400px;
+  font-size: 30px;
+  padding-top: 10px;
+  padding-bottom: 40px;
+  font-family: 'S-CoreDream-3Light';
+}
+
+.inputSignup:focus {
+  outline: none;
+}
+
+.mainSignup {
+  width: 500px;
+  margin: auto;
+}
+
+.signupTitle {
+  font-family: 'GmarketSansMedium';
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.fileSignup input[type='file'] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+}
+
+.fileSignup label {
+  display: inline-block;
+  padding: 10px 20px;
+  color: #fff;
+  vertical-align: middle;
+  background-color: #999999;
+  cursor: pointer;
+  height: 25px;
+  margin-left: 10px;
+}
+
+.fileSignup .upload-name {
+  display: inline-block;
+  height: 40px;
+  padding: 0 10px;
+  vertical-align: middle;
+  border: 1px solid #dddddd;
+  width: 60%;
+  color: #999999;
+}
+
+.profileRound {
+  width: 100px; /* 원하는 너비 및 높이로 조절하세요 */
+  height: 100px;
+  border-radius: 50%; /* 50%로 설정하여 동그랗게 만듭니다 */
+  object-fit: cover; /* 이미지가 동그랗게 잘리게 하려면 cover를 사용합니다 */
+}
