@@ -8,26 +8,36 @@ const { Sequelize, literal } = require("sequelize");
 require("dotenv").config();
 const env = process.env;
 
-exports.chat = async (req, res) => {
-  res.render("chat");
+exports.requestChat = (req, res) => {
+  const { userId, joinUserNick, parkingName } = req.params;
+
+  console.log("userId", userId);
+  console.log("joinUserNick", joinUserNick);
+  res.render("chat", { userId, roomId: null, joinUserNick, parkingName });
+};
+
+exports.chat = (req, res) => {
+  console.log("chatcontroller실행");
+  const { roomId, joinUser, parkingName } = req.params;
+  console.log("chatId", req.params);
+  console.log("chatroomId", roomId);
+  res.render("chat", {
+    roomId,
+    joinUser,
+    joinUserNick: null,
+    parkingName,
+  });
 };
 
 exports.chatList = async (req, res) => {
-  let chatListDB;
-  let joinUserId;
-
   try {
     const { userId } = req.params;
     console.log("chatListuserid", userId);
 
-    chatListDB = await models.ChatUser.findAll({
-      where: {
-        userid: userId,
-      },
+    const chatListDB = await models.ChatUser.findAll({
       include: [
         {
           model: models.ChatRoom,
-          attributes: ["roomname"],
           include: [
             {
               model: models.Chat,
@@ -39,9 +49,9 @@ exports.chatList = async (req, res) => {
         },
       ],
     });
-    console.log("roomid", chatListDB[0].roomid);
-    console.log("roomname", chatListDB[0].chatroom.roomname);
-    console.log("content", chatListDB[0].chatroom.chats.content);
+    console.log("chatListroomid", chatListDB[0].roomid);
+    // console.log("roomname", chatListDB[0].chatroom.roomname);
+    // console.log("content", chatListDB[0].chatroom.chats.content);
     res.render("chatList", { chatListDB });
   } catch (error) {
     console.log("chatList에러", error);

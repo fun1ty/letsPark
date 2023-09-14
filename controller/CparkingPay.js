@@ -87,7 +87,8 @@ const parkingPay = async (req, res) => {
 };
 const paySuccess = async (req, res) => {
   try {
-    const { id } = req.query;
+    const { id } = req.params;
+    console.log(id);
     const result = await ParkingPay.findOne({
       where: { id },
       include: [
@@ -129,7 +130,7 @@ const save = async (req, res) => {
   });
   console.log(result);
   if (result) {
-    res.json({ result: true });
+    res.json({ result: true, data: result });
   } else {
     res.json({ result: false });
   }

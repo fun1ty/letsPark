@@ -3,17 +3,40 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <link rel="stylesheet" href="/payok.css" />
+    <title>payOk</title>
   </head>
   <body>
-    <div class="container">
-      <h1>결제 성공</h1>
-      <p>결제가 성공적으로 완료되었습니다.</p>
-      <p>결제 정보:</p>
+    <div class="box1"></div>
+
+    <div class="successContainer">
+      <img
+        src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/CheckCircleFill.svg"
+        alt="완료"
+        class="success-icon"
+      />
+      <h1 class="paydone">결제 성공</h1>
+      <hr class="dot-line" />
+      <p class="successmsg">결제가 성공적으로 완료되었습니다.</p>
+
       <ul>
-        <li>주차장 이름: <%= result.shareparking.shareparkname %></li>
-        <li>결제 금액: <%= result.payamount %>원</li>
+        <li>주차장: <span><%= result.shareparking.shareparkname %></span></li>
+        <li>
+          결제금액:
+          <span style="color: #8783f5; font-weight: bold"
+            ><%= result.payamount %>원</span
+          >
+        </li>
       </ul>
     </div>
+
+    <div>
+      <button class="success" onclick="home()">확인</button>
+    </div>
+    <script>
+      function home() {
+        location.href = "/";
+      }
+    </script>
   </body>
 </html>

@@ -88,7 +88,16 @@
                   class="chevronRight"
                 />
               </li>
-
+              <li onclick="getMySharePark()">
+                🚙 내 공유주차장 목록
+                <img
+                        src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                        alt="이동"
+                        width="14px"
+                        height="14px"
+                        class="chevronRight"
+                />
+              </li>
               <li type="button" id="chat" onclick="chatListBtn()">
                 💬 채팅방
                 <img
@@ -455,15 +464,40 @@
               },
             })
             .then((response) => {
+
               console.log('chatList', response);
               const userid = response.data.responseData.data.id;
               console.log('회원번호', userid);
               location.href = `/chatList/${userid}`;
+
             })
             .catch((error) => {
               console.log('chatList에러', error);
               document.location.reload();
             });
+        }
+      }
+
+      async function getMySharePark() {
+        let id;
+        let check;
+        try {
+           const result = await axios({
+            method : 'POST',
+            url : '/shareparking/mysharepark',
+            headers: {
+              Authorization: `${localStorage.getItem('token')}`,
+            },
+          });
+          console.log(result);
+          id = result.data.id;
+          check = result.data.result;
+        } catch (err) {
+          console.log(err);
+        }
+        console.log('밖', id);
+        if(check) {
+          document.location.href = `/shareparking/myshareparks?id=${id}`;
         }
       }
     </script>

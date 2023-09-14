@@ -67,24 +67,6 @@
             />
           </button>
 
-          <div style="margin: 20px">
-            <button class="mypageEdit" onclick="profileEdit()">
-              <div>
-                <img
-                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/profile.svg"
-                  alt="profile"
-                  width="30px"
-                  height="30px"
-                />
-              </div>
-              <div>
-                <div class="userNick">파킹퍼시블님</div>
-                <div class="userEmail">parkinghaka@gmail.com</div>
-              </div>
-            </button>
-          </div>
-
-
             <div style="margin: 20px">
                 <button class="mypageEdit" onclick="profileEdit()">
                     <div>
@@ -105,6 +87,16 @@
                 <ul class="menuContainer">
                     <li onclick="parkingAdd()">
                         🚙 공유주차장 등록
+                        <img
+                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
+                                alt="이동"
+                                width="14px"
+                                height="14px"
+                                class="chevronRight"
+                        />
+                    </li>
+                    <li onclick="getMySharePark()">
+                        🚙 내 공유주차장 목록
                         <img
                                 src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
                                 alt="이동"
@@ -139,43 +131,6 @@
             >로그인/회원가입</span
             >
             </div>
-
-          <div>
-            <button class="reservationButton" onclick="userReservation()">
-              예약 내역 보기
-            </button>
-          </div>
-          <div class="noticeBox">
-            <ul class="menuContainer">
-              <li onclick="parkingAdd()">
-                🚙 공유주차장 등록
-                <img
-                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
-                  alt="이동"
-                  width="14px"
-                  height="14px"
-                  class="chevronRight"
-                />
-              </li>
-
-              <li type="button" id="chat" onclick="chatBtn()">
-                💬 채팅방
-                <img
-                  src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/Vector.svg"
-                  alt="이동"
-                  width="14px"
-                  height="14px"
-                  class="chevronRight"
-                />
-              </li>
-              <li>💰 포인트</li>
-            </ul>
-          </div>
-          <h5 class="payButton">결제내역</h5>
-          <div class="logoutBox">
-            <span class="service">이용안내 및 문의하기</span>
-            <span class="logoutService">로그아웃</span>
-          </div>
 
 
           <!-- 사용자 정보 조회 -->
@@ -242,7 +197,7 @@
             </div>
             <div style="display: flex; justify-content: space-between">
                 <div class="otherTitle">공유주차장 등록자</div>
-                <div class="spContent"><%= nickname%></div>
+                <div class="spContent" id="<%= userid%>"><%= nickname%></div>
             </div>
             <div style="display: flex; justify-content: center">
                 <div class="taCenter spContent" style="padding-top: 5px;">평점(<%= result.length%>) : <%= average%>&nbsp;&nbsp;</div>
@@ -269,7 +224,7 @@
                         <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
                     </svg>
 
-                    <div class="stars-inner" style="width: <%= average * 10 * 2%>%;"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
+                    <div class="stars-inner" style="width: <%= average * 10 * 2%>%"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
                         <!-- 5개의 노란색 별 -->
                         <!-- 별 1 -->
                         <svg class="star" viewBox="0 0 25 25">
@@ -316,7 +271,7 @@
         </div>
         <div style="display: flex; justify-content: space-evenly; padding-top: 10px;">
             <div class="spBtn" onclick="requestPay('<%= result1.id%>')">바로 예약하기</div>
-            <div class="spBtn">주인과 채팅하기</div>
+            <div class="spBtn" onclick="requestChat('<%= userid%>')">주인과 채팅하기</div>
         </div>
         </div>
             <hr class="hr" style="margin: 0px;">
@@ -366,7 +321,7 @@
                                                 <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
                                             </svg>
 
-                                            <div class="stars-inner" style="width: <%= review.score * 10 * 2%>%;"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
+                                            <div class="stars-inner" style="width: <%= review.score * 10 * 2%>%"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
                                                 <!-- 5개의 노란색 별 -->
                                                 <!-- 별 1 -->
                                                 <svg class="star" viewBox="0 0 25 25">
@@ -420,7 +375,7 @@
             </div>
             <div style="display: flex; justify-content: space-evenly; padding-top: 20px;">
                 <div class="modalBtn spBtn" id="modalCloseButton">취소하기</div>
-                <div class="modalBtn spBtn" onclick="enrollReview(<%= result1.id%>)">리뷰작성</div>
+                <div class="modalBtn spBtn" onclick="enrollReview('<%= result1.id%>')">리뷰작성</div>
             </div>
         </div>
       </div>
@@ -641,14 +596,9 @@
 
     //공유주차장등록 이동
     function parkingAdd() {
-      location.href = "/mypage/parking/add";
+        location.href = '/shareparking';
     }
 
-    //채팅방 이동
-    function chatBtn() {
-      console.log("front 채팅방클릭");
-      location.href = "/chat";
-    }
     
     //결제////////////////////////////////////////
 
@@ -707,7 +657,7 @@
 
             if (result) {
               alert("결제가 성공적으로 완료되었습니다.");
-              document.location.href = "/parkingpay/payok";
+              document.location.href = `/parkingpay/payok/${result.id}`;
             } else {
               alert("서버 응답이 실패했습니다.");
             }
@@ -739,7 +689,7 @@
           //throw new Error("서버 응답이 실패했습니다.");
           return false;
         } else {
-          return true;
+          return response.data.data;
         }
       } catch (error) {
         console.error("서버 요청 실패:", error);
@@ -791,29 +741,34 @@
     }
 
     //my채팅내역
-    function chatListBtn() {
+    function requestChat(userId) {
+        const joinUserNick = "<%= nickname%>"
+        const parkingName = "<%= result1.shareparkname%>"
         console.log('front 채팅방리스트 클릭');
-        const token = localStorage.getItem('token');
-        if (!token) {
-            alert('로그인 해주세요');
-            return;
-        } else {
-            axios
-                .get('/data', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((response) => {
-                    console.log('chatList', response);
-                    const userid = response.data.responseData.data.id;
-                    console.log('회원번호', userid);
-                    location.href = `/chatList/${userid}`;
-                })
-                .catch((error) => {
-                    console.log('chatList에러', error);
-                    document.location.reload();
-                });
+        location.href = `/chat/${userId}/${joinUserNick}/${parkingName}`;
+        console.log('chatList에러', error);
+    }
+        
+    async function getMySharePark() {
+        let id;
+        let check;
+        try {
+            const result = await axios({
+                method : 'POST',
+                url : '/shareparking/mysharepark',
+                headers: {
+                    Authorization: `${localStorage.getItem('token')}`,
+                },
+            });
+            console.log(result);
+            id = result.data.id;
+            check = result.data.result;
+        } catch (err) {
+            console.log(err);
+        }
+        console.log('밖', id);
+        if(check) {
+            document.location.href = `/shareparking/myshareparks?id=${id}`;
         }
     }
 </script>
