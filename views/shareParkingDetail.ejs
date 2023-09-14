@@ -536,9 +536,7 @@
                 alert('로그아웃 되었습니다!');
 
                 //로그아웃 후 새로고침
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
+                location.href='/'
             }
         } else {
             location.href = '/user/login';

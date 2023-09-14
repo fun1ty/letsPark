@@ -155,24 +155,31 @@
 
 /* 프로필 페이지 */
 .mainProfile {
-  width: 500px;
-  margin: auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .pTitle {
   font-family: 'GmarketSansMedium';
   font-size: 20px;
   font-weight: bolder;
+  height: 20px;
+  border: none;
+  padding-top: 13px;
 }
 
 .inputProfile {
-  border: 0;
-  height: 30px;
+  height: 20px;
   width: 400px;
-  font-size: 30px;
+  font-size: 20px;
   padding-top: 10px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   font-family: 'S-CoreDream-3Light';
+  margin-top: -50px;
+  border: none;
 }
 
 .inputProfile:focus {
@@ -183,4 +190,5 @@
   height: 300px;
   width: 300px;
   border-radius: 50%;
+  margin: 0 auto;
 }

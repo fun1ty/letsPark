@@ -155,13 +155,13 @@
 
 /* signup */
 .inputSignup {
-  border: 0;
-  height: 30px;
+  height: 20px;
   width: 400px;
-  font-size: 30px;
+  font-size: 20px;
   padding-top: 10px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   font-family: 'S-CoreDream-3Light';
+  border: none;
 }
 
 .inputSignup:focus {
@@ -177,6 +177,9 @@
   font-family: 'GmarketSansMedium';
   font-size: 20px;
   font-weight: bolder;
+  height: 20px;
+  border: none;
+  padding-top: 13px;
 }
 
 .fileSignup input[type='file'] {
@@ -214,4 +217,17 @@
   height: 100px;
   border-radius: 50%; /* 50%로 설정하여 동그랗게 만듭니다 */
   object-fit: cover; /* 이미지가 동그랗게 잘리게 하려면 cover를 사용합니다 */
+}
+
+#useridError {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#useridError.available {
+  color: blue; /* 사용 가능한 아이디일 때 파란색으로 설정 */
+}
+
+#useridError.unavailable {
+  color: red; /* 이미 사용 중인 아이디일 때 빨간색으로 설정 */
 }

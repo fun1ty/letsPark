@@ -155,33 +155,37 @@
 
 /* 프로필 수정 페이지 */
 /* 원형 이미지 스타일 */
-.profile-image {
+/* .profile-image {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
-}
+} */
 
 .eTitle {
   font-family: 'GmarketSansMedium';
   font-size: 20px;
   font-weight: bolder;
+  height: 20px;
+  border: none;
+  padding-top: 13px;
 }
 
 .mainEdit {
-  width: 500px;
+  width: 700px;
   margin: auto;
 }
 
 .inputEdit {
-  height: 30px;
+  height: 20px;
   width: 400px;
-  font-size: 30px;
+  font-size: 20px;
   padding-top: 10px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   font-family: 'S-CoreDream-3Light';
+  margin-top: -50px;
+  border: none;
 }
-
 .inputEdit:focus {
   outline: none;
 }
@@ -190,4 +194,70 @@
   height: 300px;
   width: 300px;
   border-radius: 50%;
+  margin: 0 auto; /* 수평 가운데 정렬 */
+}
+
+.editButtonContainer {
+  display: flex;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  height: 100vh; /* 화면 높이 만큼 높이 설정 */
+  margin-top: -400px;
+}
+
+.editButton {
+  background-color: #706bfa;
+  text-align: center;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 10px;
+  margin-top: 40px;
+  font-family: 'Dovemayo_gothic';
+  font-size: 30px;
+  color: white;
+  width: 200px;
+  border: none;
+  margin-right: 20px;
+}
+
+.edit {
+  background-color: #706bfa; /* 첫 번째 버튼 색상 */
+}
+
+.reset {
+  background-color: #aaa8f1; /* 두 번째 버튼 색상 */
+}
+
+.editButton:hover {
+  background-color: #6b67e1;
+}
+
+.fileEdit input[type='file'] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+}
+
+.fileEdit label {
+  display: inline-block;
+  padding: 10px 20px;
+  color: #fff;
+  vertical-align: middle;
+  background-color: #999999;
+  cursor: pointer;
+  height: 25px;
+  margin-left: 10px;
+}
+
+.fileEdit .upload-name {
+  display: inline-block;
+  height: 40px;
+  padding: 0 10px;
+  vertical-align: middle;
+  border: 1px solid #dddddd;
+  width: 60%;
+  color: #999999;
 }
