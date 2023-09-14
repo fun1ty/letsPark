@@ -52,7 +52,33 @@ exports.chatList = async (req, res) => {
     console.log("chatListroomid", chatListDB[0].roomid);
     // console.log("roomname", chatListDB[0].chatroom.roomname);
     // console.log("content", chatListDB[0].chatroom.chats.content);
-    res.render("chatList", { chatListDB });
+
+    let roomMakeUserFound = false;
+    let joinUserFound = false;
+
+    if (chatListDB.length > 0) {
+      for (let i = 0; i < chatListDB.length; i++) {
+        const roomNameSplit = chatListDB[i].chatroom.roomname.split("_");
+        const roomMakeUser = roomNameSplit[1];
+        const joinUser = roomNameSplit[2];
+
+        if (roomMakeUser == userId) {
+          roomMakeUserFound = true;
+        }
+
+        if (joinUser == userId) {
+          joinUserFound = true;
+        }
+      }
+    } else {
+      console.log("chatListDB Null");
+    }
+    console.log("chatListDB", chatListDB);
+    if (roomMakeUserFound || joinUserFound) {
+      res.render("chatList", { chatListDB });
+    } else {
+      res.render("chatList", { chatListDB: 0 });
+    }
   } catch (error) {
     console.log("chatList에러", error);
   }
