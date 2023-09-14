@@ -148,15 +148,18 @@
     <div style="display: flex; justify-content: center">
         <div id="mainArea">
             <h2>내가 등록한 공유주차장 리스트</h2>
+            <% if(result.length == '0') {%>
+                <h2>등록한 공유주차장이 없습니다.</h2>
+            <% } %>
                 <% for(let i=0 ; i<result.length ; i++) {%>
                     <div>
                         <div class="shindex" id="index<%= i%>">
                             <div>
-                                <div class="shname"><%= result[0].shareparkname %></div>
-                                <% let createDate = result[0].createdAt%>
+                                <div class="shname"><%= result[i].shareparkname %></div>
+                                <% let createDate = result[i].createdAt%>
                                 <div>등록일자 :  <%= createDate.getFullYear()%>년 <%= createDate.getMonth() + 1%>월 <%= createDate.getDate()%>일</div>
                             </div>
-                            <div id="toggleBtn">
+                            <div id="toggleBtn<%= i%>">
                                 <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down detail" viewBox="0 0 16 16" onclick="openDetail(<%= i%>)">
                                     <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
                                 </svg>
@@ -176,13 +179,13 @@
 </body>
 <script>
     function closeDetail(id) {
-        const toggleBtn = document.getElementById('toggleBtn');
+        const toggleBtn = document.getElementById(`toggleBtn${id}`);
         const mainDiv = document.getElementById(`mainDiv${id}`);
         mainDiv.remove();
         toggleBtn.innerHTML = `<svg onclick="openDetail(${id})" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down detail" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>`;
     }
     function openDetail(id) {
-        const toggleBtn = document.getElementById('toggleBtn');
+        const toggleBtn = document.getElementById(`toggleBtn${id}`);
         toggleBtn.innerHTML = `<svg onclick="closeDetail(${id})" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up detail" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/> </svg>`;
 
         const tempWidth = window.innerWidth;
@@ -304,17 +307,20 @@
 
     function loadFile(input, id) {
         const img = document.getElementById(`img${id}`);
+        const uploadName = document.querySelector('.upload-name');
         let file = input.files[0];
 
         img.src = URL.createObjectURL(file);
+        uploadName.value = input.files[0].name;
     }
 
     async function deleteShareParking(id) {
+        const shareParkingId = document.getElementById(`id${id}`).value;
         try {
             const result = await axios({
                 method: 'DELETE',
                 url : 'delete',
-                data : { shareParkingId : id },
+                data : { shareParkingId } ,
                 headers: {
                     Authorization: `${localStorage.getItem('token')}`,
                 },
@@ -353,11 +359,14 @@
 
         if(file.files[0] !== undefined) {
             formData.append('file', file.files[0]);
+            formData.append('checkFile', true);
+        } else {
+            formData.append('checkFile', false);
         }
 
         formData.append('shareparkname', shareParkingName);
         formData.append('price', price);
-        formData.append('shareParkingId', id);
+        formData.append('shareParkingId', document.getElementById(`id${id}`).value);
         //axios 부터
         try {
             const result = await axios({

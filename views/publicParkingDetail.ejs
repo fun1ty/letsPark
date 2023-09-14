@@ -160,27 +160,6 @@
     </div>
     <input type="hidden" id="kakaoLat" />
     <input type="hidden" id="kakaoLng" />
-    <div id="search-bar">
-      <form onsubmit="searchPlaces(); return false;">
-        <div class="search-container">
-          <input
-                  type="text"
-                  id="search-input"
-                  name="q"
-                  placeholder="목적지 또는 주소 검색"
-          />
-          <div class="filter-icon">
-            <img
-                    src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/filter.svg"
-                    alt="필터"
-                    width="25px"
-                    height="25px"
-            />
-          </div>
-          <button type="submit" id="search-button"></button>
-        </div>
-      </form>
-    </div>
   </nav>
 </div>
 <input type="hidden" id="check" value="0" />
@@ -395,7 +374,7 @@
   </div>
   <hr class="hr" style="margin: 0px;"/>
   <div class="child2">
-    <div style="display: flex; justify-content: space-between">
+    <div style="display: flex; justify-content: space-between; padding-top: 10px;">
       <div class="otherTitle">리뷰</div>
       <div class="otherTitle" onclick="modalOpen()" style="cursor: pointer">
         리뷰작성
@@ -418,8 +397,10 @@
     <% } else {%>
       <div>
         <% for(let review of result) {%>
-          <div style="display: flex">
-            <div class="profileImage" style="width: 40px; height: 40px"></div>
+          <div style="display: flex; padding-bottom: 20px;">
+            <div class="profileImage" style="width: 40px; height: 40px">
+              <img src="<%= review.user.profile%>" width="30px;" height="30px;">
+            </div>
             <div>
               <div style="display: flex; justify-content: space-between">
                 <div class="dovego" style="padding-top: 5px">
@@ -557,8 +538,8 @@
                 <%= review.comment%>
               </div>
             </div>
-            <% }%>
           </div>
+            <% }%>
       </div>
     <%}%>
   </div>

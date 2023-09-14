@@ -155,27 +155,7 @@
 
         <input type="hidden" id="kakaoLat" />
         <input type="hidden" id="kakaoLng" />
-        <div id="search-bar">
-            <form onsubmit="searchPlaces(); return false;">
-                <div class="search-container">
-                    <input
-                            type="text"
-                            id="search-input"
-                            name="q"
-                            placeholder="목적지 또는 주소 검색"
-                    />
-                    <div class="filter-icon">
-                        <img
-                                src="https://kdt8-cs.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EC%B0%A8%ED%95%98%EC%B9%B4_icon/filter.svg"
-                                alt="필터"
-                                width="25px"
-                                height="25px"
-                        />
-                    </div>
-                    <button type="submit" id="search-button"></button>
-                </div>
-            </form>
-        </div>
+
       </nav>
     </div>
 </div>
@@ -224,7 +204,7 @@
                         <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
                     </svg>
 
-                    <div class="stars-inner" style="width: <%= average * 10 * 2%>"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
+                    <div class="stars-inner" style="width: <%= average * 10 * 2%>%"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
                         <!-- 5개의 노란색 별 -->
                         <!-- 별 1 -->
                         <svg class="star" viewBox="0 0 25 25">
@@ -276,7 +256,7 @@
         </div>
             <hr class="hr" style="margin: 0px;">
         <div class="child2">
-            <div style="display: flex; justify-content: space-between">
+            <div style="display: flex; justify-content: space-between; padding-top: 10px;">
                 <div class="otherTitle">리뷰</div>
                 <div class="otherTitle" onclick="modalOpen()" style="cursor: pointer;">
                     리뷰작성
@@ -293,7 +273,9 @@
                 <div>
                     <% for(let review of result) {%>
                         <div style="display: flex;">
-                            <div class="profileImage" style="width: 40px; height: 40px"></div>
+                            <div class="profileImage" style="width: 40px; height: 40px">
+                                <img src="<%= review.user.profile%>" width="30px;" height="30px;">
+                            </div>
                             <div>
                                 <div style="display : flex; justify-content: space-between">
                                     <div class="dovego" style="padding-top: 5px"><%= review.nickname%> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
@@ -321,7 +303,7 @@
                                                 <path d="M12,2 L15,9 L22,9 L17,14 L18,21 L12,17 L6,21 L7,14 L2,9 L9,9 Z" stroke="#ccc" fill="#ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="1"></path>
                                             </svg>
 
-                                            <div class="stars-inner" style="width: <%= review.score * 10 * 2%>"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
+                                            <div class="stars-inner" style="width: <%= review.score * 10 * 2%>%"> <!-- 별점을 이 부분의 너비를 조절하여 설정하세요 -->
                                                 <!-- 5개의 노란색 별 -->
                                                 <!-- 별 1 -->
                                                 <svg class="star" viewBox="0 0 25 25">
