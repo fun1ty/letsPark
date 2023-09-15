@@ -71,12 +71,6 @@ exports.connection = (io, socket) => {
         socket.user = usernick;
         socket.join(roomFind.id);
         socket.room = roomFind.id;
-
-        // //이미 입장한 사용자인지 확인
-        // if (!joinedUsers[socket.room]) {
-        //   // 입장한 사용자를 추적
-        //   joinedUsers[socket.room] = true;
-
         // 방 정보 저장
         if (!rooms[socket.room]) {
           rooms[socket.room] = [];
