@@ -34,8 +34,7 @@ exports.connection = (io, socket) => {
       const resultValue = await UserInfo(userId);
 
       userId = console.log("resultValue", resultValue);
-      if (!user.includes(resultValue.id)) {
-      }
+
       socket.emit("jwt", resultValue);
     } catch (error) {
       console.error("토큰 검증 에러:", error);
