@@ -11,27 +11,15 @@ const db = {};
 
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], {
-    ...config,
-    dialectOptions: {
-      charset: "utf8mb4",
-      dateStrings: false,
-      typeCast: true,
-    },
-    timezone: "Asia/Seoul", // 한국 시간대로 설정
-  });
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, {
-    ...config,
-    dialectOptions: {
-      charset: "utf8mb4", // 문자셋 설정
-      dateStrings: true,
-      typeCast: true,
-    },
-    timezone: "Asia/Seoul", // 한국 시간대로 설정
-  });
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config
+  );
 }
-
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (
