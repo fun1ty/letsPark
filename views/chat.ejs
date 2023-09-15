@@ -91,7 +91,7 @@
         usernick = resultValue.nickname;
         const getItem = localStorage.getItem("userid");
         if (getItem === null || getItem.length == 0) {
-          localStorage.setItem("userid", userid);
+          localStorage.setItem("userid", resultValue.id);
         }
 
         //채팅방 생성
