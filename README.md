@@ -46,6 +46,7 @@
   <img src="https://img.shields.io/badge/AWS RDS-527FFF?&logo=amazonrds&logoColor=white">
   <img src="https://img.shields.io/badge/AWS S3-569A31?&logo=amazons3&logoColor=white">
   <img src="https://img.shields.io/badge/Ubuntu-E95420?&logo=ubuntu&logoColor=white">
+  <br/>
   <img src="https://img.shields.io/badge/Docker-2496ED?&logo=docker&logoColor=white">
   <img src="https://img.shields.io/badge/Jenkins-D24939?&logo=jenkins&logoColor=white">
   <img src="https://img.shields.io/badge/Nginx-009639?&logo=nginx&logoColor=white">
