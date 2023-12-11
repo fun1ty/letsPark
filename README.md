@@ -18,7 +18,7 @@
 
 ## 기술스택
 <div align=center> 
-  <p><b>Frontend</b></p>
+  <h3><b>Frontend</b></h3>
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white">
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white">
   <img src="https://img.shields.io/badge/Javascript-F7DF1E?style=flat&logo=javascript&logoColor=white">
@@ -30,7 +30,7 @@
   <img src="https://img.shields.io/badge/PortOne API-FF9A00?style=flat&logo=&logoColor=white">
   <br/><br/>
   
-  <p><b>Backend</b></p>
+  <h3><b>Backend</b></h3>
   <img src="https://img.shields.io/badge/Javascript-F7DF1E?style=flat&logo=javascript&logoColor=white">
   <img src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white">
   <img src="https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white">
@@ -41,7 +41,7 @@
   <img src="https://img.shields.io/badge/Sequelize-52B0E7?&logo=sequelize&logoColor=white">
   <br/><br/>
 
-  <p><b>Infra</b></p>
+  <h3><b>Infra</b></h3>
   <img src="https://img.shields.io/badge/AWS EC2-FF9900?&logo=amazon ec2&logoColor=white">
   <img src="https://img.shields.io/badge/AWS RDS-527FFF?&logo=amazonrds&logoColor=white">
   <img src="https://img.shields.io/badge/AWS S3-569A31?&logo=amazons3&logoColor=white">
@@ -54,7 +54,7 @@
   
   <br/><br/>
 
-  <p><b>Collab Tools</b></p>
+  <h3><b>Collab Tools</b></h3>
   <img src="https://img.shields.io/badge/GitHub-181717?&logo=github&logoColor=white">
   <img src="https://img.shields.io/badge/Notion-000000?&logo=Notion&logoColor=white">
   <img src="https://img.shields.io/badge/Postman-FF6C37?&logo=Postman&logoColor=white">
