@@ -28,7 +28,7 @@
   <img src="https://img.shields.io/badge/Kakaomap-ffcd00?style=flat&logo=kakao&logoColor=white">
   <img src="https://img.shields.io/badge/SeoulData API-000000?style=flat&logo=&logoColor=white">
   <img src="https://img.shields.io/badge/PortOne API-FF9A00?style=flat&logo=&logoColor=white">
-  <br/><br/>
+  <br/>
   
   <h3><b>Backend</b></h3>
   <img src="https://img.shields.io/badge/Javascript-F7DF1E?style=flat&logo=javascript&logoColor=white">
@@ -39,7 +39,7 @@
   <img src="https://img.shields.io/badge/JWT-000000?style=flat&logo=jsonwebtokens&logoColor=white">
   <img src="https://img.shields.io/badge/MySQL-4479A1?&logo=mysql&logoColor=white">
   <img src="https://img.shields.io/badge/Sequelize-52B0E7?&logo=sequelize&logoColor=white">
-  <br/><br/>
+  <br/>
 
   <h3><b>Infra</b></h3>
   <img src="https://img.shields.io/badge/AWS EC2-FF9900?&logo=amazon ec2&logoColor=white">
@@ -52,7 +52,7 @@
   <img src="https://img.shields.io/badge/Nginx-009639?&logo=nginx&logoColor=white">
   <img src="https://img.shields.io/badge/PM2-2B037A?&logo=pm2&logoColor=white">
   
-  <br/><br/>
+  <br/>
 
   <h3><b>Collab Tools</b></h3>
   <img src="https://img.shields.io/badge/GitHub-181717?&logo=github&logoColor=white">
