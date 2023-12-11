@@ -66,8 +66,8 @@
   <tbody>
     <tr>
       <td align="center"><a href="https://github.com/papicc45"><img src="https://github.com/papicc45.png" width="100px;" alt=""/><br /><b>이동준</b></a><br /></td>
-      <td align="center"><a href="https://github.com/fun1ty"><img src="https://github.com/fun1ty" width="100px;" alt=""/><br /><b>김미리</b></a><br /></td>
-      <td align="center"><a href="https://github.com/ddomiunnie"><img src="https://github.com/domiunnie.png" width="100px;" alt=""/><br /><b>김승주</b></a><br /></td>
+      <td align="center"><a href="https://github.com/fun1ty"><img src="https://github.com/fun1ty.png" width="100px;" alt=""/><br /><b>김미리</b></a><br /></td>
+      <td align="center"><a href="https://github.com/ddomiunnie"><img src="https://github.com/ddomiunnie.png" width="100px;" alt=""/><br /><b>김승주</b></a><br /></td>
       <td align="center"><a href="https://github.com/suhyuns22"><img src="https://github.com/suhyuns22.png" width="100px;" alt=""/><br /><b>차수현</b></a><br /></td>
     </tr>
     <tr>
