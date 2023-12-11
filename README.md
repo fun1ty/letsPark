@@ -61,6 +61,7 @@
   <img src="https://img.shields.io/badge/Figma-F24E1E?&logo=Figma&logoColor=white">
   <img src="https://img.shields.io/badge/Slack-4A154B?&logo=slack&logoColor=white">
 </div>
+
 ## 팀원
 <table align="center">
   <tbody>
