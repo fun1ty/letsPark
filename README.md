@@ -28,8 +28,28 @@
       <td align="center">메인 검색</td>
     </tr>
     <tr>
-      <td align="center">사용자가 등록한 공유주차장<br/>서울시의 노상주차장 정보를 확인할 수 있다</td>
-      <td align="center">지도 검색을 통해 <br/>원하는 위치의 주차장 정보를 확인할 수 있다</td>
+      <td align="center">사용자가 등록한 공유주차장<br/>서울시의 노상주차장 정보를 확인</td>
+      <td align="center">지도 검색을 통해 <br/>원하는 위치의 주차장 정보를 확인</td>
+    </tr>
+  </tbody>
+</table>
+<table align="center">
+  <tbody>
+    <tr>
+      <td>
+        <img src="https://github.com/fun1ty/letsPark/assets/118866032/0acd14c0-2ce2-4a13-9a15-06c7be2ac1fa">
+      </td>
+      <td>
+        <img src="https://github.com/fun1ty/letsPark/assets/118866032/5c090eb6-7293-42c2-a397-38e038478d29">
+      </td>
+    </tr>
+    <tr>
+      <td align="center">회원가입</td>
+      <td align="center">회원정보</td>
+    </tr>
+    <tr>
+      <td align="center">서비스 사용 전 회원가입 가능</td>
+      <td align="center">사용자의 정보 수정<br/>회원 탈퇴 가능</td>
     </tr>
   </tbody>
 </table>
