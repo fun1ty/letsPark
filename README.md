@@ -15,7 +15,7 @@
 
 <div align="center">
 
-  <img src="https://github.com/fun1ty/letsPark/assets/118866032/be576b87-1b96-46be-81ad-b348a17c78e9">
+  <img src="https://github.com/fun1ty/letsPark/assets/118866032/df80931d-fe2f-4325-b902-cfa9c7c97d7e">
 </div>
 ## ERD
 <img src="https://github.com/kdt-8-4/Weatherfit_Backend/assets/118866032/443ecb42-d625-4b3b-adaf-9f5d061b6804">
