@@ -13,10 +13,22 @@
 
 ## 프로젝트 핵심 기능
 
-<div align="center">
-
-  <img src="https://github.com/fun1ty/letsPark/assets/118866032/e00ad86d-9add-47af-8e77-1f53ce02b90a">
-</div>
+<table align="center">
+  <tbody>
+    <tr>
+      <td>
+        <img src="https://github.com/fun1ty/letsPark/assets/118866032/198d7783-36ae-4b6e-83ed-74e92ef06623">
+      </td>
+      <td>
+        <img src="https://github.com/fun1ty/letsPark/assets/118866032/f9565ddd-d564-4966-b60f-d791e90bbd55">
+      </td>
+    </tr>
+    <tr>
+      <td align="center">메인 상세</td>
+      <td align="center">메인 검색</td>
+    </tr>
+  </tbody>
+</table>
 ## ERD
 <img src="https://github.com/kdt-8-4/Weatherfit_Backend/assets/118866032/443ecb42-d625-4b3b-adaf-9f5d061b6804">
 
