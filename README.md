@@ -28,8 +28,8 @@
       <td align="center">메인 검색</td>
     </tr>
     <tr>
-      <td align="center">사용자가 등록한 공유주차장, 서울시의 노상주차장 정보를 확인할 수 있다</td>
-      <td align="center">지도 검색을 통해 원하는 위치의 주차장 정보를 확인할 수 있다</td>
+      <td align="center">사용자가 등록한 공유주차장<br/>서울시의 노상주차장 정보를 확인할 수 있다</td>
+      <td align="center">지도 검색을 통해 <br/>원하는 위치의 주차장 정보를 확인할 수 있다</td>
     </tr>
   </tbody>
 </table>
