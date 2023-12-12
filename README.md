@@ -13,6 +13,7 @@
 
 ## 프로젝트 핵심 기능
 
+<h4>메인</h4>
 <table align="center">
   <tbody>
     <tr>
@@ -33,6 +34,8 @@
     </tr>
   </tbody>
 </table>
+<br/>
+<h4>회원</h4>
 <table align="center">
   <tbody>
     <tr>
