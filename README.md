@@ -35,7 +35,7 @@
   </tbody>
 </table>
 <br/>
-<h3>회원</h3>
+<h3 align="center">회원</h3>
 <table align="center">
   <tbody>
     <tr>
@@ -57,7 +57,7 @@
   </tbody>
 </table>
 <br/>
-<h3>공유주차장</h3>
+<h3 align="center">공유주차장</h3>
 <table align="center">
   <tbody>
     <tr>
@@ -79,7 +79,7 @@
   </tbody>
 </table>
 <br/>
-<h3>결제 / 리뷰</h3>
+<h3 align="center">결제 / 리뷰</h3>
 <table align="center">
   <tbody>
     <tr>
@@ -101,7 +101,7 @@
   </tbody>
 </table>
 <br/>
-<h3>채팅</h3>
+<h3 align="center">채팅</h3>
 <table align="center">
   <tbody>
     <tr>
