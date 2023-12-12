@@ -13,6 +13,10 @@
 
 ## 프로젝트 핵심 기능
 
+<div align="center">
+
+  <img src="https://github.com/fun1ty/letsPark/assets/118866032/be576b87-1b96-46be-81ad-b348a17c78e9">
+</div>
 ## ERD
 <img src="https://github.com/kdt-8-4/Weatherfit_Backend/assets/118866032/443ecb42-d625-4b3b-adaf-9f5d061b6804">
 
