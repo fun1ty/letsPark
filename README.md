@@ -13,7 +13,7 @@
 
 ## 프로젝트 핵심 기능
 
-<h4>메인</h4>
+<h3>메인</h3>
 <table align="center">
   <tbody>
     <tr>
@@ -35,7 +35,7 @@
   </tbody>
 </table>
 <br/>
-<h4>회원</h4>
+<h3>회원</h3>
 <table align="center">
   <tbody>
     <tr>
@@ -56,6 +56,68 @@
     </tr>
   </tbody>
 </table>
+<br/>
+<h3>공유주차장</h3>
+<table align="center">
+  <tbody>
+    <tr>
+      <td>
+        <img src="https://github.com/fun1ty/letsPark/assets/118866032/a84cb913-77c6-4d3e-9c1c-447dfb1fa929">
+      </td>
+      <td>
+        <img src="https://github.com/fun1ty/letsPark/assets/118866032/a3cc9b6f-383e-419b-ab2b-4635bdf2a708">
+      </td>
+    </tr>
+    <tr>
+      <td align="center">공유주차장 등록</td>
+      <td align="center">공유주차장 수정</td>
+    </tr>
+    <tr>
+      <td align="center">다른 사용자들에게 공유할 <br/>자신의 개인사유지 등록 가능</td>
+      <td align="center">등록한 공유주차장의 정보 변경</td>
+    </tr>
+  </tbody>
+</table>
+<br/>
+<h3>결제 / 리뷰</h3>
+<table align="center">
+  <tbody>
+    <tr>
+      <td>
+        <img src="https://github.com/fun1ty/letsPark/assets/118866032/d6e3203e-af6c-48be-bcf5-efb87d67d4c7">
+      </td>
+      <td>
+        <img src="https://github.com/fun1ty/letsPark/assets/118866032/7c74dd07-9a23-4e04-960e-713ee6525cd6">
+      </td>
+    </tr>
+    <tr>
+      <td align="center">공유주차장 결제</td>
+      <td align="center">공유/노상주차장 리뷰</td>
+    </tr>
+    <tr>
+      <td align="center">등록된 공유주차장 사용하기 위한<br/>결제 가능</td>
+      <td align="center">공유/노상주차장 사용 후 <br/>해당 주차장 리뷰 작성</td>
+    </tr>
+  </tbody>
+</table>
+<br/>
+<h3>채팅</h3>
+<table align="center">
+  <tbody>
+    <tr>
+      <td>
+        <img src="https://github.com/fun1ty/letsPark/assets/118866032/2d31eba0-c7ec-445b-866f-1de51996914c">
+      </td>
+    </tr>
+    <tr>
+      <td align="center">채팅</td>
+    </tr>
+    <tr>
+      <td align="center">공유주차장의 주인과<br/>채팅 가능</td>
+    </tr>
+  </tbody>
+</table>
+<br/>
 ## ERD
 <img src="https://github.com/kdt-8-4/Weatherfit_Backend/assets/118866032/443ecb42-d625-4b3b-adaf-9f5d061b6804">
 
