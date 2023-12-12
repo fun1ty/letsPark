@@ -13,7 +13,7 @@
 
 ## 프로젝트 핵심 기능
 
-<h3>메인</h3>
+<h3 align="center">메인</h3>
 <table align="center">
   <tbody>
     <tr>
